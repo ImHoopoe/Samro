@@ -1,0 +1,92 @@
+﻿@model WinWin.DataLayer.DTOS.MainSamroShowViewModels.NavbarViewModel
+
+<nav class="navbar">
+    <div class="nav-container">
+        <!-- لوگو در سمت راست -->
+        <div class="nav-right">
+            <a href="#" class="logo">
+                <img src="/MainLayout/assets/images/SamroLogo.png" alt="لوگو">
+            </a>
+        </div>
+
+        <!-- بخش میانی (منوها و جستجو) -->
+        <div class="nav-center d-flex">
+            <a href="#" class="user-action">
+                <i class="fa-solid fa-house"></i>
+                <span>خانه</span>
+            </a>
+
+            <a href="#AboutUs" class="user-action">
+                <i class="fa-solid fa-address-card"></i>
+                <span>درباره ما</span>
+            </a>
+            <div id="Records" class="user-action">
+                <i class="fa-solid fa-trophy"></i>
+                <span>رکورد ها</span>
+            </div>
+
+            <div id="Blogs" class="user-action">
+
+                <i class="fa-solid fa-newspaper"></i>
+                <span>مقالات</span>
+            </div>
+
+            <a href="#" class="user-action">
+                <i class="fa-solid fa-question"></i>
+                <span>سوالات</span>
+            </a>
+
+        </div>
+
+        <div class="nav-left">
+            <div class="auth-buttons">
+                <a href="#" class="auth-btn login-btn">ورود</a>
+                <a href="#" class="auth-btn signup-btn">ثبت نام</a>
+            </div>
+            <div class="user-actions">
+
+                <div class="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="RecordsMegaMenu" class="mega-menu">
+        <div class="mega-menu-content">
+            @foreach (var sport in Model.Sports.Where(s => s.ParentId == null))
+            {
+                <div class="mega-menu-column">
+                    <h4 class="fw-bold border-right">@sport.SportName</h4>
+                    <hr class="w-100"/>
+                    <ul>
+                        @foreach (var Subsport in Model.Sports.Where(subSport => subSport.ParentId == sport.SportId))
+                        {
+                            <li><a href="#">@Subsport.SportName</a></li>
+                            
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div id="BlogsMegaMenu" class="mega-menu">
+        <div class="mega-menu-content">
+            @foreach (var blogGroup in Model.BlogGroups.Where(bg=> bg.ParentId==null))
+            {
+                <div class="mega-menu-column">
+                    <h4>@blogGroup.BlogGroupName</h4>
+                    <ul>
+                        @foreach (var subBlogGroup in Model.BlogGroups.Where(sbg => sbg.ParentId == blogGroup.BlogGroupId))
+                        {
+                            <li><a href="#">@subBlogGroup.BlogGroupName</a></li>
+                            
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</nav>

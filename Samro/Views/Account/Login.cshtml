@@ -1,0 +1,60 @@
+﻿@model WinWin.DataLayer.DTOS.LoginViewModel
+@{
+    Layout = "_Layout";
+    var returnUrl = Context.Request.Query["returnUrl"].ToString() ?? "/";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+        <div class="card-header text-center bg-white border-0 mb-3">
+            <h3 class="mb-0">ورود به حساب کاربری</h3>
+        </div>
+        <form asp-action="Login" asp-route-returnUrl="@returnUrl" method="post">
+            <input type="hidden" name="returnUrl" value="@returnUrl" />
+            <div class="form-floating mb-3">
+                <input asp-for="UserName" class="form-control" id="UserName" placeholder="نام کاربری یا ایمیل" />
+                <label for="UserName">نام کاربری یا ایمیل</label>
+                <span asp-validation-for="UserName" class="text-danger small"></span>
+            </div>
+
+            <div class="form-floating mb-4 position-relative">
+                <input asp-for="Password" type="password" class="form-control" id="Password" placeholder="رمز عبور" />
+                <label for="Password">رمز عبور</label>
+                <button type="button" class="btn btn-sm btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2" onclick="togglePassword('Password', this)">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                
+                <a href="@Url.Action("ForgetPassword", "Account")" class="small">رمز عبور را فراموش کرده‌ام؟</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">ورود</button>
+        </form>
+
+        @if (!string.IsNullOrEmpty(ViewData["LoginError"] as string))
+        {
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                @ViewData["LoginError"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePassword(fieldId, btn) {
+          var input = document.getElementById(fieldId);
+          if (input.type === 'password') {
+            input.type = 'text';
+            btn.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash');
+          } else {
+            input.type = 'password';
+            btn.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye');
+          }
+        }
+    </script>
+}

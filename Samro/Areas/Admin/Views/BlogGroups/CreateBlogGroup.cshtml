@@ -1,0 +1,54 @@
+﻿@model WinWin.DataLayer.DTOS.CreateBlogGroupViewModel
+
+@{
+    ViewData["Title"] = "افزودن گروه جدید";
+    Layout = "~/Views/Shared/AdminProfile/AdminProfileLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-light rounded-3 p-2">
+            <li class="breadcrumb-item"><a asp-controller="BlogGroup" asp-action="Index">مدیریت</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4 text-center">افزودن گروه جدید</h5>
+
+                    <form asp-action="CreateBlogGroup" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="BlogGroupName" class="form-control" id="BlogGroupName" placeholder="نام گروه بلاگ" />
+                            <label for="BlogGroupName">نام گروه بلاگ</label>
+                            <div class="invalid-feedback">
+                                <span asp-validation-for="BlogGroupName"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-plus-circle me-1"></i> افزودن
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <a asp-action="Index" class="btn btn-outline-secondary">← بازگشت به مدیریت</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

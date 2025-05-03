@@ -1,0 +1,265 @@
+﻿@model WinWin.DataLayer.DTOS.ShowBlogGroupsViewModel
+@{
+    ViewData["Title"] = "مدیریت گروه‌های بلاگ";
+    Layout = "~/Views/Shared/AdminProfile/AdminProfileLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0">لیست گروه‌های بلاگ</h3>
+        <a asp-area="Admin" asp-controller="BlogGroups" asp-action="CreateBlogGroup" class="btn btn-primary" aria-label="ایجاد گروه جدید">
+            <i class="bi bi-plus-circle me-1"></i> گروه جدید
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <!-- Controls -->
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-md-4">
+                    <div class="input-group input-group-sm">
+                        <label class="input-group-text" for="entriesPerPage">نمایش</label>
+                        <select id="entriesPerPage" asp-for="Count" class="form-select" aria-label="تعداد موارد برای نمایش">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 ms-auto">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text" id="searchLabel">جستجو</span>
+                        <input type="search" id="tableSearch" class="form-control" placeholder="عبارت را وارد کنید..." aria-label="جستجوی گروه" aria-controls="groupsTable">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table id="groupsTable" class="table table-striped table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">نام گروه</th>
+                            <th scope="col">زیر گروه‌ها</th>
+                            <th scope="col">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var group in Model.BlogGroups.Where(b => b.ParentId == null))
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-medium text-truncate" style="max-width: 200px;">@group.BlogGroupName</span>
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="عملیات گروه">
+                                            <a asp-area="Admin" asp-controller="BlogGroups" asp-action="EditBlogGroup" asp-route-id="@group.BlogGroupId" class="btn btn-outline-secondary" aria-label="ویرایش گروه">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger delete-btn" data-id="@group.BlogGroupId" aria-label="حذف گروه">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (Model.BlogGroups.Any(bg => bg.ParentId == group.BlogGroupId))
+                                    {
+                                        <div class="list-group list-group-flush">
+                                            @foreach (var sg in Model.BlogGroups.Where(bg => bg.ParentId == group.BlogGroupId))
+                                            {
+                                                <div class="list-group-item bg-transparent py-2">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="text-truncate" style="max-width: 180px;">@sg.BlogGroupName</span>
+                                                        <div class="btn-group btn-group-sm" role="group" aria-label="عملیات زیر گروه">
+                                                            <a asp-area="Admin" asp-controller="BlogGroups" asp-action="EditBlogGroup" asp-route-id="@sg.BlogGroupId" class="btn btn-outline-secondary" aria-label="ویرایش زیر گروه">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </a>
+                                                            <button type="button" class="btn btn-outline-danger delete-btn" data-id="@sg.BlogGroupId" aria-label="حذف زیر گروه">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-area="Admin" asp-controller="BlogGroups" asp-action="CreateSubBlogGroup" asp-route-id="@group.BlogGroupId" class="btn btn-sm btn-primary" aria-label="ایجاد زیر گروه">
+                                        <i class="bi bi-plus-circle me-1"></i> زیر گروه
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination and Info -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3">
+                <div class="mb-2 mb-md-0">
+                    نمایش @((Model.PageNumber - 1) * Model.Count + 1) تا @(Math.Min(Model.PageNumber * Model.Count, Model.TotalRecords)) از مجموع @Model.TotalRecords
+                </div>
+                <nav aria-label="صفحه‌بندی">
+                    <ul class="pagination pagination-sm mb-0">
+                        @for (var i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", "BlogGroups", new { pageNumber = i, count = Model.Count })" aria-label="صفحه @i">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">تایید حذف</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <p>آیا مطمئن هستید که می‌خواهید این گروه را حذف کنید؟</p>
+                <input type="hidden" id="groupIdToDelete" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">حذف</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto" id="toastTitle">اعلان</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="بستن"></button>
+        </div>
+        <div class="toast-body" id="toastMessage"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/admin/bloggroups.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Bootstrap tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Entries per page change handler
+            document.getElementById('entriesPerPage').addEventListener('change', function () {
+                const count = this.value;
+                const page = @Model.PageNumber;
+                window.location.href = `@Url.Action("BlogGroups", "Home")?pageNumber=${page}&count=${count}`;
+            });
+
+            // Table search functionality
+            document.getElementById('tableSearch').addEventListener('input', function () {
+                const filter = this.value.toLowerCase();
+                document.querySelectorAll('#groupsTable tbody tr').forEach(row => {
+                    const text = row.innerText.toLowerCase();
+                    row.style.display = text.includes(filter) ? '' : 'none';
+                });
+            });
+
+            // Delete button handler
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const groupId = this.getAttribute('data-id');
+                    document.getElementById('groupIdToDelete').value = groupId;
+                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                    deleteModal.show();
+                });
+            });
+
+            // Confirm delete handler
+            document.getElementById('confirmDelete').addEventListener('click', function () {
+                const groupId = document.getElementById('groupIdToDelete').value;
+                const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+
+                fetch('@Url.Action("DeleteBlogGroup", "BlogGroups")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `id=${groupId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        deleteModal.hide();
+                        showToast('موفقیت', data.message, 'success');
+
+                        // Remove the deleted items from view
+                        document.querySelectorAll(`[data-id="${groupId}"]`).forEach(el => {
+                            const row = el.closest('tr') || el.closest('.list-group-item');
+                            if (row) {
+                                row.style.opacity = '0';
+                                setTimeout(() => row.remove(), 300);
+                            }
+                        });
+                    } else {
+                        showToast('خطا', data.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    showToast('خطا', 'خطا در حذف گروه', 'danger');
+                    console.error('Error:', error);
+                });
+            });
+
+            // Toast notification function
+            function showToast(title, message, type) {
+                const toast = document.getElementById('liveToast');
+                const toastTitle = document.getElementById('toastTitle');
+                const toastMessage = document.getElementById('toastMessage');
+
+                toastTitle.textContent = title;
+                toastMessage.textContent = message;
+
+                // Set appropriate styling based on type
+                const toastHeader = toast.querySelector('.toast-header');
+                toastHeader.className = 'toast-header';
+
+                if (type === 'success') {
+                    toastHeader.classList.add('bg-success', 'text-white');
+                } else if (type === 'danger') {
+                    toastHeader.classList.add('bg-danger', 'text-white');
+                }
+
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+            }
+
+            // Show temp data notifications
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>showToast('موفقیت', '@Html.Raw(TempData["SuccessMessage"])', 'success');</text>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>showToast('خطا', '@Html.Raw(TempData["ErrorMessage"])', 'danger');</text>
+        }
+        });
+    </script>
+
+}
+
+
+
+
+
+       
+        

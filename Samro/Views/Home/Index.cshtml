@@ -1,0 +1,16 @@
+﻿@model WinWin.DataLayer.DTOS.MainSamroShowViewModels.IndexViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+<partial name="MainPartials/_HeroSectionPartial" />
+<partial name="MainPartials/_TournamentsSectionPartial" model="Model.LasTournaments" />
+<partial name="MainPartials/_LastBlogsSectionPartial" model="@Model.LastBlogs"/>
+<partial name="MainPartials/_CounterSectionPartial" model="@Model.UsersCounts" />
+<partial name="MainPartials/_AboutUsPartial" />
+<partial name="MainPartials/_FAQPartial" />

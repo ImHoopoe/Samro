@@ -1,0 +1,62 @@
+﻿@* @using Microsoft.OpenApi.Extensions *@
+@model List<WinWin.DataLayer.Entities.EventModels.Tournament>
+
+<section id="Tournaments" class="section">
+    <div class="container pt-5">
+        <h2 class="bordered-heading fw-bold"> عنوان رویداد  </h2>
+
+
+        <div class="main-slider">
+
+            @foreach (var tournament in Model)
+            {
+                <div class="card-slide">
+                    <div class="card">
+                        <div class="position-relative">
+                            <span class="card-badge">۱۹:۰۰</span>
+                            <img src="/images/Tournament/thumb/@tournament.Thumbnail" class="card-image w-100" alt="...">
+                        </div>
+                        <div class="card-content">
+                            <h5 class="card-title">@tournament.Title </h5>
+                            <p class="card-description">
+                                @tournament.Description
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+
+            <div class="swiper-container thumbnail-swiper">
+                <div class="swiper-wrapper ">
+
+                    @foreach (var tournament in Model)
+                    {
+                        <div class="swiper-slide card-thumb bg-white">
+                            <img src="/images/Tournament/thumb/@tournament.Thumbnail" class="w-100" style="height: 120px; object-fit: cover;" />
+                            <div class="p-3">
+                                <h6 class="mb-0">@tournament.TournamentType.GetDisplayName()</h6>
+                                <h5>@tournament.Title</h5>
+                                <small class="text-muted">زنده</small>
+                            </div>
+                        </div>
+
+                    }
+
+                </div>
+
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <a href="#" class="fw-bold text-white d-flex align-items-center text-decoration-none bordered-heading">
+                همه رویداد‌ها
+                <i class="fas fa-arrow-left ms-2"></i>
+
+            </a>
+        </div>
+
+    </div>
+</section>

@@ -1,0 +1,162 @@
+﻿// File: Views/Admin/Blogs/Index.cshtml
+@using WinWin.Core.Tools.PublicTools
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model WinWin.DataLayer.DTOS.ShowBlogsViewModel
+@{
+    ViewData["Title"] = "مدیریت بلاگ‌ها";
+    Layout = "~/Views/Shared/AdminProfile/AdminProfileLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0">لیست بلاگ‌ها</h3>
+        <a asp-action="CreateBlog" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> بلاگ جدید
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <!-- Controls -->
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-md-4">
+                    <div class="input-group input-group-sm">
+                        <label class="input-group-text" for="entriesPerPage">نمایش</label>
+                        <select id="entriesPerPage" asp-for="Count" class="form-select" aria-label="تعداد ورودی‌ها">
+                            @foreach (var opt in new[] { 5, 10, 15, 20 })
+                            {
+                                if (Model.Count == opt)
+                                {
+                                    <option value="@opt" selected>@opt</option>
+                                }
+                                else
+                                {
+                                    <option value="@opt">@opt</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 ms-auto">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text">جستجو</span>
+                        <input type="search" id="tableSearch" class="form-control" placeholder="عبارت را وارد کنید..." aria-controls="blogsTable">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table id="blogsTable" class="table table-striped table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>عنوان</th>
+                            <th>توضیحات کوتاه</th>
+                            <th>تاریخ انتشار</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var blog in Model.Blogs)
+                        {
+                            <tr>
+                                <td class="text-truncate" style="max-width:180px;">@blog.Title</td>
+                                <td class="text-truncate" style="max-width:250px;">@blog.ShortDescription</td>
+                                <td>@blog.PublishDate.ToShamsi()</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="عملیات">
+                                        <a asp-area="Admin" asp-controller="Blogs" asp-action="EditBlog" asp-route-id="@blog.BlogId" class="btn btn-outline-secondary" title="ویرایش">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger delete-btn" data-id="@blog.BlogId" title="حذف">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3">
+                <div class="mb-2 mb-md-0">
+                    نمایش @((Model.PageNumber - 1) * Model.Count + 1) تا @(Math.Min(Model.PageNumber * Model.Count, Model.TotalRecords)) از مجموع @Model.TotalRecords
+                </div>
+                <nav aria-label="صفحه‌بندی">
+                    <ul class="pagination pagination-sm mb-0">
+                        @for (var i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i==Model.PageNumber?"active":"")">
+                                <a class="page-link" href="@Url.Action("Index","Blogs",new{pageNumber=i,count=Model.Count})">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">تأیید حذف</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                آیا از حذف این بلاگ اطمینان دارید؟
+                <input type="hidden" id="blogIdToDelete" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">حذف</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            // Entries per page
+            document.getElementById('entriesPerPage').addEventListener('change',function(){
+                const count=this.value, page=@Model.PageNumber;
+                window.location.href=`@Url.Action("Index", "Blogs")?pageNumber=${page}&count=${count}`;
+            });
+            // Search
+            document.getElementById('tableSearch').addEventListener('input',function(){
+                const f=this.value.toLowerCase();
+                document.querySelectorAll('#blogsTable tbody tr').forEach(r=>r.style.display=r.innerText.toLowerCase().includes(f)?'':'none');
+            });
+            // Delete handlers
+            document.querySelectorAll('.delete-btn').forEach(btn=>btn.addEventListener('click',function(){
+                document.getElementById('blogIdToDelete').value=this.dataset.id;
+                new bootstrap.Modal(document.getElementById('deleteModal')).show();
+            }));
+            document.getElementById('confirmDelete').addEventListener('click',function(){
+                const id=document.getElementById('blogIdToDelete').value;
+                fetch('@Url.Action("DeleteBlog", "Blogs", new { area = "Admin" })',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:`id=${id}`})
+                .then(res=>res.json()).then(data=>{
+                    if(data.success){
+                        bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                        location.reload();
+                    } else alert(data.message);
+                });
+            });
+            // TempData notifications
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>$.notify({icon:'bi bi-check-circle',title:'موفقیت',message:'@TempData["SuccessMessage"]'},{type:'success',delay:3000});</text>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>$.notify({icon:'bi bi-x-circle',title:'خطا',message:'@TempData["ErrorMessage"]'},{type:'danger',delay:3000});</text>
+        }
+        });
+    </script>
+}

@@ -1,0 +1,155 @@
+﻿/* استایل کلی پیام‌ها */
+.chat-message-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* پیام‌های کاربر خود (سمت راست) */
+.my-message {
+   
+
+        background-color: #e0e0e0;
+    color: black;
+    align-self: flex-start; /* این قسمت باعث می‌شود پیام به سمت چپ برود */
+    border-radius: 20px 20px 0 20px;
+    text-align: left;
+    position: relative;
+    max-width: 75%;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* پیام‌های کاربر دیگر (سمت چپ) */
+.other-message {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end; /* این قسمت باعث می‌شود پیام به سمت راست برود */
+    border-radius: 20px 20px 20px 0;
+    text-align: right;
+    margin-right: auto; /* پیام‌های خود کاربر را سمت راست می‌برد */
+    position: relative;
+    max-width: 75%;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* تنظیمات هدر پیام */
+.chat-message-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+/* تنظیمات متن پیام */
+.chat-message-body {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* انیمیشن برای ظاهر شدن پیام‌ها */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* طراحی ریسپانسیو */
+@media (max-width: 768px) {
+    .chat-message {
+        max-width: 90%;
+    }
+
+    .my-message {
+        max-width: 85%;
+    }
+}
+
+/* استایل برای دکمه‌ها */
+textarea.form-control {
+    border-radius: 20px;
+}
+
+button.btn-primary {
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+
+/* استایل برای لیست اتاق‌ها */
+.rooms-list {
+    height: 500px;
+    max-height: 500px; 
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.room-card {
+direction:rtl;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border-radius: 12px;
+    height: 100px;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+
+.avatar-container {
+    width: 50px;
+    height: 50px;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 3px solid #007bff;
+}
+
+/* استایل برای اطلاعات اتاق */
+.room-info {
+    flex: 1;
+}
+
+.room-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.room-info p {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0;
+}
+
+/* طراحی ریسپانسیو */
+@media (max-width: 768px) {
+    .room-card {
+        margin-bottom: 10px;
+    }
+
+    .avatar-container {
+        width: 50px;
+        height: 50px;
+    }
+
+    .room-name {
+        font-size: 1rem;
+    }
+
+    .room-info p {
+        font-size: 0.8rem;
+    }
+}

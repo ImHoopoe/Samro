@@ -1,0 +1,95 @@
+#Tournaments {
+  height: 80vh;
+  width: 100%;
+  height: fit-content;
+}
+#Tournaments{
+  background: linear-gradient(25deg, var(--gray-dark) 90%, var(--red) 70%);
+  margin-top: 0px!important;
+}
+.bordered-heading {
+  position: relative;
+  padding-bottom: 10px;
+  display: inline-block;
+  margin-bottom: 3rem;
+}
+.bordered-heading:hover {
+  transition: transform 0.3s ease;
+  transform: scale(1.1);
+}
+.bordered-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--red);
+  transition: width 0.3s ease-in;
+}
+
+.bordered-heading:hover::after {
+  width: 0%;
+  left: 0;
+}
+
+#Tournaments
+{
+  padding: auto;
+  padding: 5rem;
+}
+
+
+.thumbnail-wrapper {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  overflow-x: hidden;               
+  scroll-behavior: smooth;         
+  position: relative;
+}
+
+
+.thumbnail-wrapper::before,
+.thumbnail-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(0,0,0,0.4);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.thumbnail-wrapper::before {
+  left: 0;
+  mask-image: url('data:image/svg+xml;utf8,<svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>');
+}
+
+.thumbnail-wrapper::after {
+  right: 0;
+  mask-image: url('data:image/svg+xml;utf8,<svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>');
+}
+
+
+@media (max-width: 768px) {
+  .thumbnail-wrapper::before,
+  .thumbnail-wrapper::after {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+
+@media (max-width: 480px)
+{
+  
+  #Tournaments
+  {
+    padding: 0%!important;
+  }
+}

@@ -1,0 +1,176 @@
+:root {
+    --gray-dark: #2B2A29;
+    --red: #E31E24;
+    --light-gray: #F5F5F5;
+  }
+
+  .bg-dark
+  {
+    background-color: var(--gray-dark)!important;
+  }
+body {
+    font-family: Vazirmatn, sans-serif;
+    background-color: var(--gray-dark);
+}
+h2{
+    color: white;
+}
+
+
+
+#CounterSection {
+    padding: 5rem 0;
+    background-image: url("img/aboutus.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+}
+.counter-item {
+    background: var(--light-gray);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.counter-number {
+    font-size: 2.5rem;
+    color: var(--red);
+    font-weight: 700;
+}
+
+.counter-item {
+    position: relative;
+    padding: 20px;
+    direction: rtl; /* راست‌چین کردن محتوا */
+}
+
+.counter-item p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: right; /* تنظیم متن به سمت راست */
+}
+
+.counter-item p .icon-right {
+    margin-right: 10px; 
+    font-size: 1.5rem; 
+    color: var(--gray-dark); 
+}
+
+.counter-number {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#FAQ h2
+{
+    color: #2B2A29!important;
+}
+#AboutUs img {
+    padding: 5px;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 2rem 0rem;
+
+}
+
+
+.accordion-button {
+    font-weight: 500;
+    background: rgba(37, 99, 235, 0.05);
+}
+.accordion-button:not(.collapsed) {
+    background: #2563eb;
+    color: white;
+}
+
+
+.contact-info {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.contact-form input,
+.contact-form textarea {
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+}
+
+@media (max-width: 991px) {
+    .navbar-collapse {
+        display: block !important;
+        height: auto !important;
+        padding-bottom: 15px;
+    }
+    .navbar-toggler {
+        display: none;
+    }
+}
+
+section
+{
+    margin-top: 5rem!important;
+}
+
+.section {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+  
+  .section.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+.btn-primary
+{
+    background-color: var(--red)!important;
+    border-color: var(--red)!important;
+}
+.btn-primary :hover
+{
+    background-color: transparent !important;
+    border-color: var(--red)!important;
+}
+  
+.btn-primary:hover,
+.btn.btn-primary:hover {
+  background-color: transparent !important;
+  border-color: var(--red) !important;
+  color: var(--red) !important;
+}
+
+.btn-outline-primary
+{
+    background-color: transparent !important;
+    border-color: var(--red) !important;
+    color: var(--red) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--red) !important;
+    border-color: var(--red) !important;
+    color: white !important; 
+}
+
+.btn-outline-secondary {
+    background-color: transparent;
+    border-color: var(--gray-dark);
+    color: var(--gray-dark);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--gray-dark);
+    border-color: var(--gray-dark);
+    color: white;
+}
+input
+ {
+    text-align: start;
+ }
+ html {
+    direction: rtl;
+    
+}

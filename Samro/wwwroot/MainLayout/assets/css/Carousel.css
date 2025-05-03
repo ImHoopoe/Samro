@@ -1,0 +1,127 @@
+.custom-card-carousel {
+  max-width: 1400px;
+  margin: 2rem auto;
+  position: relative;
+}
+
+.main-slider {
+  overflow: hidden;
+
+}
+
+.card-slide {
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  transform: scale(0.9);
+  opacity: 0;
+  display: none;
+}
+
+.card-slide.active {
+  transform: scale(1);
+  opacity: 1;
+  display: block;
+}
+
+.thumbnail-wrapper {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  overflow-x: auto;
+}
+
+.card-thumb {
+  flex: 0 0 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(135, 204, 24, 0.1);
+
+}
+
+.card-thumb:hover {
+  transform: translateY(-5px);
+}
+
+.card-thumb.active {
+  border-color: rgba(255, 99, 38, 0.3);
+  box-shadow: 0 3px 4px rgba(255, 99, 38, 0.3);
+}
+
+.card-image {
+  height: 220px;
+  object-fit: cover;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.card-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 4px 12px;
+  font-size: 0.9rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.card-content {
+  padding: 1.2rem;
+  
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--gray-dark);
+}
+
+.card-description {
+  color: #6b7280;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+.thumbnail-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.thumbnail-wrapper::-webkit-scrollbar-thumb {
+  background: #ddd;
+
+}
+
+.thumbnail-swiper {
+  position: relative;
+  padding: 20px 0;
+  direction: rtl; /* برای راست‌چین بودن */
+}
+
+.card-thumb {
+  flex: 0 0 200px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  border: 2px solid transparent;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-thumb:hover {
+  transform: scale(1.1);
+}
+
+.card-thumb.active {
+  border-color: var(--red);
+  box-shadow: 0 2px 15px var(--red);
+}
+
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: var(--red);
+}
+

@@ -1,0 +1,238 @@
+﻿@model WinWin.DataLayer.DTOS.ShowBlogGroupsViewModel
+
+@{
+    Layout = "AdminProfile/AdminProfileLayout";
+}
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <div class="dataTables_wrapper container-fluid dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dataTables_length" id="add-row_length">
+                                <label>
+                                    نمایش
+                                    <select name="add-row_length" class="form-control form-control-sm" id="entriesPerPage" asp-for="Count">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                        <option value="20">20</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div id="add-row_filter" class="dataTables_filter">
+                                <label>
+                                    جستجو:
+                                    <input type="search" class="form-control form-control-sm" placeholder="" aria-controls="add-row">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="display table table-striped table-hover dataTable" role="grid" aria-describedby="add-row_info">
+                        <thead>
+                            <tr role="row">
+                                <th>نام گروه</th>
+                                <th>زیر گروه ها</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var group in Model.BlogGroups.Where(b => b.ParentId == null))
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span>@group.BlogGroupName</span>
+                                            <span>
+
+                                                <button class="btn btn-link btn-primary restore-btn" data-id="@group.BlogGroupId">
+                                                    <i class="fa fa-undo" aria-hidden="true"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (Model.BlogGroups.Any(bg => bg.ParentId == group.BlogGroupId))
+                                        {
+                                            <ul class="list-unstyled">
+                                                @foreach (var sg in Model.BlogGroups.Where(bg => bg.ParentId == group.BlogGroupId))
+                                                {
+                                                    <li>
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>@sg.BlogGroupName</span>
+                                                            <span>
+
+                                                                <button class="btn btn-link btn-primary restore-btn" data-id="@sg.BlogGroupId">
+                                                                    <i class="fa fa-undo" aria-hidden="true"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                    </td>
+                                   
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-5">
+                            <div class="dataTables_info" id="add-row_info" role="status" aria-live="polite">
+                                نمایش @(Model.PageNumber - 1) تا @(Model.PageNumber * Model.Count) از مجموع @Model.TotalRecords نتایج
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-7">
+                            <div class="dataTables_paginate paging_simple_numbers" id="add-row_paginate">
+                                <ul class="pagination">
+                                    @for (var i = 1; i <= Model.TotalPages; i++)
+                                    {
+                                        <li class="paginate_button page-item @(i == Model.PageNumber ? "active" : "")">
+                                            <a href="@Url.Action("DeletedBlogGroups", "BlogGroups", new { pageNumber = i, count = Model.Count })" class="page-link">@i</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal حذف گروه -->
+<div class="modal fade" id="restoreModal" tabindex="-1" role="dialog" aria-labelledby="restoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="restoreModalLabel">تایید بازگردانی</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                آیا مطمئن هستید که می‌خواهید این گروه خبری را بازگردانی کنید؟
+                <input type="hidden" id="groupIdToRestore" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                <button type="button" class="btn btn-primary" id="confirmRestore">بازگردانی</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+
+    <script>
+        $(document).ready(function () {
+
+            $('.restore-btn').on('click', function () {
+                var groupId = $(this).data('id');
+                $('#groupIdToRestore').val(groupId);
+                $('#restoreModal').modal('show');
+            });
+
+            $('#confirmRestore').on('click', function () {
+                var groupId = $('#groupIdToRestore').val();
+
+                $.ajax({
+                    url: '@Url.Action("RestoreBlogGroup", "BlogGroups")',
+                    type: 'POST',
+                    data: { id: groupId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#restoreModal').modal('hide');
+                            $('tr').each(function () {
+                                if ($(this).find('.restore-btn').data('id') == groupId) {
+                                    $(this).fadeOut(500, function () {
+                                        $(this).remove();
+                                    });
+                                }
+                            });
+
+                            $('ul').each(function () {
+                                $(this).find('li').each(function () {
+                                    if ($(this).find('.restore-btn').data('id') == groupId) {
+                                        $(this).fadeOut(500, function () {
+                                            $(this).remove();
+                                        });
+                                    }
+                                });
+                            });
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('خطا در حذف گروه: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $('#entriesPerPage').on('change', function () {
+            var selectedValue = $(this).val();
+            var currentPage = @Model.PageNumber;
+            window.location.href = '@Url.Action("DeletedBlogGroups", "BlogGroups")?pageNumber=' + currentPage + '&count=' + selectedValue;
+        });
+    </script>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            $.notify({
+                icon: 'icon-check',
+                title: 'موفقیت',
+                message: '@Html.Raw(TempData["SuccessMessage"])'
+            }, {
+                type: 'success',
+                placement: {
+                    from: "top",
+                    align: "center"
+                },
+                delay: 5000,
+                animate: {
+                    enter: "animated fadeInDown",
+                    exit: "animated fadeOutUp"
+                }
+            });
+        </script>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            $.notify({
+                icon: 'icon-close',
+                title: 'شکست',
+                message: '@Html.Raw(TempData["ErrorMessage"])'
+            }, {
+                type: 'danger',
+                placement: {
+                    from: "top",
+                    align: "center"
+                },
+                delay: 5000,
+                animate: {
+                    enter: "animated fadeInDown",
+                    exit: "animated fadeOutUp"
+                }
+            });
+        </script>
+    }
+}
+
+
+
+
+

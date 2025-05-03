@@ -1,0 +1,159 @@
+﻿// File: Views/Admin/Blogs/CreateBlog.cshtml
+@model WinWin.DataLayer.DTOS.CreateBlogViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "افزودن مقاله جدید";
+    Layout = "~/Views/Shared/AdminProfile/AdminProfileLayout.cshtml";
+    var blogGroups = ViewData["BlogGroups"] as List<SelectListItem>;
+}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-light rounded-3 p-2">
+            <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Blogs" asp-action="Index">مدیریت مقالات</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8">
+            <div class="card shadow-sm p-4">
+                <h4 class="mb-4 text-center text-primary">@ViewData["Title"]</h4>
+                <form id="createBlogForm" asp-action="CreateBlog" method="post" enctype="multipart/form-data" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Title" class="form-control" id="Title" placeholder="عنوان مقاله" aria-describedby="TitleHelp" />
+                        <label for="Title">عنوان مقاله</label>
+                        <div id="TitleHelp" class="form-text">حداقل 5 کاراکتر</div>
+                        <span asp-validation-for="Title" class="invalid-feedback"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="ShortDescription" class="form-control" id="ShortDescription" placeholder="توضیح کوتاه" style="height: 100px;" aria-describedby="ShortDescHelp"></textarea>
+                        <label for="ShortDescription">توضیح کوتاه</label>
+                        <div id="ShortDescHelp" class="form-text">حداکثر 200 کاراکتر</div>
+                        <span asp-validation-for="ShortDescription" class="invalid-feedback"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Description" class="form-label">متن مقاله</label>
+                        <textarea asp-for="Description" class="form-control" id="editor" rows="8"></textarea>
+                        <span asp-validation-for="Description" class="invalid-feedback"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select id="blogGroupSelect" class="form-select" aria-label="انتخاب گروه اصلی">
+                                    <option value="">گروه اصلی</option>
+                                    @foreach (var grp in blogGroups)
+                                    {
+                                        <option value="@grp.Value">@grp.Text</option>
+                                    }
+                                </select>
+                                <label for="blogGroupSelect">گروه اصلی</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select asp-for="BlogGroupId" id="subGroupSelect" class="form-select" aria-label="انتخاب زیر گروه">
+                                    <option value="">زیر گروه</option>
+                                </select>
+                                <label for="subGroupSelect">زیر گروه</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Thumbnail" class="form-label">تصویر شاخص</label>
+                        <input asp-for="Thumbnail" type="file" class="form-control" id="thumbnailInput" accept="image/*" />
+                        <span asp-validation-for="Thumbnail" class="invalid-feedback"></span>
+                        <div class="mt-3 text-center d-none" id="previewContainer">
+                            <div class="position-relative d-inline-block">
+                                <img id="imagePreview" src="#" alt="پیش‌نمایش تصویر" class="img-fluid rounded shadow" style="max-height:200px;" />
+                                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 start-100 translate-middle" id="removeImage" aria-label="حذف تصویر">×</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input asp-for="Tags" class="form-control" id="Tags" placeholder="برچسب‌ها" aria-describedby="TagsHelp" />
+                        <label for="Tags">برچسب‌ها</label>
+                        <div id="TagsHelp" class="form-text">هر برچسب با , جدا شود</div>
+                        <span asp-validation-for="Tags" class="invalid-feedback"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-save me-1"></i> ثبت مقاله</button>
+                        <a asp-area="Admin" asp-controller="Blogs" asp-action="Index" class="btn btn-outline-secondary btn-lg"><i class="bi bi-arrow-left me-1"></i> بازگشت</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // CKEditor initialization
+            const editorElement = document.querySelector('#editor');
+            if (editorElement && window.ClassicEditor) {
+                ClassicEditor.create(editorElement, {
+                    language: 'fa',
+                    toolbar: ['heading','|','bold','italic','link','bulletedList','numberedList','blockQuote','imageUpload','undo','redo','alignment'],
+                    extraPlugins: [function(editor) {
+                        editor.plugins.get('FileRepository').createUploadAdapter = loader => ({
+                            upload: () => loader.file.then(file => new Promise((resolve,reject) => {
+                                const data = new FormData();
+                                data.append('upload', file);
+                                fetch('/Admin/Home/UploadImage', { method: 'POST', body: data })
+                                    .then(res => res.json())
+                                    .then(json => json.error ? reject(json.error) : resolve({ default: json.url }))
+                                    .catch(err => reject(err));
+                            }))
+                        });
+                    }]
+                }).catch(console.error);
+            }
+
+            // Main and sub group handler
+            const main = document.getElementById('blogGroupSelect');
+            const sub = document.getElementById('subGroupSelect');
+            main?.addEventListener('change', async () => {
+                const id = main.value;
+                sub.innerHTML = '<option value="">زیر گروه</option>';
+                if (!id) return;
+                try {
+                    const res = await fetch(`/GetSubGroups/?id=${id}`);
+                    if (!res.ok) throw new Error();
+                    const items = await res.json();
+                    items.forEach(i => sub.append(new Option(i.text, i.value)));
+                } catch {
+                    console.error('خطا بارگذاری زیرگروه');
+                }
+            });
+
+            // Thumbnail preview
+            const thumb = document.getElementById('thumbnailInput');
+            const preview = document.getElementById('previewContainer');
+            const img = document.getElementById('imagePreview');
+            const remove = document.getElementById('removeImage');
+            thumb?.addEventListener('change', () => {
+                const f = thumb.files[0];
+                if (f?.type.startsWith('image/')) {
+                    const r = new FileReader();
+                    r.onload = e => { img.src = e.target.result; preview.classList.remove('d-none'); };
+                    r.readAsDataURL(f);
+                } else preview.classList.add('d-none');
+            });
+            remove?.addEventListener('click', () => { thumb.value=''; preview.classList.add('d-none'); img.src='#'; });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

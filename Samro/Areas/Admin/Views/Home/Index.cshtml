@@ -1,0 +1,159 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "AdminProfile/AdminProfileLayout";
+}
+<div class="page-inner">
+
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">مدیریت</h3>
+            <h6 class="op-7 mb-2">مدیریت / صفحه اصلی</h6>
+        </div>
+    </div>
+
+<div class="container-fluid">
+    <h2 class="mb-4">داشبورد مدیریت</h2>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card animate-fadein" style="animation-delay: 0.1s;">
+                <div class="card-header">
+                    <i class="fas fa-newspaper me-2"></i> مقالات
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="counter" data-count="124">0</h3>
+                    <p>مقاله منتشر شده</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card animate-fadein" style="animation-delay: 0.2s;">
+                <div class="card-header">
+                    <i class="fas fa-users me-2"></i> کاربران
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="counter" data-count="856">0</h3>
+                    <p>کاربر ثبت‌نام شده</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card animate-fadein" style="animation-delay: 0.3s;">
+                <div class="card-header">
+                    <i class="fas fa-trophy me-2"></i> مسابقات
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="counter" data-count="32">0</h3>
+                    <p>مسابقه فعال</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card animate-fadein" style="animation-delay: 0.4s;">
+                <div class="card-header">
+                    <i class="fas fa-calendar-alt me-2"></i> رویدادها
+                </div>
+                <div class="card-body text-center">
+                    <h3 class="counter" data-count="15">100</h3>
+                    <p>رویداد آینده</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card animate-fadein" style="animation-delay: 0.5s;">
+                <div class="card-header">
+                    <i class="fas fa-chart-line me-2"></i> آمار بازدید
+                </div>
+                <div class="card-body">
+                    <canvas id="visitsChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card animate-fadein" style="animation-delay: 0.6s;">
+                <div class="card-header">
+                    <i class="fas fa-comments me-2"></i> آخرین نظرات
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">مقاله: فوتبال مدرن</h6>
+                                <small>2 ساعت پیش</small>
+                            </div>
+                            <p class="mb-1">مقاله بسیار خوبی بود. ممنون از زحمات شما</p>
+                            <small>ارسال شده توسط: کاربر مهمان</small>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">مقاله: تغذیه ورزشی</h6>
+                                <small>5 ساعت پیش</small>
+                            </div>
+                            <p class="mb-1">لطفا منابع مقاله را هم ذکر کنید</p>
+                            <small>ارسال شده توسط: علی محمدی</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+</div>
+
+@section Scripts
+{
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            $.notify({
+                icon: 'icon-check',
+                title: 'موفقیت',
+                message: '@Html.Raw(TempData["SuccessMessage"])'
+            }, {
+                type: 'success',
+                placement: {
+                    from: "bottom",
+                    align: "right"
+                },
+                delay: 5000,
+                animate: {
+                    enter: "animated fadeInDown",
+                    exit: "animated fadeOutUp"
+                }
+            });
+        </script>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            $.notify({
+                icon: 'icon-close',
+                title: 'شکست',
+                message: '@Html.Raw(TempData["ErrorMessage"])'
+            }, {
+                type: 'danger',
+                placement: {
+                    from: "bottom",
+                    align: "right"
+                },
+                delay: 5000,
+                animate: {
+                    enter: "animated fadeInDown",
+                    exit: "animated fadeOutUp"
+                }
+            });
+        </script>
+    }
+}
+

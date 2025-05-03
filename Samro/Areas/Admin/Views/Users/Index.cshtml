@@ -1,0 +1,111 @@
+﻿@model WinWin.DataLayer.DTOS.ShowUsersViewModel
+@{
+    Layout = "AdminProfile/AdminProfileLayout";
+}
+
+<div class="text-center bg-light">
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>لیست کاربران</h2>
+            <a asp-area="Admin" asp-controller="Users" asp-action="CreateUser" class="btn mx-5">
+                <i class="fas fa-plus"></i>
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>نام کاربری</th>
+                        <th>ایمیل</th>
+                        <th>شماره تلفن</th>
+                        <th>وضعیت فعال</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td>@user.UserName</td>
+                            <td>@(string.IsNullOrEmpty(user.Email) ? "نامشخص" : user.Email)</td>
+                            <td>@user.PhoneNumber</td>
+                            <td>@(user.IsActivated ? "فعال" : "غیرفعال")</td>
+                            <td>
+                                <a asp-area="Admin" asp-controller="Users" asp-action="UpdateUser" asp-route-id="@user.UserId" class="btn text-info btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="btn text-danger btn-sm delete-btn" data-id="@user.UserId">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal حذف کاربر -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">تایید حذف</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                آیا مطمئن هستید که می‌خواهید این کاربر را حذف کنید؟
+                <input type="hidden" id="userIdToDelete" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">بستن</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">حذف</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            // هنگام کلیک بر روی دکمه حذف
+            $('.delete-btn').on('click', function () {
+                var userId = $(this).data('id'); // گرفتن شناسه کاربر
+                $('#userIdToDelete').val(userId); // قرار دادن شناسه کاربر در ورودی مخفی
+                $('#deleteModal').modal('show');  // نمایش مودال تایید حذف
+            });
+
+            // وقتی دکمه تایید حذف در مودال کلیک می‌شود
+            $('#confirmDelete').on('click', function () {
+                var userId = $('#userIdToDelete').val();  // گرفتن شناسه کاربر از ورودی مخفی
+
+                $.ajax({
+                    url: '@Url.Action("DeleteUser", "Users")',  // آدرس اکشن حذف کاربر
+                    type: 'POST',
+                    data: { id: userId },  // ارسال شناسه کاربر به اکشن
+                    success: function (response) {
+                        if (response.success) {
+                            $('#deleteModal').modal('hide');  // بستن مودال بعد از حذف موفق
+                            $('tr').each(function () {
+                                if ($(this).find('.delete-btn').data('id') == userId) {
+                                    $(this).fadeOut(500, function () {
+                                        $(this).remove();  // حذف ردیف جدول
+                                    });
+                                }
+                            });
+                        } else {
+                            alert(response.message);  // نمایش پیامی که از سرور ارسال می‌شود
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('خطا در حذف کاربر: ' + xhr.responseText);  // نمایش خطا در صورت بروز مشکل
+                    }
+                });
+            });
+        });
+    </script>
+}

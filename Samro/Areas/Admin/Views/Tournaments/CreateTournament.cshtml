@@ -1,0 +1,274 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using WinWin.DataLayer.DTOS
+@using WinWin.DataLayer.Entities.TournamentMatch
+@model CreateTournamentViewModel
+
+@{
+    ViewData["Title"] = "افزودن رویداد جدید";
+    Layout = "/Views/Shared/AdminProfile/AdminProfileLayout.cshtml";
+    var Sports = ViewData["Sports"] as List<SelectListItem>;
+    Console.WriteLine("hello");
+}
+
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">مدیریت</h3>
+            <h6 class="op-7 mb-2">مدیریت / @ViewData["Title"]</h6>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4">
+                <h4 class="mb-4 text-center text-primary">@ViewData["Title"]</h4>
+                <form asp-action="CreateTournament" enctype="multipart/form-data">
+                    <div class="row g-3">
+
+                        <!-- بخش ۱: اطلاعات اصلی -->
+                        <div class="col-12">
+                            <h5 class="text-primary">اطلاعات اصلی</h5>
+                            <hr />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Address" class="form-label"></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <!-- بخش ۲: محل‌ها -->
+                        <div class="col-12 mt-4">
+                            <h5 class="text-primary">محل‌های برگزاری</h5>
+                            <hr />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="MatchLocation" class="form-label"></label>
+                            <input asp-for="MatchLocation" class="form-control" />
+                            <span asp-validation-for="MatchLocation" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="WeighInLocation" class="form-label"></label>
+                            <input asp-for="WeighInLocation" class="form-control" />
+                            <span asp-validation-for="WeighInLocation" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="FaceToFaceLocation" class="form-label"></label>
+                            <input asp-for="FaceToFaceLocation" class="form-control" />
+                            <span asp-validation-for="FaceToFaceLocation" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="HostelLocation" class="form-label"></label>
+                            <input asp-for="HostelLocation" class="form-control" />
+                            <span asp-validation-for="HostelLocation" class="text-danger"></span>
+                        </div>
+
+                        <!-- بخش ۳: تاریخ‌ها و زمان‌ها -->
+                        <div class="col-12 mt-4">
+                            <h5 class="text-primary">تاریخ‌ها و زمان‌ها</h5>
+                            <hr />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="MatchDate" class="form-label"></label>
+                            <div class="input-group">
+                                <input type="text" id="MatchDatePersian" class="form-control persian-datepicker" />
+                                <input asp-for="MatchDate" type="hidden" id="MatchDate" />
+                            </div>
+                            <span asp-validation-for="MatchDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="WeighInDate" class="form-label"></label>
+                            <div class="input-group">
+                                <input type="text" id="WeighInDatePersian" class="form-control persian-datepicker" />
+                                <input asp-for="WeighInDate" type="hidden" id="WeighInDate" />
+                            </div>
+                            <span asp-validation-for="WeighInDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="FaceToFaceDate" class="form-label"></label>
+                            <div class="input-group">
+                                <input type="text" id="FaceToFaceDatePersian" class="form-control persian-datepicker" />
+                                <input asp-for="FaceToFaceDate" type="hidden" id="FaceToFaceDate" />
+                            </div>
+                            <span asp-validation-for="FaceToFaceDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="RegsiterStartsAt" class="form-label"></label>
+                            <div class="input-group">
+                                <input type="text" id="RegsiterStartsAtPersian" class="form-control persian-datepicker" />
+                                <input asp-for="RegsiterStartsAt" type="hidden" id="RegsiterStartsAt" />
+                            </div>
+                            <span asp-validation-for="RegsiterStartsAt" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="RegsiterEndsAt" class="form-label"></label>
+                            <div class="input-group">
+                                <input type="text" id="RegsiterEndsAtPersian" class="form-control persian-datepicker" />
+                                <input asp-for="RegsiterEndsAt" type="hidden" id="RegsiterEndsAt" />
+                            </div>
+                            <span asp-validation-for="RegsiterEndsAt" class="text-danger"></span>
+                        </div>
+
+                        <!-- بخش ۴: تنظیمات تکمیلی -->
+                        <div class="col-12 mt-4">
+                            <h5 class="text-primary">تنظیمات تکمیلی</h5>
+                            <hr />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="TournamentType" class="form-label"></label>
+                            <select asp-for="TournamentType" class="form-select" asp-items="Html.GetEnumSelectList<TournamentType>()">
+                                <option value="">-- انتخاب نوع رویداد --</option>
+                            </select>
+                            <span asp-validation-for="TournamentType" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="MaximnumPlayers" class="form-label"></label>
+                            <input asp-for="MaximnumPlayers" class="form-control" />
+                            <span asp-validation-for="MaximnumPlayers" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Thumbnail" class="form-label"></label>
+                            <input asp-for="Thumbnail" type="file" class="form-control" />
+                            <span asp-validation-for="Thumbnail" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">گروه ورزشی</label>
+                            <select id="blogGroupSelect" class="form-select" onchange="getSubGroups(this.value)">
+                                <option value="">انتخاب کنید</option>
+                                @foreach (var Sport in Sports)
+                                {
+                                    <option value="@Sport.Value">@Sport.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">ورزش</label>
+                            <select asp-for="SportId" class="form-select" id="subGroupSelect" asp-items="ViewBag.BlogGroupId">
+                                <option value="">انتخاب کنید</option>
+                            </select>
+                        </div>
+
+                        <!-- دکمه ارسال -->
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-plus-circle ms-2"></i> ایجاد رویداد
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <a asp-action="Index" class="btn btn-outline-secondary">بازگشت به مدیریت</a>
+    </div>
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css" rel="stylesheet">
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+    <script>
+               $(document).ready(function () {
+            $.validator.setDefaults({
+                ignore: [],
+                errorPlacement: function (error, element) {
+                    if (element.is(":hidden")) {
+                        const visibleInput = element.closest('.form-group').find('.persian-datepicker');
+                        error.insertAfter(visibleInput);
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+
+            function setupPersianDatepicker(pickerId, hiddenInputId) {
+                const $picker = $('#' + pickerId);
+                const $hidden = $('#' + hiddenInputId);
+                const initialValue = $hidden.val();
+
+                // اگر مقدار پنهان داریم، به صورت YYYY/MM/DD HH:mm:ss نشان بده
+                if (initialValue) {
+                    const d = new persianDate(new Date(initialValue));
+                    $picker.val(d.format('YYYY/MM/DD HH:mm:ss'));
+                } else {
+                    $picker.val('');
+                }
+
+                $picker.persianDatepicker({
+                    format: 'YYYY/MM/DD HH:mm:ss',     // نمایش شامل ثانیه
+                    initialValue: false,
+                    initialValueType: 'gregorian',     // مقدار اولیه را از hidden بخواند
+                    autoClose: true,
+                    calendar: {
+                        persian: {
+                            locale: 'fa',
+                            showHint: true
+                        }
+                    },
+                    timePicker: {
+                        enabled: true,
+                        meridiem: { enabled: false }    // اگر AM/PM نیاز نیست
+                    },
+                    toolbox: {
+                        calendarSwitch: { enabled: false }
+                    },
+                    onSelect: function (unixDate) {
+                        // پس از انتخاب، رشته فارسی را به شکل ISO با ثانیه بفرست
+                        const p = new persianDate(unixDate);
+                        const persianStr = p.format('YYYY/MM/DD HH:mm:ss');
+                        $picker.val(persianStr);
+                        $hidden.val(persianStr).trigger('change');
+                    }
+                });
+
+                // اگر کاربر دستی پاک کرد
+                $picker.on('input', function () {
+                    if ($(this).val().trim() === '') {
+                        $hidden.val('').trigger('change');
+                    }
+                });
+            }
+
+            // راه‌اندازی برای همه فیلدهای تاریخ
+            setupPersianDatepicker('MatchDatePersian',      'MatchDate');
+            setupPersianDatepicker('WeighInDatePersian',    'WeighInDate');
+            setupPersianDatepicker('FaceToFaceDatePersian', 'FaceToFaceDate');
+            setupPersianDatepicker('RegsiterStartsAtPersian','RegsiterStartsAt');
+            setupPersianDatepicker('RegsiterEndsAtPersian', 'RegsiterEndsAt');
+        });
+
+    </script>
+    <script>
+    async function getSubGroups(sportId) {
+        if (!sportId) return;
+        try {
+            const url = '@Url.Action("GetSubGroups","Tournaments", new { area = "Admin" })';
+            const response = await fetch(`${url}?id=${sportId}`);
+            if (!response.ok) throw new Error('خطا در بارگذاری داده‌ها');
+            const data = await response.json();
+            const select = document.getElementById('subGroupSelect');
+            select.innerHTML = '<option value="">انتخاب کنید</option>';
+            data.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.value;   // lowercase
+                opt.textContent = item.text;
+                select.appendChild(opt);
+            });
+        } catch (error) {
+            console.error('خطا:', error);
+        }
+    }
+</script>
+
+}
+

@@ -1,0 +1,19 @@
+﻿@model WinWin.DataLayer.DTOS.ShowUserViewModel
+@{
+    Layout = "~/Views/Shared/UserProfile/UserProfileLayout.cshtml";
+}
+
+
+<h2>مشخصات کاربر</h2>
+<ul>
+    <li>نام کاربری: @Model.UserName</li>
+    <li>ایمیل: @Model.Email</li>
+    <li>شماره تماس: @Model.PhoneNumber</li>
+    <li>نام: @Model.Name</li>
+    <li>نام خانوادگی: @Model.LastName</li>
+</ul>
+
+@if (!string.IsNullOrEmpty(Model.Avatar))
+{
+    <img src="@Model.Avatar" alt="آواتار کاربر" style="width:150px;height:auto;" />
+}
