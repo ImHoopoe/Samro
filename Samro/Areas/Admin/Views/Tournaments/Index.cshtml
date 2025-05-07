@@ -1,27 +1,49 @@
-﻿@using WinWin.Core.Tools.PublicTools
+﻿// Views/AdminProfile/Tournaments/Index.cshtml
+@using WinWin.Core.Tools.PublicTools
 @using System.ComponentModel.DataAnnotations
 @model IEnumerable<WinWin.DataLayer.DTOS.ShowTournamentForAdminViewModel>
 
 @{
     ViewData["Title"] = "مدیریت رویدادها";
     Layout = "~/Views/Shared/AdminProfile/AdminProfileLayout.cshtml";
+    var pageSize = ViewBag.PageSize as int? ?? 10;
+    var pageIndex = ViewBag.PageIndex as int? ?? 1;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
 }
 
-<style>
-    .hover-scale {
-        transition: transform .3s ease, box-shadow .3s ease;
-        border-radius: .75rem;
-    }
-    .hover-scale:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.1);
-    }
-    .badge.bg-indigo { background-color: #6610f2; }
-    .object-fit-cover { object-fit: cover; }
-    .btn-hover-icon i { transition: transform .2s ease; }
-    .btn-hover-icon:hover i { transform: scale(1.1); }
-    .btn-rounded { border-radius: 50px; }
-</style>
+
+    <style>
+        .hover-scale {
+            transition: transform .3s ease, box-shadow .3s ease;
+            border-radius: .75rem;
+        }
+
+            .hover-scale:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.1);
+            }
+
+        .badge.bg-indigo {
+            background-color: #6610f2;
+        }
+
+        .object-fit-cover {
+            object-fit: cover;
+        }
+
+        .btn-hover-icon i {
+            transition: transform .2s ease;
+        }
+
+        .btn-hover-icon:hover i {
+            transform: scale(1.1);
+        }
+
+        .btn-rounded {
+            border-radius: 50px;
+        }
+    </style>
+
 
 <div class="page-inner container-fluid py-4">
     <!-- Page Header -->
@@ -35,23 +57,21 @@
         </a>
     </div>
 
-    <!-- Controls -->
+    <!-- Controls: Page Size & Search -->
     <div class="row g-3 align-items-center mb-4">
         <div class="col-auto">
-            <div class="input-group input-group-sm">
-                <label class="input-group-text" for="entriesPerPage">نمایش</label>
-                @* <select id="entriesPerPage" asp-for="PageSize" class="form-select">
-                    @foreach (var opt in new[] { 5, 10, 15, 20 })
-                    {
-                        <option value="@opt" @(Model.PageSize == opt ? "selected" : "")>@opt</option>
-                    }
-                </select> *@
-            </div>
+            <label for="entriesPerPage" class="col-form-label">نمایش</label>
+            <select id="entriesPerPage" class="form-select form-select-sm">
+                @foreach (var opt in new[] { 5, 10, 15, 20 })
+                {
+                   @*  <option value="@opt" @(pageSize==opt?"selected":"")>@opt</option> *@
+                }
+            </select>
         </div>
         <div class="col-md-4 ms-auto">
             <div class="input-group input-group-sm">
                 <input id="searchInput" type="text" class="form-control" placeholder="جستجو بر اساس عنوان..." />
-                <button id="searchBtn" class="btn btn-primary">
+                <button id="searchBtn" type="button" class="btn btn-primary">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
@@ -60,129 +80,108 @@
 
     <!-- Tournament Cards -->
     <div class="row g-4" id="tournamentCards">
-        @foreach (var item in Model)
+        @if (Model != null && Model.Any())
         {
-            <div class="col-12 col-md-6 col-lg-4 tournament-card">
-                <div class="card h-100 border-0 shadow-sm hover-scale">
-                    <div class="ratio ratio-4x3 overflow-hidden rounded-top">
-                        <img src="@(string.IsNullOrEmpty(item.Thumbnail) ? Url.Content("/images/Tournament/thumb/") : Url.Content($"/images/Tournament/thumb/{item.Thumbnail}"))"
-                             class="object-fit-cover w-100 h-100" alt="@item.Title" />
-                        <div class="position-absolute top-0 end-0 m-2">
-                            @if (item.IsDeleted)
-                            {
-                                <span class="badge bg-danger">حذف شده</span>
-                            }
-                            else if (item.IsTimeEnds)
-                            {
-                                <span class="badge bg-secondary">پایان یافته</span>
-                            }
-                            else if (item.IsFull)
-                            {
-                                <span class="badge bg-warning text-dark">تکمیل ظرفیت</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-success">در حال ثبت نام</span>
-                            }
+            foreach (var item in Model)
+            {
+                <div class="col-12 col-md-6 col-lg-4 tournament-card">
+                    <div class="card h-100 border-0 shadow-sm hover-scale">
+                        <div class="ratio ratio-4x3 overflow-hidden rounded-top position-relative">
+                            <img src="@(Url.Content(string.IsNullOrEmpty(item.Thumbnail)? "~/images/Tournament/thumb/default.jpg" : $"~/images/Tournament/thumb/{item.Thumbnail}"))"
+                                 class="object-fit-cover w-100 h-100" alt="@item.Title" loading="lazy" />
+                            <span class="badge position-absolute top-0 end-0 m-2 "></span>
                         </div>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="card-title text-primary mb-0 text-truncate">@item.Title</h5>
-                            <span class="badge bg-indigo">@item.TournamentType</span>
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title text-primary mb-0 text-truncate">@item.Title</h5>
+                                <span class="badge bg-indigo">@item.TournamentType</span>
+                            </div>
+                            <p class="mb-2"><small class="text-muted">محل مسابقه:</small> @item.MatchLocation</p>
+                            <p class="mb-2"><small class="text-muted">تاریخ وزن‌کشی:</small> @item.WeighInDate.ToShamsi()</p>
+                            <div class="d-flex justify-content-between mb-3">
+                                <small class="text-muted">شرکت‌کنندگان: @item.RegisteredUsersCount/@item.MaximnumPlayers</small>
+                                <small class="text-muted">ایجادکننده: @item.CreatedByUserName</small>
+                            </div>
+                            <div class="mt-auto border-top pt-3 d-flex justify-content-between">
+                                <a asp-action="EditTournament" asp-route-id="@item.TournamentId" class="btn btn-sm btn-outline-warning btn-hover-icon">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" data-id="@item.TournamentId" class="btn btn-sm btn-outline-danger btn-hover-icon delete-btn">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-dark btn-hover-icon" data-bs-toggle="modal" data-bs-target="#detailsModal-@item.TournamentId">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                            </div>
                         </div>
-                        <p class="mb-2"><small class="text-muted">محل مسابقه:</small> @item.MatchLocation</p>
-                        <p class="mb-2"><small class="text-muted">تاریخ وزن‌کشی:</small> @item.WeighInDate.ToShamsi()</p>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span><small class="text-muted">شرکت‌کنندگان:</small> @item.RegisteredUsersCount / @item.MaximnumPlayers</span>
-                            <span><small class="text-muted">ایجاد‌کننده:</small> @item.CreatedByUserName</span>
-                        </div>
-                        <div class="mt-auto border-top pt-3 d-flex justify-content-between">
-                            <a asp-action="EditTournament" asp-route-id="@item.TournamentId" class="btn btn-sm btn-outline-warning btn-hover-icon">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-hover-icon delete-btn" data-id="@item.TournamentId">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-dark btn-hover-icon" data-bs-toggle="modal" data-bs-target="#detailsModal-@item.TournamentId">
-                                <i class="fas fa-info-circle"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Details Modal -->
-                <div class="modal fade" id="detailsModal-@item.TournamentId" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title text-primary">جزئیات رویداد</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item d-flex justify-content-between"><strong>عنوان:</strong> <span>@item.Title</span></li>
-                                            <li class="list-group-item d-flex justify-content-between"><strong>نوع:</strong> <span>@item.TournamentType</span></li>
-                                            <li class="list-group-item d-flex justify-content-between"><strong>وضعیت:</strong>
-                                                <span>
-                                                    @if (item.IsDeleted)
-                                                    {<span class="badge bg-danger">حذف شده</span>}
-                                                    else if (item.IsTimeEnds)
-                                                    {<span class="badge bg-secondary">پایان یافته</span>}
-                                                    else if (item.IsFull)
-                                                    {<span class="badge bg-warning text-dark">تکمیل ظرفیت</span>}
-                                                    else
-                                                    {<span class="badge bg-success">در حال ثبت نام</span>}
-                                                </span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between"><strong>وزن‌کشی:</strong> <span>@item.WeighInDate.ToShamsi()</span></li>
-                                        </ul>
+                        <!-- Details Modal Inline -->
+                        <div class="modal fade" id="detailsModal-@item.TournamentId" tabindex="-1" aria-labelledby="detailsModalLabel-@item.TournamentId" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title text-primary" id="detailsModalLabel-@item.TournamentId">جزئیات رویداد</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                                     </div>
-                                    <div class="col-md-6">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item d-flex justify-content-between"><strong>شروع ثبت‌نام:</strong> <span>@item.RegsiterStartsAt?.ToShamsi() ?? "—"</span></li>
-                                            <li class="list-group-item d-flex justify-content-between"><strong>پایان ثبت‌نام:</strong> <span>@item.RegsiterEndsAt.ToShamsi()</span></li>
-                                            <li class="list-group-item d-flex justify-content-between"><strong>ظرفیت:</strong> <span>@item.RegisteredUsersCount از @item.MaximnumPlayers</span></li>
-                                        </ul>
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item d-flex justify-content-between"><strong>عنوان:</strong><span>@item.Title</span></li>
+                                                    <li class="list-group-item d-flex justify-content-between"><strong>نوع:</strong><span>@item.TournamentType</span></li>
+                                                    <li class="list-group-item d-flex justify-content-between"><strong>وضعیت:</strong><span class="badge"></span></li>
+                                                    <li class="list-group-item d-flex justify-content-between"><strong>وزن‌کشی:</strong><span>@item.WeighInDate.ToShamsi()</span></li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item d-flex justify-content-between"><strong>شروع ثبت‌نام:</strong><span>@item.RegsiterStartsAt.ToShamsi()</span></li>
+                                                    <li class="list-group-item d-flex justify-content-between"><strong>پایان ثبت‌نام:</strong><span>@item.RegsiterEndsAt.ToShamsi()</span></li>
+                                                    <li class="list-group-item d-flex justify-content-between"><strong>ظرفیت:</strong><span>@item.RegisteredUsersCount از @item.MaximnumPlayers</span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <h6 class="text-muted">موقعیت‌های مکانی</h6>
+                                        <table class="table table-bordered mb-3">
+                                            <tbody>
+                                                <tr><th>محل مسابقه</th><td>@item.MatchLocation</td></tr>
+                                                <tr><th>وزن‌کشی</th><td>@item.WeighInLocation</td></tr>
+                                                <tr><th>ملاقات</th><td>@item.FaceToFaceLocation</td></tr>
+                                                <tr><th>اسکان</th><td>@item.HostelLocation</td></tr>
+                                                <tr><th>آدرس</th><td>@item.Address</td></tr>
+                                            </tbody>
+                                        </table>
+                                        <h6 class="text-muted">توضیحات</h6>
+                                        <div class="card bg-light mb-0">
+                                            <div class="card-body p-3">
+                                                @(string.IsNullOrEmpty(item.Description) ? "—" : item.Description)
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <hr />
-                                <h6 class="text-muted">موقعیت‌های مکانی</h6>
-                                <table class="table table-bordered mb-3">
-                                    <tbody>
-                                        <tr><th>محل مسابقه</th><td>@item.MatchLocation</td></tr>
-                                        <tr><th>وزن‌کشی</th><td>@item.WeighInLocation</td></tr>
-                                        <tr><th>ملاقات</th><td>@item.FaceToFaceLocation</td></tr>
-                                        <tr><th>اسکان</th><td>@item.HostelLocation</td></tr>
-                                        <tr><th>آدرس</th><td>@item.Address</td></tr>
-                                    </tbody>
-                                </table>
-                                <h6 class="text-muted">توضیحات</h6>
-                                <div class="card bg-light mb-0">
-                                    <div class="card-body p-3">
-                                        @(string.IsNullOrEmpty(item.Description) ? "—" : item.Description)
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
+        }
+        else
+        {
+            <p class="text-center text-muted">هیچ رویدادی یافت نشد.</p>
         }
     </div>
 
     <!-- Pagination -->
     <div class="d-flex justify-content-center mt-4">
         <ul class="pagination pagination-sm mb-0">
-            @for (var i = 1; i <= ViewBag.TotalPages; i++)
+            @for (var i = 1; i <= totalPages; i++)
             {
-                <li class="page-item @(i == ViewBag.PageIndex ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("Index","Tournaments", new { pageIndex = i, pageSize = ViewBag.PageSize })">@i</a>
+                <li class="page-item @(i==pageIndex?"active":"")">
+                    <a class="page-link" href="@Url.Action("Index","Tournaments", new { pageIndex = i, pageSize })">@i</a>
                 </li>
             }
         </ul>
@@ -191,27 +190,36 @@
 
 @section Scripts {
     <script>
-        $(function() {
-            $('#entriesPerPage').change(function() {
-                var size = $(this).val(), page = @ViewBag.PageIndex;
-                window.location = '@Url.Action("Index","Tournaments")?pageIndex=' + page + '&pageSize=' + size;
+        // Change page size
+        document.getElementById('entriesPerPage').addEventListener('change', function() {
+            const size = this.value;
+            window.location = '@Url.Action("Index", "Tournaments")?pageIndex=' + @pageIndex + '&pageSize=' + size;
+        });
+
+        // Search filter
+        function filterCards() {
+            const term = document.getElementById('searchInput').value.trim().toLowerCase();
+            document.querySelectorAll('#tournamentCards .tournament-card').forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                card.style.display = title.includes(term) ? '' : 'none';
             });
-            $('#searchInput').keypress(function(e) { if (e.which === 13) $('#searchBtn').click(); });
-            $('#searchBtn').click(function() {
-                var term = $('#searchInput').val().toLowerCase();
-                $('#tournamentCards .tournament-card').each(function() {
-                    var txt = $(this).find('.card-title').text().toLowerCase();
-                    $(this).toggle(txt.indexOf(term) !== -1);
-                });
-            });
-            $('.delete-btn').click(function() {
-                $('#tournamentIdToDelete').val($(this).data('id'));
-                $('#deleteModal').modal('show');
-            });
-            $('#confirmDelete').click(function() {
-                var id = $('#tournamentIdToDelete').val();
-                $.post('@Url.Action("DeleteTournament","Tournaments", new { area = "Admin" })', { id: id })
-                    .done(function(data) { if (data.success) location.reload(); else alert(data.message); });
+        }
+        document.getElementById('searchBtn').addEventListener('click', filterCards);
+        document.getElementById('searchInput').addEventListener('keypress', function(e) { if (e.key==='Enter') filterCards(); });
+
+        // Delete tournament
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                if (confirm('آیا از حذف این رویداد مطمئن هستید؟')) {
+                    fetch('@Url.Action("DeleteTournament", "Tournaments")', {
+                        method: 'POST',
+                        headers: { 'Content-Type':'application/json', 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() },
+                        body: JSON.stringify({ id })
+                    })
+                    .then(res=>res.json())
+                    .then(data=>{ if(data.success) location.reload(); else alert(data.message); });
+                }
             });
         });
     </script>

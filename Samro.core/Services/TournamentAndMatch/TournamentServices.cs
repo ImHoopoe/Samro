@@ -111,5 +111,10 @@ namespace WinWin.Core.Services.TournamentAndMatch
                 })
                 .ToListAsync();
         }
+
+        public async Task<int> GetTournamentsCounts()
+        {
+            return await _context.Tournaments.CountAsync();
+        }
     }
 }

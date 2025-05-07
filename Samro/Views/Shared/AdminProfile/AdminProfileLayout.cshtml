@@ -4,126 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مدیریت وبسایت ورزشی</title>
+    <!-- Google Font for Persian -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="/AdminProfile/css/AdminLayoutStyles.css" rel="stylesheet">
     <!-- Bootstrap 5.3 RTL -->
     <partial name="Refrences.cshtml" />
-
 </head>
 <body>
-    <!-- Loading animation -->
-    <div class="loader-wrapper">
+    <div class="loader-wrapper" id="loader">
         <div class="loader"></div>
         <div class="loader-text">در حال بارگذاری...</div>
     </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3 class="animate__animated animate__fadeIn">مدیریت ورزشی</h3>
-            <button class="toggle-btn" id="toggleSidebar">
-                <i class="fas fa-chevron-right"></i>
-            </button>
+    <div class="d-flex">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3 class="animate__animated animate__fadeIn">مدیریت ورزشی</h3>
+                <button class="toggle-btn" id="toggleSidebar">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="sidebar-menu p-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2">
+                        <a class="nav-link active d-flex justify-content-between align-items-center" href="#" data-bs-toggle="collapse" data-bs-target="#articleGroupMenu">
+                            <span><i class="fas fa-layer-group" style="color: #ffcc00;"></i> مدیریت گروه مقالات</span>
+                            <i class="fas fa-angle-down"></i>
+                        </a>
+                        <div class="sub-menu collapse show" id="articleGroupMenu">
+                            <a class="nav-link" asp-area="Admin" asp-controller="BlogGroups" asp-action="index">گروه‌های خبری</a>
+                            <a class="nav-link" asp-area="Admin" asp-controller="BlogGroups" asp-action="CreateBlogGroup">افزودن گروه جدید</a>
+                        </div>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link d-flex justify-content-between align-items-center" href="#" data-bs-toggle="collapse" data-bs-target="#articlesMenu">
+                            <span><i class="fas fa-newspaper" style="color: #4da6ff;"></i> مدیریت مقالات</span>
+                            <i class="fas fa-angle-down"></i>
+                        </a>
+                        <div class="sub-menu collapse" id="articlesMenu">
+                            <a class="nav-link" asp-area="Admin" asp-controller="Blogs" asp-action="Index">مقالات</a>
+                            <a class="nav-link" asp-area="Admin" asp-controller="Blogs" asp-action="CreateBlog">افزودن مقاله جدید</a>
+                        </div>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link d-flex justify-content-between align-items-center" href="#" data-bs-toggle="collapse" data-bs-target="#competitionsMenu">
+                            <span><i class="fas fa-trophy" style="color: #ff6666;"></i> مدیریت مسابقات</span>
+                            <i class="fas fa-angle-down"></i>
+                        </a>
+                        <div class="sub-menu collapse" id="competitionsMenu">
+                            <a class="nav-link" href="#">در دست توسعه</a>
+                        </div>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link d-flex justify-content-between align-items-center" href="#" data-bs-toggle="collapse" data-bs-target="#eventsMenu">
+                            <span><i class="fas fa-calendar-alt" style="color: #66cc99;"></i> مدیریت رویدادها</span>
+                            <i class="fas fa-angle-down"></i>
+                        </a>
+                        <div class="sub-menu collapse" id="eventsMenu">
+                            <a class="nav-link" asp-area="Admin" asp-controller="Tournaments" asp-action="Index">رویدادها</a>
+                            <a class="nav-link" asp-area="Admin" asp-controller="Tournaments" asp-action="CreateTournament">افزودن رویداد جدید</a>
+                        </div>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link d-flex justify-content-between align-items-center" href="#" data-bs-toggle="collapse" data-bs-target="#userManagementMenu">
+                            <span><i class="fas fa-users" style="color: #66ccff;"></i> مدیریت کاربران</span>
+                            <i class="fas fa-angle-down"></i>
+                        </a>
+                        <div class="sub-menu collapse" id="userManagementMenu">
+                            <a class="nav-link" asp-area="Admin" asp-controller="Users" asp-action="Index">لیست کاربران</a>
+                            <a class="nav-link" asp-area="Admin" asp-controller="Users" asp-action="CreateUser">افزودن کاربر جدید</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <div class="sidebar-menu">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#" data-bs-toggle="collapse" data-bs-target="#articleGroupMenu">
-                        <i class="fas fa-layer-group" style="color: #ffcc00;"></i>
-                        <span>مدیریت گروه مقالات</span>
-                        <i class="fas fa-angle-down ms-auto"></i>
-                    </a>
-                    <div class="sub-menu collapse show" id="articleGroupMenu">
-                        <a class="nav-link" asp-area="Admin" asp-controller="BlogGroups" asp-action="index"> گروه‌های خبری</a>
-                        <a class="nav-link" asp-area="Admin" asp-controller="BlogGroups" asp-action="CreateBlogGroup">افزودن گروه جدید</a>
+        <div class="main-content" id="mainContent">
+            <nav class="top-navbar">
+                <div class="menu-toggle d-lg-none" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="user-actions">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
                     </div>
-                </li>
+                    <div class="user-profile">
+                        <img src="https://via.placeholder.com/150" alt="پروفایل کاربر">
+                        <span>مدیر سیستم</span>
+                    </div>
+                </div>
+            </nav>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#articlesMenu">
-                        <i class="fas fa-newspaper" style="color: #4da6ff;"></i>
-                        <span>مدیریت مقالات</span>
-                        <i class="fas fa-angle-down ms-auto"></i>
-                    </a>
-                    <div class="sub-menu collapse" id="articlesMenu">
-                        <a class="nav-link" asp-area="Admin" asp-controller="Blogs" asp-action="Index">مقالات</a>
-                        <a class="nav-link" asp-area="Admin" asp-controller="Blogs" asp-action="CreateBlog">افزودن مقاله جدید</a>
-                    </div>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#competitionsMenu">
-                        <i class="fas fa-trophy" style="color: #ff6666;"></i>
-                        <span>مدیریت مسابقات</span>
-                        <i class="fas fa-angle-down ms-auto"></i>
-                    </a>
-                    <div class="sub-menu collapse" id="competitionsMenu">
-                        <a class="nav-link" href="#">در دست توسعه</a>
-                        
-                    </div>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#eventsMenu">
-                        <i class="fas fa-calendar-alt" style="color: #66cc99;"></i>
-                        <span>مدیریت رویدادها</span>
-                        <i class="fas fa-angle-down ms-auto"></i>
-                    </a>
-                    <div class="sub-menu collapse" id="eventsMenu">
-                        <a class="nav-link" asp-area="Admin" asp-controller="Tournaments" asp-action="Index">رویدادها</a>
-                        <a class="nav-link" asp-area="Admin" asp-controller="Tournaments" asp-action="CreateTournament">افزودن رویداد جدید</a>
-                    </div>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#usersMenu">
-                        <i class="fas fa-users" style="color: #cc99ff;"></i>
-                        <span>مدیریت کاربران</span>
-                        <i class="fas fa-angle-down ms-auto"></i>
-                    </a>
-                    <div class="sub-menu collapse" id="usersMenu">
-                        <a class="nav-link" href="#">لیست کاربران</a>
-                        <a class="nav-link" href="#">افزودن کاربر جدید</a>
-                        <a class="nav-link" href="#">سطوح دسترسی</a>
-                        <a class="nav-link" href="#">لاگ فعالیت‌ها</a>
-                    </div>
-                </li>
-            </ul>
+            <div class="content-wrapper animate__animated animate__fadeIn">
+                @RenderBody()
+            </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent">
-        <!-- Top Navbar -->
-        <nav class="top-navbar">
-            <div class="menu-toggle" id="mobileMenuToggle">
-                <i class="fas fa-bars"></i>
-            </div>
-
-            <div class="user-actions">
-                <div class="notification-bell">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
-                </div>
-
-                <div class="user-profile">
-                    <img src="https://via.placeholder.com/150" alt="پروفایل کاربر">
-                    <span>مدیر سیستم</span>
-                </div>
-            </div>
-        </nav>
-
-        @RenderBody()
-        <div class="content animate__animated animate__fadeIn">
-           
-        </div>
-    </div>
-
-    <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <partial name="Scripts.cshtml" />
     @RenderSection("Scripts", false)
 
+    <script>
+        document.getElementById('toggleSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        });
+        document.getElementById('mobileMenuToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        });
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = 0;
+            setTimeout(() => loader.style.display = 'none', 500);
+        });
+    </script>
 </body>
 </html>

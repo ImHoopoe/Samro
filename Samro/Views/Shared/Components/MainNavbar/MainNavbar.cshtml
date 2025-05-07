@@ -40,31 +40,40 @@
 
         <div class="nav-left">
             <div class="auth-buttons">
-                <a href="#" class="auth-btn login-btn">ورود</a>
-                <a href="#" class="auth-btn signup-btn">ثبت نام</a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-area="Profile" asp-controller="Accounts" class="btn btn-primary">
+                        <i class="fas fa-user"></i> مشاهده پروفایل
+                    </a>
+                }
+                else
+                {
+                    <a href="/login" class="auth-btn login-btn">ورود</a>
+                    <a href="/register" class="auth-btn signup-btn">ثبت نام</a>
+                }
             </div>
             <div class="user-actions">
-
                 <div class="mobile-menu-toggle">
                     <i class="fas fa-bars"></i>
                 </div>
             </div>
         </div>
+
     </div>
 
-    
+
     <div id="RecordsMegaMenu" class="mega-menu">
         <div class="mega-menu-content">
             @foreach (var sport in Model.Sports.Where(s => s.ParentId == null))
             {
                 <div class="mega-menu-column">
                     <h4 class="fw-bold border-right">@sport.SportName</h4>
-                    <hr class="w-100"/>
+                    <hr class="w-100" />
                     <ul>
                         @foreach (var Subsport in Model.Sports.Where(subSport => subSport.ParentId == sport.SportId))
                         {
                             <li><a href="#">@Subsport.SportName</a></li>
-                            
+
                         }
                     </ul>
                 </div>
@@ -74,7 +83,7 @@
 
     <div id="BlogsMegaMenu" class="mega-menu">
         <div class="mega-menu-content">
-            @foreach (var blogGroup in Model.BlogGroups.Where(bg=> bg.ParentId==null))
+            @foreach (var blogGroup in Model.BlogGroups.Where(bg => bg.ParentId == null))
             {
                 <div class="mega-menu-column">
                     <h4>@blogGroup.BlogGroupName</h4>
@@ -82,7 +91,7 @@
                         @foreach (var subBlogGroup in Model.BlogGroups.Where(sbg => sbg.ParentId == blogGroup.BlogGroupId))
                         {
                             <li><a href="#">@subBlogGroup.BlogGroupName</a></li>
-                            
+
                         }
                     </ul>
                 </div>

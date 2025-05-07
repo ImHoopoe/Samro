@@ -6,7 +6,10 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using WinWin.Core.Interfaces;
 using WinWin.Core.Interfaces.BlogandBlogGroup;
+using WinWin.Core.Interfaces.Sports;
+using WinWin.Core.Interfaces.TournamentAndMatch;
 using WinWin.Core.Tools.Account;
 using WinWin.DataLayer.DTOS;
 using WinWin.DataLayer.Entities.BlogBlogGroup;
@@ -21,19 +24,31 @@ namespace WinWin.Areas.Admin.Controllers
     {
         private readonly IBlogGroup _blogGroupServices;
         private readonly IBlog _blogServices;
+        private readonly IUser _userServices;
+        private readonly ITournament _tournamentServices;
+        private readonly ISport _sportServices;
         private readonly ILogger<HomeController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private const long MaxFileSize = 5 * 1024 * 1024;
         private static readonly string[] AllowedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
-        public HomeController(IBlogGroup blogGroupServices, IBlog blogServices, ILogger<HomeController> logger, IWebHostEnvironment webHostEnvironment)
+
+        public HomeController(IBlogGroup blogGroupServices, IBlog blogServices, IUser userServices, ITournament tournamentServices, ISport sportServices, ILogger<HomeController> logger, IWebHostEnvironment webHostEnvironment)
         {
             _blogGroupServices = blogGroupServices;
             _blogServices = blogServices;
+            _userServices = userServices;
+            _tournamentServices = tournamentServices;
+            _sportServices = sportServices;
             _logger = logger;
             _webHostEnvironment = webHostEnvironment;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ViewBag.UsersCounts = await _userServices.GetTotalUsersCount();
+            ViewBag.TournamentsCounts = await _tournamentServices.GetTournamentsCounts();
+            ViewBag.BlogsCounts = await _blogServices.GetTotalBlogsCount();
+            ViewBag.SportsCounts = await _sportServices.GetSportsCounts();
+            ViewBag.LastBlogs = await _blogServices.GetLastBlogs(3);
             return View();
         }
 

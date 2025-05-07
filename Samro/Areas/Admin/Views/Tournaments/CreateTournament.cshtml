@@ -7,7 +7,6 @@
     ViewData["Title"] = "افزودن رویداد جدید";
     Layout = "/Views/Shared/AdminProfile/AdminProfileLayout.cshtml";
     var Sports = ViewData["Sports"] as List<SelectListItem>;
-    Console.WriteLine("hello");
 }
 
 <div class="page-inner">
@@ -39,6 +38,12 @@
                             <label asp-for="Address" class="form-label"></label>
                             <input asp-for="Address" class="form-control" />
                             <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
 
                         <!-- بخش ۲: محل‌ها -->

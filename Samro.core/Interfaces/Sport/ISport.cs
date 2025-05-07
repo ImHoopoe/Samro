@@ -14,6 +14,7 @@ namespace WinWin.Core.Interfaces.Sports
         Task<bool> CreateAsync(Sport sport);
         Task<bool> UpdateAsync(Sport sport);
         Task<bool> DeleteAsync(int id);
+        Task<int> GetSportsCounts();
 
         Task<bool> AddSubSportAsync(int parentId, Sport sport );
     }

@@ -86,5 +86,10 @@ namespace WinWin.Core.Services.SportServices
         {
             throw new NotImplementedException();
         }
+
+        public async Task<int> GetSportsCounts()
+        {
+            return await _context.Sports.CountAsync();
+        }
     }
 }

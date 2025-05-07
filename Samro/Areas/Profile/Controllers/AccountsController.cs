@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WinWin.Core.Interfaces;
 using WinWin.DataLayer.DTOS;
-using WinWin.DataLayer.Entities.Roles;
 
-namespace WinWin.Areas.Profile.Controllers
+namespace Samro.Areas.User.Profile.Controllers
 {
     [Area("Profile")]
     [Authorize]
@@ -128,7 +127,7 @@ namespace WinWin.Areas.Profile.Controllers
                 TempData["Error"] = "کاربر یافت نشد";
                 return Redirect("/Profile/Accounts/index");
             }
-            if (model.NewPassword != model.ConfirmPassword) 
+            if (model.NewPassword != model.ConfirmPassword)
             {
                 TempData["Error"] = "رمز عبور و تکرار آن مطابقت ندارد";
             }

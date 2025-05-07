@@ -270,9 +270,9 @@
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .auth-buttons {
+  /*.auth-buttons {
       display: none;
-  }
+  }*/
   
   .nav-sections {
       margin-left: 0;

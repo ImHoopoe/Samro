@@ -43,6 +43,22 @@ namespace WinWin.Core.Tools.PublicTools
             };
         }
 
+        public static string GetTimeAgo(this DateTimeOffset dateTimeOffset)
+        {
+            var timeSpan = DateTimeOffset.UtcNow - dateTimeOffset;
+
+            return timeSpan.TotalSeconds switch
+            {
+                < 60 => "چند لحظه پیش",
+                < 3600 => $"{(int)timeSpan.TotalMinutes} دقیقه پیش",
+                < 86400 => $"{(int)timeSpan.TotalHours} ساعت پیش",
+                < 2592000 => $"{(int)timeSpan.TotalDays} روز پیش",
+                < 31536000 => $"{(int)(timeSpan.TotalDays / 30)} ماه پیش",
+                _ => $"{(int)(timeSpan.TotalDays / 365)} سال پیش"
+            };
+        }
+
+
         public static DateTime ToGregorian(this string persianDateTime)
         {
             if (string.IsNullOrWhiteSpace(persianDateTime))

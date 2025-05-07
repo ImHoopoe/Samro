@@ -13,6 +13,7 @@ namespace WinWin.Core.Interfaces.TournamentAndMatch
         #region CRUD
         Task<bool> CreateTournament(Tournament tournament);
         Task<bool> EditTournament(Tournament tournament);
+        Task<int> GetTournamentsCounts();
         Task<bool> DeleteTournament(int id);
         Task<List<Tournament>> GetTournaments();
         Task<Tournament> GetTournamentById(int id);
