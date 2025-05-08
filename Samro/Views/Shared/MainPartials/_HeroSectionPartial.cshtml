@@ -1,70 +1,117 @@
-﻿<section id="HeroSection" class="section">
-    <div class="carousel slide" data-bs-ride="carousel" id="carousel-1" style="height: 600px;">
-        <div class="carousel-inner h-100">
+﻿<style>
+    /* ارتفاع ثابت اسلایدر */
+    #carousel-1,
+    #carousel-1 .carousel-inner,
+    #carousel-1 .carousel-item {
+        height: 600px;
+    }
+
+        /* تصویر حتماً قاب را بپوشاند */
+        #carousel-1 .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill !important;
+
+            display: block;
+        }
+</style>
+
+
+
+<section id="HeroSection" class="section">
+    <div id="carousel-1" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+
             <!-- Slide 1 -->
-            <div class="carousel-item active h-100">
-                <img src="/MainLayout/assets/images/slide-1.jpg" class="w-100 d-block position-absolute h-100 fit-cover" alt="Slide 1" style="z-index: -1;">
+            <div class="carousel-item active">
+                <img src="/MainLayout/assets/images/slide-1.jpg"
+                     class="d-block"
+                     alt="اسلاید شماره 1"
+                     loading="lazy">
             </div>
+
             <!-- Slide 2 -->
-            <div class="carousel-item h-100">
-                <img src="/MainLayout/assets/images/slide-2.jpg" class="w-100 d-block position-absolute h-100 fit-cover" alt="Slide 2" style="z-index: -1;">
+            <div class="carousel-item">
+                <img src="/MainLayout/assets/images/slide-2.jpg"
+                     class="d-block"
+                     alt="اسلاید شماره 2"
+                     loading="lazy">
             </div>
-            <!-- Slide 3 -->
-            <div class="carousel-item h-100">
-                <img src="/MainLayout/assets/images/slide-3.jpg" class="w-100 d-block position-absolute h-100 fit-cover" alt="Slide 3" style="z-index: -1;">
+
+            <!-- ... ادامه اسلایدها تا Slide 10 ... -->
+            <div class="carousel-item">
+                <img src="/MainLayout/assets/images/slide-3.jpg"
+                     class="d-block"
+                     alt="اسلاید شماره 3"
+                     loading="lazy">
             </div>
-            <!-- Slide 4 -->
-            <div class="carousel-item h-100">
-                <img src="/MainLayout/assets/images/slide-4.jpg" class="w-100 d-block position-absolute h-100 fit-cover" alt="Slide 4" style="z-index: -1;">
+            <div class="carousel-item">
+                <img src="/MainLayout/assets/images/slide-4.jpg"
+                     class="d-block"
+                     alt="اسلاید شماره 4"
+                     loading="lazy">
             </div>
-            <!-- Slide 5 -->
-            <div class="carousel-item h-100">
-                <img src="/MainLayout/assets/images/slide-5.jpg" class="w-100 d-block position-absolute h-100 fit-cover" alt="Slide 5" style="z-index: -1;">
+            <div class="carousel-item">
+                <img src="/MainLayout/assets/images/slide-5.jpg"
+                     class="d-block"
+                     alt="اسلاید شماره 5"
+                     loading="lazy">
             </div>
-            <!-- Slide 6 -->
-            <div class="carousel-item h-100">
-                <img src="/MainLayout/assets/images/slide-6.jpg" class="w-100 d-block position-absolute h-100 fit-cover" alt="Slide 6" style="z-index: -1;">
+            <div class="carousel-item">
+                <img src="/MainLayout/assets/images/slide-6.jpg"
+                     class="d-block"
+                     alt="اسلاید شماره 6"
+                     loading="lazy">
             </div>
-            <!-- Slide 7 -->
-            <div class="carousel-item h-100">
-                <img src="/MainLayout/assets/images/slide-7.jpg" class="w-100 d-block position-absolute h-100 fit-cover" alt="Slide 7" style="z-index: -1;">
+            <div class="carousel-item">
+                <img src="/MainLayout/assets/images/slide-7.jpg"
+                     class="d-block"
+                     alt="اسلاید شماره 7"
+                     loading="lazy">
             </div>
-            <!-- Slide 8 -->
-            <div class="carousel-item h-100">
-                <img src="/MainLayout/assets/images/slide-8.jpg" class="w-100 d-block position-absolute h-100 fit-cover" alt="Slide 8" style="z-index: -1;">
+            <div class="carousel-item">
+                <img src="/MainLayout/assets/images/slide-8.jpg"
+                     class="d-block"
+                     alt="اسلاید شماره 8"
+                     loading="lazy">
             </div>
-            <!-- Slide 9 -->
-            <div class="carousel-item h-100">
-                <img src="/MainLayout/assets/images/slide-9.jpg" class="w-100 d-block position-absolute h-100 fit-cover" alt="Slide 9" style="z-index: -1;">
+            <div class="carousel-item">
+                <img src="/MainLayout/assets/images/slide-9.jpg"
+                     class="d-block"
+                     alt="اسلاید شماره 9"
+                     loading="lazy">
             </div>
-            <!-- Slide 10 -->
-            <div class="carousel-item h-100">
-                <img src="/MainLayout/assets/images/slide-10.jpg" class="w-100 d-block position-absolute h-100 fit-cover" alt="Slide 10" style="z-index: -1;">
+            <div class="carousel-item">
+                <img src="/MainLayout/assets/images/slide-10.jpg"
+                     class="d-block"
+                     alt="اسلاید شماره 10"
+                     loading="lazy">
             </div>
+
         </div>
 
         <!-- Controls -->
-        <a class="carousel-control-prev" href="#carousel-1" role="button" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-            <span class="visually-hidden">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carousel-1" role="button" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-            <span class="visually-hidden">Next</span>
-        </a>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-1" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">قبلی</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carousel-1" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">بعدی</span>
+        </button>
 
         <!-- Indicators -->
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="2"></button>
-            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="3"></button>
-            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="4"></button>
-            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="5"></button>
-            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="6"></button>
-            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="7"></button>
-            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="8"></button>
-            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="9"></button>
+            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="0" class="active" aria-label="اسلاید 1"></button>
+            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="1" aria-label="اسلاید 2"></button>
+            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="2" aria-label="اسلاید 3"></button>
+            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="3" aria-label="اسلاید 4"></button>
+            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="4" aria-label="اسلاید 5"></button>
+            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="5" aria-label="اسلاید 6"></button>
+            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="6" aria-label="اسلاید 7"></button>
+            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="7" aria-label="اسلاید 8"></button>
+            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="8" aria-label="اسلاید 9"></button>
+            <button type="button" data-bs-target="#carousel-1" data-bs-slide-to="9" aria-label="اسلاید 10"></button>
         </div>
     </div>
 </section>

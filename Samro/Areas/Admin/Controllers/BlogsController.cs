@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using WinWin.Core.Interfaces.BlogandBlogGroup;
 using WinWin.Core.Services.BlogandBlogGroupServices;
 using WinWin.Core.Tools.Account;
+using WinWin.Core.Tools.PublicTools;
 using WinWin.DataLayer.DTOS;
 using WinWin.DataLayer.Entities.BlogBlogGroup;
 
@@ -65,9 +66,14 @@ namespace WinWin.Areas.Admin.Controllers
                         BlogGroupId = model.BlogGroupId,
                         Tags = model.Tags,
                         PublishDate = DateTime.Now,
-                        Thumbnail = await _blogServices.SaveImageAsync(model.Thumbnail, "thumbnails")
                     };
-
+                    if (model.Thumbnail!=null)
+                    {
+                        string imageName = Guid.NewGuid().ToString();
+                       await PublicTools.SaveOriginalImageAsync(model.Thumbnail, "BlogThumbs", imageName);
+                       await PublicTools.SaveThumbnailImageAsync(model.Thumbnail, "BlogThumbs", imageName);
+                       blog.Thumbnail = imageName + ".jpg";
+                    }
                     var result = await _blogServices.CreateBlog(blog);
                     if (result)
                     {

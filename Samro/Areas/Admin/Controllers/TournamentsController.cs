@@ -111,7 +111,7 @@ namespace WinWin.Areas.Admin.Controllers
                 string ImageName = Guid.NewGuid().ToString();
                await PublicTools.SaveOriginalImageAsync(createTournamentViewModel.Thumbnail, "Tournament", ImageName);
                await PublicTools.SaveThumbnailImageAsync(createTournamentViewModel.Thumbnail, "Tournament", ImageName);
-                tournament.Thumbnail = ImageName + Path.GetExtension(createTournamentViewModel.Thumbnail.FileName);
+                tournament.Thumbnail = ImageName + ".jpg";
             }
 
             if (!await _tournamentServices.CreateTournament(tournament))

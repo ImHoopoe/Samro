@@ -100,7 +100,7 @@
                             {
                                 foreach (var blog in lastBlogs)
                                 {
-                                    <a href="#" class="list-group-item list-group-item-action">
+                                    <a asp-area="" asp-controller="Blogs" asp-action="ShowBlog" asp-route-id="@blog.BlogId" class="list-group-item list-group-item-action">
                                         <div class="d-flex w-100 justify-content-between">
                                             <h6 class="mb-1">@blog.Title</h6>
                                             <small>@DateTimeExtensions.GetTimeAgo(blog.PublishDate)</small>

@@ -1,0 +1,86 @@
+﻿@using WinWin.Core.Tools.PublicTools
+@model WinWin.DataLayer.Entities.BlogBlogGroup.Blog
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<section id="BlogDetailSection" class="section">
+    <div class="container pt-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+
+                <!-- Article Card -->
+                <div class="card border-0 shadow-sm mb-5">
+                    <img src="@Model.Thumbnail"
+                         class="card-img-top"
+                         alt="@Model.Title"
+                         loading="lazy" />
+
+                    <div class="card-body">
+                        <h1 class="card-title fw-bold mb-3">@Model.Title</h1>
+                        <div class="mb-4 text-muted">
+                            <small>
+                                منتشر شده در
+                                <time datetime="@Model.PublishDate.UtcDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ")">
+                                    @Model.PublishDate.ToShamsi()
+                                </time>
+                            </small>
+                        </div>
+
+                        <!-- Render HTML description -->
+                        <div class="card-text article-content">
+                            @Html.Raw(Model.Description)
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Tags))
+                        {
+                            <div class="mt-4">
+                                <h6 class="fw-semibold">برچسب‌ها:</h6>
+                                <p>
+                                    @foreach (var tag in Model.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        <a href="@Url.Action("Blogs", new { tag = tag.Trim() })"
+                                           class="badge bg-secondary text-decoration-none me-1">
+                                            @tag.Trim()
+                                        </a>
+                                    }
+                                </p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Back to list -->
+                <div class="d-flex justify-content-start">
+                    <a href="@Url.Action("Blogs", "Blogs")" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-right"></i> بازگشت به مقالات
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Optional: make images cover */
+    #BlogDetailSection .card-img-top {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    /* Optional: styles for article HTML */
+    .article-content p {
+        margin-bottom: 1rem;
+        line-height: 1.8;
+    }
+
+    .article-content img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 1rem auto;
+    }
+</style>

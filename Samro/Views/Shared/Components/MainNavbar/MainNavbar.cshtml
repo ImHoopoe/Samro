@@ -11,7 +11,7 @@
 
         <!-- بخش میانی (منوها و جستجو) -->
         <div class="nav-center d-flex">
-            <a href="#" class="user-action">
+            <a asp-controller="Home" asp-action="index" class="user-action">
                 <i class="fa-solid fa-house"></i>
                 <span>خانه</span>
             </a>
@@ -31,7 +31,7 @@
                 <span>مقالات</span>
             </div>
 
-            <a href="#" class="user-action">
+            <a href="#FAQ" class="user-action">
                 <i class="fa-solid fa-question"></i>
                 <span>سوالات</span>
             </a>
@@ -42,7 +42,7 @@
             <div class="auth-buttons">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a asp-area="Profile" asp-controller="Accounts" class="btn btn-primary">
+                    <a asp-area="Admin" asp-controller="Home" class="btn btn-primary">
                         <i class="fas fa-user"></i> مشاهده پروفایل
                     </a>
                 }

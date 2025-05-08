@@ -71,7 +71,7 @@ namespace WinWin.Areas.Admin.Controllers
         public async Task<IActionResult> EditBlogGroup(int id)
         {
             var blogGroup = await _blogGroupServices.GetBlogGroupById(id);
-            if (blogGroup == null) return NotFound();
+            if (blogGroup == null) return View("Error");
 
             var editBlog = new EditBlogGroupViewModel
             {
@@ -118,7 +118,7 @@ namespace WinWin.Areas.Admin.Controllers
             var BlogGroup = _blogGroupServices.GetBlogGroupById(id);
             if (BlogGroup==null)
             {
-                return NotFound();
+                return View("Error");
             }
 
             ViewBag.BlogGroupId = id;
@@ -149,7 +149,7 @@ namespace WinWin.Areas.Admin.Controllers
             var blogGroup = await _blogGroupServices.GetBlogGroupById(id);
             if (blogGroup == null)
             {
-                return NotFound("لطفا url را تغییر ندهید");
+                return View("Error");
             }
 
             DeleteBlogGroupViewModel deleteBlogGroup = new DeleteBlogGroupViewModel()

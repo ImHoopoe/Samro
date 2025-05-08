@@ -13,7 +13,7 @@
                 <div class="card-slide">
                     <div class="card">
                         <div class="position-relative">
-                            <span class="card-badge">۱۹:۰۰</span>
+                            <span class="card-badge">@tournament.RegsiterEndsAt</span>
                             <img src="/images/Tournament/thumb/@tournament.Thumbnail" class="card-image w-100" alt="...">
                         </div>
                         <div class="card-content">
@@ -33,7 +33,7 @@
 
                     @foreach (var tournament in Model)
                     {
-                        <div class="swiper-slide card-thumb bg-white">
+                        <div class="swiper-slide card-thumb bg-white mx-2">
                             <img src="/images/Tournament/thumb/@tournament.Thumbnail" class="w-100" style="height: 120px; object-fit: cover;" />
                             <div class="p-3">
                                 <h6 class="mb-0">@tournament.TournamentType.GetDisplayName()</h6>

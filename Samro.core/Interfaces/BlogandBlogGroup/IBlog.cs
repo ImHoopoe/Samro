@@ -11,7 +11,7 @@ namespace WinWin.Core.Interfaces.BlogandBlogGroup
     public interface IBlog
     {
         #region CRUDservices
-        Task<bool>  CreateBlog(Blog blog);
+        Task<bool> CreateBlog(Blog blog);
         Task<Blog> GetBlogById(int id);
         Task<IEnumerable<Blog>> GetBlogs(int? pageNumber = 1, int? count = 10);
         Task<bool> EditBlog(Blog blog);
@@ -25,5 +25,8 @@ namespace WinWin.Core.Interfaces.BlogandBlogGroup
         Task<int> GetTotalBlogsCount();
 
         #endregion
+
+
+
     }
 }
