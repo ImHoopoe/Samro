@@ -100,8 +100,8 @@ builder.Services.AddAuthentication(options =>
 //builder.Services.AddDbContext<SamroContext>(options =>
 //   options.UseSqlServer(builder.Configuration.GetConnectionString("WinWinTestConnectionString2022")));
 
-//builder.Services.AddDbContext<SamroContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("WinWinTestConnectionString2019")));
+builder.Services.AddDbContext<SamroContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("WinWinTestConnectionString2019")));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
@@ -109,10 +109,9 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddSignalR();
+
 //builder.Services.AddDbContext<SamroContext>(options =>
-//   options.UseSqlServer(builder.Configuration.GetConnectionString("TestConnection")));
-builder.Services.AddDbContext<SamroContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SamroConnection")));
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("SamroConnection")));
 #endregion
 
 #region Dependency Injection (IOC)

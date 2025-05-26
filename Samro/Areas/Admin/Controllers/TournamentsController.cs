@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using WinWin.Core.Interfaces.Sports;
@@ -250,6 +251,18 @@ namespace WinWin.Areas.Admin.Controllers
             return Json(new SelectList(list, "Value", "Text"));
         }
 
+        public async Task<IActionResult> UpdateTournamentStatus(int tournamentId, bool isAccepted, bool isRegistered)
+        {
+            var tournament = await _tournamentServices.GetTournamentById(tournamentId);
+            if (tournament != null)
+            {
+                tournament.IsAccepted = isAccepted;
+                tournament.IsFull = isRegistered;
 
+               await _tournamentServices.EditTournament(tournament);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
