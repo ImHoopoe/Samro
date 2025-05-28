@@ -56,7 +56,8 @@ namespace WinWin.Areas.Admin.Controllers
                     CreatedByUserName = t.CreatedByUser.UserName,
                     RegisteredUsersCount = t.RegisteredUsersCount,
                     TournamentId = t.TournamentId,
-                    Thumbnail = t.Thumbnail
+                    Thumbnail = t.Thumbnail,
+                    IsAccepted = t.IsAccepted
                 });
             }
 
@@ -223,7 +224,8 @@ namespace WinWin.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> DeleteTournament(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteTournament([FromBody] int id)
         {
             try
             {
@@ -251,18 +253,35 @@ namespace WinWin.Areas.Admin.Controllers
             return Json(new SelectList(list, "Value", "Text"));
         }
 
-        public async Task<IActionResult> UpdateTournamentStatus(int tournamentId, bool isAccepted, bool isRegistered)
+        [HttpPost]
+        [Route("admin/tournaments/updateTournamentStatus")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateTournamentStatus([FromBody] UpdateTournamentStatusModel model)
         {
-            var tournament = await _tournamentServices.GetTournamentById(tournamentId);
-            if (tournament != null)
+            if (model == null)
             {
-                tournament.IsAccepted = isAccepted;
-                tournament.IsFull = isRegistered;
-
-               await _tournamentServices.EditTournament(tournament);
+                return Json(new { success = false, message = "مدل ارسال شده null است" });
             }
 
-            return RedirectToAction(nameof(Index));
+            var tournament = await _tournamentServices.GetTournamentById(model.TournamentId);
+            if (tournament == null)
+            {
+                return Json(new { success = false, message = "رویداد پیدا نشد" });
+            }
+
+            tournament.IsAccepted = model.IsAccepted;
+
+            var success = await _tournamentServices.EditTournament(tournament);
+            if (success)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "خطا در بروزرسانی وضعیت رویداد" });
+            }
         }
+
+
     }
 }

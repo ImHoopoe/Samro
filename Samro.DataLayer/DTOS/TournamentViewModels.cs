@@ -149,6 +149,7 @@ namespace WinWin.DataLayer.DTOS
         public int? RegisteredUsersCount { get; set; }
         public string SportName { get; set; }
         public string Thumbnail { get; set; }
+        public bool IsAccepted { get; set; } = false;
     }
 
     public class EditTournamentViewModel
@@ -295,5 +296,11 @@ namespace WinWin.DataLayer.DTOS
         }
         public string Thumbnail { get; set; } = "No.png";
         public int? SportId { get; set; }
+    }
+
+    public class UpdateTournamentStatusModel
+    {
+        public int TournamentId { get; set; }
+        public bool IsAccepted { get; set; }
     }
 }
