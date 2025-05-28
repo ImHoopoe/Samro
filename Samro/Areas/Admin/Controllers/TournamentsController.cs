@@ -253,10 +253,50 @@ namespace WinWin.Areas.Admin.Controllers
             return Json(new SelectList(list, "Value", "Text"));
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateTournamentStatus()
+        {
+            var tournaments = await _tournamentServices.GetStepOneTournaments();
+
+            var viewModelList = new List<ShowTournamentForAdminViewModel>();
+
+            foreach (var t in tournaments)
+            {
+                viewModelList.Add(new ShowTournamentForAdminViewModel
+                {
+                    Title = t.Title,
+                    IsDeleted = t.IsDeleted,
+                    IsTimeEnds = t.IsTimeEnds,
+                    IsFull = t.IsFull,
+                    Description = t.Description,
+                    TournamentType = await t.TournamentType.GetDisplayNameAsync(),
+                    MatchLocation = t.MatchLocation,
+                    FaceToFaceDate = t.FaceToFaceDate,
+                    Address = t.Address,
+                    WeighInLocation = t.WeighInLocation,
+                    FaceToFaceLocation = t.FaceToFaceLocation,
+                    HostelLocation = t.HostelLocation,
+                    WeighInDate = t.WeighInDate,
+                    RegsiterStartsAt = t.RegsiterStartsAt,
+                    RegsiterEndsAt = t.RegsiterEndsAt,
+                    MaximnumPlayers = t.MaximnumPlayers,
+                    CreatedByUserName = t.CreatedByUser.UserName,
+                    RegisteredUsersCount = t.RegisteredUsersCount,
+                    TournamentId = t.TournamentId,
+                    Thumbnail = t.Thumbnail,
+                    IsAccepted = t.IsAccepted
+                });
+            }
+
+            return View();
+
+        }
+
         [HttpPost]
         [Route("admin/tournaments/updateTournamentStatus")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateTournamentStatus([FromBody] UpdateTournamentStatusModel model)
+        public async Task<IActionResult> UpdateTournamentStatus([FromBody] UpdateTournamentStatusViewModel model)
         {
             if (model == null)
             {
@@ -282,6 +322,74 @@ namespace WinWin.Areas.Admin.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("admin/tournaments/updateTournamentStatus")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateTournamentFinalStatus()
+        {
+            var tournaments = await _tournamentServices.GetStepStepTwoTournaments();
+
+            var viewModelList = new List<ShowTournamentForAdminViewModel>();
+
+            foreach (var t in tournaments)
+            {
+                viewModelList.Add(new ShowTournamentForAdminViewModel
+                {
+                    Title = t.Title,
+                    IsDeleted = t.IsDeleted,
+                    IsTimeEnds = t.IsTimeEnds,
+                    IsFull = t.IsFull,
+                    Description = t.Description,
+                    TournamentType = await t.TournamentType.GetDisplayNameAsync(),
+                    MatchLocation = t.MatchLocation,
+                    FaceToFaceDate = t.FaceToFaceDate,
+                    Address = t.Address,
+                    WeighInLocation = t.WeighInLocation,
+                    FaceToFaceLocation = t.FaceToFaceLocation,
+                    HostelLocation = t.HostelLocation,
+                    WeighInDate = t.WeighInDate,
+                    RegsiterStartsAt = t.RegsiterStartsAt,
+                    RegsiterEndsAt = t.RegsiterEndsAt,
+                    MaximnumPlayers = t.MaximnumPlayers,
+                    CreatedByUserName = t.CreatedByUser.UserName,
+                    RegisteredUsersCount = t.RegisteredUsersCount,
+                    TournamentId = t.TournamentId,
+                    Thumbnail = t.Thumbnail,
+                    IsAccepted = t.IsAccepted
+                });
+            }
+
+            return View();
+        }
+        [HttpPost]
+        [Route("admin/tournaments/updateTournamentStatus")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateTournamentFinalStatus([FromBody] UpdateTournamentFinalStatusModel model)
+        {
+            if (model == null)
+            {
+                return Json(new { success = false, message = "مدل ارسال شده null است" });
+            }
+
+            var tournament = await _tournamentServices.GetTournamentById(model.TournamentId);
+            if (tournament == null)
+            {
+                return Json(new { success = false, message = "رویداد پیدا نشد" });
+            }
+
+            tournament.IsAccepted = model.IsAccepted;
+
+            var success = await _tournamentServices.EditTournament(tournament);
+            if (success)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "خطا در بروزرسانی وضعیت رویداد" });
+            }
+        }
 
     }
 }

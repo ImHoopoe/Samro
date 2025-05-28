@@ -116,5 +116,15 @@ namespace WinWin.Core.Services.TournamentAndMatch
         {
             return await _context.Tournaments.CountAsync();
         }
+
+        public async Task<List<Tournament>> GetStepOneTournaments()
+        {
+            return await _context.Tournaments.Where(t => !t.IsAccepted).ToListAsync();
+        }
+
+        public async Task<List<Tournament>> GetStepStepTwoTournaments()
+        {
+            return await _context.Tournaments.Where(t => !t.IsFinal).ToListAsync();
+        }
     }
 }

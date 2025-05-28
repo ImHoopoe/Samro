@@ -31,6 +31,7 @@ namespace WinWin.DataLayer.Entities.EventModels
         public bool IsFull { get; set; } = false;
         public int MaximnumPlayers { get; set; }
         public bool IsAccepted { get; set; } = false;
+        public bool IsFinal { get; set; } = false;
         public int? RegisteredUsersCount
         {
             get;
