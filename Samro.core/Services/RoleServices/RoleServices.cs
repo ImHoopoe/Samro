@@ -64,9 +64,9 @@ namespace WinWin.Core.Services.RoleServices
             }
         }
 
-        public IEnumerable<Role> GetAllRolesAsync()
+        public async Task<List<Role>> GetAllRolesAsync()
         {
-            return _Context.Roles;
+            return await _Context.Roles.ToListAsync();
         }
 
         public async Task<Role> GetRoleByIdAsync(Guid roleId)

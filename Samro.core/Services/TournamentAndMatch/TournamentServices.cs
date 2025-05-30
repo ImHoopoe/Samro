@@ -117,14 +117,28 @@ namespace WinWin.Core.Services.TournamentAndMatch
             return await _context.Tournaments.CountAsync();
         }
 
+        // متد اول: GetStepOneTournaments
         public async Task<List<Tournament>> GetStepOneTournaments()
         {
-            return await _context.Tournaments.Where(t => !t.IsAccepted).ToListAsync();
+            return await _context.Tournaments
+                .Where(t => !t.IsAccepted)
+                .AsNoTracking()  // جلوگیری از ردیابی تغییرات
+                .Include(t => t.CreatedByUser)  // بارگذاری موجودیت مربوط به CreatedByUser
+                .Include(t => t.Sport)  // بارگذاری موجودیت مربوط به Sport
+                .ToListAsync();
         }
 
+        // متد دوم: GetStepTwoTournaments
         public async Task<List<Tournament>> GetStepStepTwoTournaments()
         {
-            return await _context.Tournaments.Where(t => !t.IsFinal).ToListAsync();
+            return await _context.Tournaments
+                .Where(t => !t.IsFinal && t.IsAccepted)
+                .AsNoTracking()  // جلوگیری از ردیابی تغییرات
+                .Include(t => t.CreatedByUser)  // بارگذاری موجودیت مربوط به CreatedByUser
+                .Include(t => t.Sport)  // بارگذاری موجودیت مربوط به Sport
+                .ToListAsync();
         }
+
+ 
     }
 }

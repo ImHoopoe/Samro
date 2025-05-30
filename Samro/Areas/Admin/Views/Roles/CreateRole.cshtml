@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using WinWin.DataLayer.Entities.Roles
+@model WinWin.DataLayer.DTOS.CreateRoleViewModel
+@{
+    ViewData["Title"] = "افزودن نقش جدید";
+    Layout = "~/Views/Shared/AdminProfile/AdminProfileLayout.cshtml";
+    List<Permission> permissions = ViewBag.Permissions as List<Permission>;
+}
+
+<div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-light rounded-3 p-2">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">مدیریت</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4 text-center">افزودن نقش جدید</h5>
+
+                    <form asp-action="CreateRole" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="RoleName" class="form-control" id="RoleName" placeholder="نام نقش" />
+                            <label for="RoleName">نام نقش</label>
+                            <div class="invalid-feedback">
+                                <span>نام نقش</span>
+                            </div>
+                        </div>
+
+                        <fieldset class="mb-3">
+                            <div class="accordion" id="permissionsAccordion">
+                                @foreach (var permission in permissions.Where(p => p.ParentId == null))
+                                {
+                                    <div class="accordion-item">
+                                        <h6 class="accordion-header" id="heading_@permission.PermissonId">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_@permission.PermissonId" aria-expanded="false" aria-controls="collapse_@permission.PermissonId">
+                                                @permission.PermissonTitle
+                                            </button>
+                                        </h6>
+                                        <div id="collapse_@permission.PermissonId" class="accordion-collapse collapse" aria-labelledby="heading_@permission.PermissonId" data-bs-parent="#permissionsAccordion">
+                                            <div class="accordion-body">
+                                                <div class="row mb-3">
+                                                    @foreach (var subPermission in permissions.Where(p => p.ParentId == permission.PermissonId))
+                                                    {
+                                                        <div class="col-md-6">
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="checkbox" name="SelectedPermissions" value="@subPermission.PermissonTitle" class="form-check-input" id="permission_@subPermission.PermissonTitle" />
+                                                                <label class="form-check-label" for="permission_@subPermission.PermissonTitle">
+                                                                    @subPermission.PermissonTitle
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </fieldset>
+
+                        
+
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-plus-circle me-1"></i> افزودن
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-3">
+                <a asp-action="Index" class="btn btn-outline-secondary">← بازگشت به مدیریت</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

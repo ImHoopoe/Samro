@@ -11,10 +11,10 @@ using WinWin.DataLayer.Entities.Roles;
 
 namespace WinWin.Areas.Admin.Controllers
 {
-    // [Authorize]
-    //  [PermissionChecker(1)]
+    
     [Area("Admin")]
     [Authorize]
+    [PermissionChecker(1)]
     public class UsersController : Controller
     {
         private readonly IUser _UserServices;

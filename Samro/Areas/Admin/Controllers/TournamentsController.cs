@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WinWin.Core.Interfaces.Sports;
 using WinWin.Core.Interfaces.TournamentAndMatch;
 using WinWin.Core.Services.BlogandBlogGroupServices;
+using WinWin.Core.Tools.Account;
 using WinWin.Core.Tools.PublicTools;
 using WinWin.DataLayer.DTOS;
 using WinWin.DataLayer.Entities.EventModels;
@@ -16,6 +17,7 @@ namespace WinWin.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize]
+    [PermissionChecker(5)]
     public class TournamentsController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -67,6 +69,7 @@ namespace WinWin.Areas.Admin.Controllers
 
 
         [HttpGet]
+        [PermissionChecker(6)]
         public async Task<IActionResult> CreateTournament()
         {
             ViewData["Sports"] = await _tournamentServices.GetSportGroups();
@@ -74,6 +77,7 @@ namespace WinWin.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [PermissionChecker(6)]
         public async Task<IActionResult> CreateTournament(CreateTournamentViewModel createTournamentViewModel)
         {
             if (!ModelState.IsValid)
@@ -255,6 +259,7 @@ namespace WinWin.Areas.Admin.Controllers
 
 
         [HttpGet]
+        [Route("admin/tournaments/UpdateTournamentStatus")]
         public async Task<IActionResult> UpdateTournamentStatus()
         {
             var tournaments = await _tournamentServices.GetStepOneTournaments();
@@ -289,7 +294,7 @@ namespace WinWin.Areas.Admin.Controllers
                 });
             }
 
-            return View();
+            return View(viewModelList);
 
         }
 
@@ -324,8 +329,7 @@ namespace WinWin.Areas.Admin.Controllers
 
 
         [HttpGet]
-        [Route("admin/tournaments/updateTournamentStatus")]
-        [ValidateAntiForgeryToken]
+        [Route("admin/tournaments/UpdateTournamentFinalStatus")]
         public async Task<IActionResult> UpdateTournamentFinalStatus()
         {
             var tournaments = await _tournamentServices.GetStepStepTwoTournaments();
@@ -360,10 +364,10 @@ namespace WinWin.Areas.Admin.Controllers
                 });
             }
 
-            return View();
+            return View(viewModelList);
         }
         [HttpPost]
-        [Route("admin/tournaments/updateTournamentStatus")]
+        [Route("admin/tournaments/UpdateTournamentFinalStatus")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateTournamentFinalStatus([FromBody] UpdateTournamentFinalStatusModel model)
         {

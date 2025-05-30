@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Samro.DataLayer.Entities.TournamentMatch;
 using WinWin.DataLayer.Entities.Roles;
 using WinWin.DataLayer.Entities.Sport;
 using WinWin.DataLayer.Entities.TournamentMatch;
@@ -32,6 +33,8 @@ namespace WinWin.DataLayer.Entities.EventModels
         public int MaximnumPlayers { get; set; }
         public bool IsAccepted { get; set; } = false;
         public bool IsFinal { get; set; } = false;
+        public int? TournamentDoctorId { get; set; }
+        public int? TournamentRefereeId { get; set; }
         public int? RegisteredUsersCount
         {
             get;
@@ -47,6 +50,8 @@ namespace WinWin.DataLayer.Entities.EventModels
         public ICollection<Match> Matches { get; set; }
         public User CreatedByUser { get; set; }
         public ICollection<TournamentUser> RegisteredUsers { get; set; }
+        public ICollection<TournamentDoctor> TournamentDoctors { get; set; }
+        public ICollection<TournamentReferees> TournamentReferees { get; set; }
         public Sport.Sport Sport { get; set; }
         #endregion
     }

@@ -14,7 +14,7 @@ namespace WinWin.Core.Interfaces.RoleInterfaces
         //ممد ریدی با این اسم گذاریت ! : Creat????? خودم اصلاحش کردم
         Task<bool> EditRole(Role role);
         Task<Role?> GetRoleByIdAsync(Guid roleId);
-        IEnumerable<Role> GetAllRolesAsync();
+        Task<List<Role>> GetAllRolesAsync();
         Task<bool> DeleteRole(Guid roleId);
         #endregion
         #region User
