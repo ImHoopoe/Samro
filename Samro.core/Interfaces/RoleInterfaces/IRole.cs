@@ -11,7 +11,6 @@ namespace WinWin.Core.Interfaces.RoleInterfaces
     {
         #region CRUD Operations
         Task<bool> CreateRole(Role role);
-        //ممد ریدی با این اسم گذاریت ! : Creat????? خودم اصلاحش کردم
         Task<bool> EditRole(Role role);
         Task<Role?> GetRoleByIdAsync(Guid roleId);
         Task<List<Role>> GetAllRolesAsync();

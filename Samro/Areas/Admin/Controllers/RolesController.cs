@@ -50,7 +50,7 @@ namespace Samro.Areas.Admin.Controllers
             if (await _roleServices.CreateRole(role))
             {
 
-                _rolePermission.AddPermissionsAsync(role.RoleId, createRoleViewModel.Permissions);
+                _rolePermission.AddPermissionsAsync(role.RoleId, createRoleViewModel.SelectedPermissions);
 
             }
             

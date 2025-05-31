@@ -50,8 +50,7 @@ namespace WinWin.DataLayer.Entities.EventModels
         public ICollection<Match> Matches { get; set; }
         public User CreatedByUser { get; set; }
         public ICollection<TournamentUser> RegisteredUsers { get; set; }
-        public ICollection<TournamentDoctor> TournamentDoctors { get; set; }
-        public ICollection<TournamentReferees> TournamentReferees { get; set; }
+        public ICollection<TournamentParticipant> TournamentParticipants { get; set; }
         public Sport.Sport Sport { get; set; }
         #endregion
     }

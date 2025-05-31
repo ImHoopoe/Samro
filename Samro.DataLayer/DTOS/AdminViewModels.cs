@@ -223,7 +223,7 @@ namespace WinWin.DataLayer.DTOS
     public class CreateRoleViewModel
     {
         public string RoleName { get; set; }
-        public List<string> SelectedPermissions { get; set; } 
-        public List<int> Permissions { get; set; }
+        public List<int> SelectedPermissions { get; set; } 
+        //public List<int> Permissions { get; set; }
     }
 }

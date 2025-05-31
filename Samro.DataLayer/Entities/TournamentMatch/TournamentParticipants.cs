@@ -8,16 +8,17 @@ using WinWin.DataLayer.Entities.Roles;
 
 namespace Samro.DataLayer.Entities.TournamentMatch
 {
-    public class TournamentDoctor
+    public class TournamentParticipant
     {
-        public int TournamentDoctorId { get; set; }
+        public int TournamentParticipantId { get; set; }
         public Guid? UserId { get; set; }
         public int? TournamentId { get; set; }
-        public bool IsAdmin { get; set; } = false;
-        #region Relations
+        public int? RoleId { get; set; }
 
-        public User? Doctor { get; set; }
-        public Tournament? Tournament { get; set; }
-        #endregion
+        public Tournament Tournament { get; set; }
+        public User User { get; set; }
+        public Role? Role { get; set; }
+
+
     }
 }
