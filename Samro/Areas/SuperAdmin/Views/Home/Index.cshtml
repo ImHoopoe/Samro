@@ -1,0 +1,170 @@
+﻿@using WinWin.DataLayer.Entities.BlogBlogGroup
+@using WinWin.Core.Tools.PublicTools
+
+@{
+    Layout = "AdminProfile/AdminProfileLayout";
+    List<Blog> lastBlogs = ViewBag.LastBlogs as List<Blog> ?? new List<Blog>();
+}
+
+<div class="page-inner">
+
+    <!-- Header -->
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">مدیریت</h3>
+            <h6 class="op-7 mb-2">مدیریت / صفحه اصلی</h6>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <h2 class="mb-4">داشبورد مدیریت</h2>
+
+        <!-- Cards -->
+        <div class="row">
+            <!-- مقالات -->
+            <div class="col-md-3">
+                <div class="card animate-fadein" style="animation-delay: 0.1s;">
+                    <div class="card-header">
+                        <i class="fas fa-newspaper me-2"></i> مقالات
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 class="counter" data-count="124">@ViewBag.BlogsCounts</h3>
+                        <p>مقاله منتشر شده</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- کاربران -->
+            <div class="col-md-3">
+                <div class="card animate-fadein" style="animation-delay: 0.2s;">
+                    <div class="card-header">
+                        <i class="fas fa-users me-2"></i> کاربران
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 class="counter" data-count="856">@ViewBag.UsersCounts</h3>
+                        <p>کاربر ثبت‌نام شده</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ورزش ها -->
+            <div class="col-md-3">
+                <div class="card animate-fadein" style="animation-delay: 0.3s;">
+                    <div class="card-header">
+                        <i class="fas fa-trophy me-2"></i> ورزش‌ها
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 class="counter" data-count="32">@ViewBag.SportsCounts</h3>
+                        <p>ورزش فعال</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- رویدادها -->
+            <div class="col-md-3">
+                <div class="card animate-fadein" style="animation-delay: 0.4s;">
+                    <div class="card-header">
+                        <i class="fas fa-calendar-alt me-2"></i> رویدادها
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 class="counter" data-count="15">@ViewBag.TournamentsCounts</h3>
+                        <p>رویداد آینده</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- نمودار و آخرین مقالات -->
+        <div class="row mt-4">
+            <!-- نمودار بازدید -->
+            <div class="col-md-6">
+                <div class="card animate-fadein" style="animation-delay: 0.5s;">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line me-2"></i> آمار بازدید
+                    </div>
+                    <div class="card-body">
+                        <canvas id="visitsChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- آخرین مقالات -->
+            <div class="col-md-6">
+                <div class="card animate-fadein" style="animation-delay: 0.6s;">
+                    <div class="card-header">
+                        <i class="fas fa-comments me-2"></i> آخرین مقالات
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            @if (lastBlogs != null && lastBlogs.Any())
+                            {
+                                foreach (var blog in lastBlogs)
+                                {
+                                    <a asp-area="" asp-controller="Blogs" asp-action="ShowBlog" asp-route-id="@blog.BlogId" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">@blog.Title</h6>
+                                            <small>@DateTimeExtensions.GetTimeAgo(blog.PublishDate)</small>
+                                        </div>
+                                        <p class="mb-1">@blog.ShortDescription</p>
+                                        <small>@blog.BlogGroup?.BlogGroupName</small>
+                                    </a>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-muted">مقاله‌ای یافت نشد.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            $.notify({
+                icon: 'icon-check',
+                title: 'موفقیت',
+                message: '@Html.Raw(TempData["SuccessMessage"].ToString())'
+            }, {
+                type: 'success',
+                placement: {
+                    from: "bottom",
+                    align: "right"
+                },
+                delay: 5000,
+                animate: {
+                    enter: "animated fadeInDown",
+                    exit: "animated fadeOutUp"
+                }
+            });
+        </script>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            $.notify({
+                icon: 'icon-close',
+                title: 'شکست',
+                message: '@Html.Raw(TempData["ErrorMessage"].ToString())'
+            }, {
+                type: 'danger',
+                placement: {
+                    from: "bottom",
+                    align: "right"
+                },
+                delay: 5000,
+                animate: {
+                    enter: "animated fadeInDown",
+                    exit: "animated fadeOutUp"
+                }
+            });
+        </script>
+    }
+}

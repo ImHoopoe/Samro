@@ -1,0 +1,93 @@
+﻿@model WinWin.DataLayer.DTOS.UpdateUserViewModel
+
+@{
+    ViewData["Title"] = "ویرایش کاربر";
+    Layout = "~/Views/Shared/AdminProfile/AdminProfileLayout.cshtml";
+}
+
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">مدیریت</h3>
+            <h6 class="op-7 mb-2">مدیریت / @ViewData["Title"]</h6>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4">
+                <h4 class="mb-4 text-center text-primary">ویرایش کاربر</h4>
+                <form asp-action="UpdateUser" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="UserName" class="form-label"></label>
+                        <input asp-for="UserName" class="form-control" placeholder="نام کاربری" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="رمز عبور" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="RePassword" class="form-label"></label>
+                        <input asp-for="RePassword" type="password" class="form-control" placeholder="تکرار رمز عبور" />
+                        <span asp-validation-for="RePassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="ایمیل" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="تلفن همراه" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="NationalId" class="form-label"></label>
+                        <input asp-for="NationalId" class="form-control" placeholder="کد ملی" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Avatar" class="form-label"></label>
+                        <input asp-for="Avatar" type="file" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label"></label>
+                        <textarea asp-for="Address" class="form-control" placeholder="نشانی" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Age" class="form-label"></label>
+                        <input asp-for="Age" type="number" class="form-control" placeholder="سن" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Height" class="form-label"></label>
+                        <input asp-for="Height" type="number" step="0.01" class="form-control" placeholder="قد" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Weight" class="form-label"></label>
+                        <input asp-for="Weight" type="number" step="0.01" class="form-control" placeholder="وزن" />
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary w-100">ویرایش</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <a asp-action="Index" class="btn btn-outline-secondary">بازگشت به مدیریت</a>
+    </div>
+</div>
