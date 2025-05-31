@@ -79,9 +79,8 @@
                             <p class="mb-2"><small class="text-muted">محل مسابقه:</small> @item.MatchLocation</p>
                             <p class="mb-2"><small class="text-muted">تاریخ وزن‌کشی:</small> @item.WeighInDate.ToShamsi()</p>
                             <div class="mt-auto border-top pt-3 d-flex justify-content-between">
-                                <button type="button" class="btn btn-sm btn-outline-success btn-hover-icon w-100" data-bs-toggle="modal" data-bs-target="#detailsModal-@item.TournamentId">
-                                    <i class="fas fa-check-circle"></i> تکمیل اطلاعات
-
+                                <button type="button" class="btn btn-sm btn-outline-dark btn-hover-icon w-100" data-bs-toggle="modal" data-bs-target="#detailsModal-@item.TournamentId">
+                                    <i class="fas fa-info-circle"> مشاهده اطلاعات  </i>
                                 </button>
                             </div>
                         </div>
@@ -155,12 +154,9 @@
                             </table>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary " data-bs-dismiss="modal">بستن</button>
-                            <a asp-controller="Tournaments" asp-action="CompleteTournamentInfo" 
-                               asp-route-TournamentId="@item.TournamentId" type="button" class="btn btn-outline-success approve-btn">
-                                تکمیل اطلاعات
-                            </a>
-
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                            <button type="button" class="btn btn-success approve-btn" data-id="@item.TournamentId">تایید</button>
+                            <button type="button" class="btn btn-danger reject-btn" data-id="@item.TournamentId">رد</button>
                         </div>
                     </div>
                 </div>
@@ -172,41 +168,41 @@
 @section Scripts {
     <script>
         // حذف رویداد
-                document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const idStr = btn.getAttribute('data-id');
-                const id = parseInt(idStr);
-                console.log('ID for deletion:', id);
+        //         document.querySelectorAll('.delete-btn').forEach(btn => {
+        //     btn.addEventListener('click', () => {
+        //         const idStr = btn.getAttribute('data-id');
+        //         const id = parseInt(idStr);
+        //         console.log('ID for deletion:', id);
 
-                if (isNaN(id) || id <= 0) {
-                    alert('شناسه رویداد معتبر نیست!');
-                    return;
-                }
+        //         if (isNaN(id) || id <= 0) {
+        //             alert('شناسه رویداد معتبر نیست!');
+        //             return;
+        //         }
 
-                if (confirm('آیا از حذف این رویداد مطمئن هستید؟')) {
-                    fetch('@Url.Action("DeleteTournament", "Tournaments")', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                        },
-                        body: JSON.stringify({ id: id })
-                    })
-                    .then(res => {
-                        if (!res.ok) throw new Error('خطا در درخواست: ' + res.status);
-                        return res.json();
-                    })
-                    .then(data => {
-                        if (data.success) location.reload();
-                        else alert(data.message || 'خطا در حذف رویداد');
-                    })
-                    .catch(error => {
-                        console.error('خطا:', error);
-                        alert('خطایی رخ داد. لطفاً دوباره تلاش کنید.');
-                    });
-                }
-            });
-        });
+        //         if (confirm('آیا از حذف این رویداد مطمئن هستید؟')) {
+        //             fetch('@Url.Action("DeleteTournament", "Tournaments")', {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     'Content-Type': 'application/json',
+        //                     'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+        //                 },
+        //                 body: JSON.stringify({ id: id })
+        //             })
+        //             .then(res => {
+        //                 if (!res.ok) throw new Error('خطا در درخواست: ' + res.status);
+        //                 return res.json();
+        //             })
+        //             .then(data => {
+        //                 if (data.success) location.reload();
+        //                 else alert(data.message || 'خطا در حذف رویداد');
+        //             })
+        //             .catch(error => {
+        //                 console.error('خطا:', error);
+        //                 alert('خطایی رخ داد. لطفاً دوباره تلاش کنید.');
+        //             });
+        //         }
+        //     });
+        // });
 
         // تأیید رویداد
         document.querySelectorAll('.approve-btn').forEach(btn => {

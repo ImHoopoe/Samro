@@ -26,7 +26,7 @@ namespace WinWin.Core.Interfaces.TournamentAndMatch
         #region Admin
         Task<List<Tournament>> GetStepOneTournaments();
         Task<List<Tournament>> GetStepStepTwoTournaments();
-
+        Task<List<Tournament>> GetStepOneTournamentsForAdmin(Guid adminId);
 
         #endregion
     }

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using WinWin.Core.Interfaces;
 using WinWin.Core.Interfaces.Sports;
 using WinWin.Core.Interfaces.TournamentAndMatch;
 using WinWin.Core.Services.BlogandBlogGroupServices;
@@ -14,9 +13,9 @@ using WinWin.DataLayer.DTOS;
 using WinWin.DataLayer.Entities.EventModels;
 using static WinWin.DataLayer.DTOS.CreateTournamentViewModel;
 
-namespace WinWin.Areas.Admin.Controllers
+namespace WinWin.Areas.SuperAdmin.Controllers
 {
-    [Area("Admin")]
+    [Area("SuperAdmin")]
     [Authorize]
     [PermissionChecker(5)]
     public class TournamentsController : Controller
@@ -24,19 +23,15 @@ namespace WinWin.Areas.Admin.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ITournament _tournamentServices;
         private readonly ISport _SportServices;
-        private readonly IUser _userServices;
-
-        public TournamentsController(ILogger<HomeController> logger, ITournament tournamentServices, ISport sportServices, IUser userServices)
+        public TournamentsController(ILogger<HomeController> logger, ITournament tournamentServices, ISport SportServices)
         {
             _logger = logger;
             _tournamentServices = tournamentServices;
-            _SportServices = sportServices;
-            _userServices = userServices;
+            _SportServices = SportServices;
         }
         public async Task<IActionResult> Index()
         {
-            var userId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
-            var tournaments = await _tournamentServices.GetStepOneTournamentsForAdmin(userId);
+            var tournaments = await _tournamentServices.GetTournaments();
 
             var viewModelList = new List<ShowTournamentForAdminViewModel>();
 
@@ -95,44 +90,44 @@ namespace WinWin.Areas.Admin.Controllers
             try
             {
 
+            
+            Tournament tournament = new Tournament()
+            {
+                Title = createTournamentViewModel.Title,
+                Address = createTournamentViewModel.Address,
+                Description = createTournamentViewModel.Description,
+                IsDeleted = false,
+                FaceToFaceDate = DateTimeExtensions.ToGregorian(createTournamentViewModel.FaceToFaceDate),
+                WeighInDate = DateTimeExtensions.ToGregorian(createTournamentViewModel.WeighInDate),
+                MatchLocation = createTournamentViewModel.MatchLocation,
+                HostelLocation = createTournamentViewModel.HostelLocation,
+                TournamentType = createTournamentViewModel.TournamentType,
+                WeighInLocation = createTournamentViewModel.WeighInLocation,
+                CreatedByUserId =Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                FaceToFaceLocation = createTournamentViewModel.FaceToFaceLocation,
+                IsFull = false,
+                IsTimeEnds = false,
+                MaximnumPlayers = createTournamentViewModel.MaximnumPlayers,
+                RegsiterEndsAt = DateTimeExtensions.ToGregorian(createTournamentViewModel.RegsiterEndsAt),
+                RegsiterStartsAt = DateTimeExtensions.ToGregorian(createTournamentViewModel.RegsiterStartsAt),
+                SportId = createTournamentViewModel.SportId
+            };
+            if (createTournamentViewModel.Thumbnail!=null&&createTournamentViewModel.Thumbnail.Length>0)
+            {
+                string ImageName = Guid.NewGuid().ToString();
+               await PublicTools.SaveOriginalImageAsync(createTournamentViewModel.Thumbnail, "Tournament", ImageName);
+               await PublicTools.SaveThumbnailImageAsync(createTournamentViewModel.Thumbnail, "Tournament", ImageName);
+                tournament.Thumbnail = ImageName + ".jpg";
+            }
 
-                Tournament tournament = new Tournament()
-                {
-                    Title = createTournamentViewModel.Title,
-                    Address = createTournamentViewModel.Address,
-                    Description = createTournamentViewModel.Description,
-                    IsDeleted = false,
-                    FaceToFaceDate = DateTimeExtensions.ToGregorian(createTournamentViewModel.FaceToFaceDate),
-                    WeighInDate = DateTimeExtensions.ToGregorian(createTournamentViewModel.WeighInDate),
-                    MatchLocation = createTournamentViewModel.MatchLocation,
-                    HostelLocation = createTournamentViewModel.HostelLocation,
-                    TournamentType = createTournamentViewModel.TournamentType,
-                    WeighInLocation = createTournamentViewModel.WeighInLocation,
-                    CreatedByUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
-                    FaceToFaceLocation = createTournamentViewModel.FaceToFaceLocation,
-                    IsFull = false,
-                    IsTimeEnds = false,
-                    MaximnumPlayers = createTournamentViewModel.MaximnumPlayers,
-                    RegsiterEndsAt = DateTimeExtensions.ToGregorian(createTournamentViewModel.RegsiterEndsAt),
-                    RegsiterStartsAt = DateTimeExtensions.ToGregorian(createTournamentViewModel.RegsiterStartsAt),
-                    SportId = createTournamentViewModel.SportId
-                };
-                if (createTournamentViewModel.Thumbnail != null && createTournamentViewModel.Thumbnail.Length > 0)
-                {
-                    string ImageName = Guid.NewGuid().ToString();
-                    await PublicTools.SaveOriginalImageAsync(createTournamentViewModel.Thumbnail, "Tournament", ImageName);
-                    await PublicTools.SaveThumbnailImageAsync(createTournamentViewModel.Thumbnail, "Tournament", ImageName);
-                    tournament.Thumbnail = ImageName + ".jpg";
-                }
-
-                if (!await _tournamentServices.CreateTournament(tournament))
-                {
-                    TempData["ErrorMessage"] = "عملیات با شکست مواجه شد";
-                    return Redirect($"/Admin/Home/Index/");
-                }
-
-                TempData["SuccessMessage"] = $"رویداد {tournament.Title} با موفقیت اضافه گردید";
+            if (!await _tournamentServices.CreateTournament(tournament))
+            {
+                TempData["ErrorMessage"] = "عملیات با شکست مواجه شد";
                 return Redirect($"/Admin/Home/Index/");
+            }
+
+            TempData["SuccessMessage"] = $"رویداد {tournament.Title} با موفقیت اضافه گردید";
+            return Redirect($"/Admin/Home/Index/");
             }
             catch (Exception e)
             {
@@ -168,7 +163,7 @@ namespace WinWin.Areas.Admin.Controllers
                 RegsiterStartsAt = DateTimeExtensions.ToShamsi(tournament.RegsiterStartsAt),
                 TournamentType = tournament.TournamentType,
                 SportId = tournament.SportId.Value
-
+                
             };
 
             ViewData["Sports"] = await _tournamentServices.GetSportGroups();
@@ -186,33 +181,32 @@ namespace WinWin.Areas.Admin.Controllers
                 return View(editTournament);
             }
             Tournament tournament = await _tournamentServices.GetTournamentById(editTournament.TournamentId);
-            if (tournament == null)
-            {
+            if (tournament == null) {
                 TempData["ErrorMessage"] = "رویداد مورد نظر یافت نشد";
                 return RedirectToAction("Index", "Home", new { area = "Admin" });
             }
-
-            tournament.Title = editTournament.Title;
-            tournament.Address = editTournament.Address;
-            tournament.Description = editTournament.Description;
-            tournament.FaceToFaceDate = DateTimeExtensions.ToGregorian(editTournament.FaceToFaceDate);
-            tournament.FaceToFaceLocation = editTournament.FaceToFaceLocation;
-            tournament.MatchLocation = editTournament.MatchLocation;
-            tournament.HostelLocation = editTournament.HostelLocation;
-            tournament.WeighInDate = DateTimeExtensions.ToGregorian(editTournament.WeighInDate);
-            tournament.WeighInLocation = editTournament.WeighInLocation;
-            tournament.MaximnumPlayers = editTournament.MaximnumPlayers;
-            tournament.RegsiterEndsAt = DateTimeExtensions.ToGregorian(editTournament.RegsiterEndsAt);
-            tournament.RegsiterStartsAt = DateTimeExtensions.ToGregorian(editTournament.RegsiterStartsAt);
-            tournament.SportId = editTournament.SportId;
-
+           
+                tournament.Title = editTournament.Title;
+                tournament.Address = editTournament.Address;
+                tournament.Description = editTournament.Description;
+                tournament.FaceToFaceDate = DateTimeExtensions.ToGregorian(editTournament.FaceToFaceDate);
+                tournament.FaceToFaceLocation = editTournament.FaceToFaceLocation;
+                tournament.MatchLocation = editTournament.MatchLocation;
+                tournament.HostelLocation = editTournament.HostelLocation;
+                tournament.WeighInDate = DateTimeExtensions.ToGregorian(editTournament.WeighInDate);
+                tournament.WeighInLocation = editTournament.WeighInLocation;
+                tournament.MaximnumPlayers = editTournament.MaximnumPlayers;
+                tournament.RegsiterEndsAt = DateTimeExtensions.ToGregorian(editTournament.RegsiterEndsAt);
+                tournament.RegsiterStartsAt = DateTimeExtensions.ToGregorian(editTournament.RegsiterStartsAt);
+                tournament.SportId = editTournament.SportId;
+            
             if (!await _tournamentServices.EditTournament(tournament))
             {
                 TempData["ErrorMessage"] = "عملیات با شکست مواجه شد";
                 return Redirect($"/Admin/Home/Index/");
             }
             TempData["SuccessMessage"] = $"رویداد {tournament.Title} با موفقیت ویرایش گردید";
-            return Redirect($"/Admin/Tournaments/Index/");
+            return Redirect($"/Admin/Tournaments/Index/"); 
         }
         [HttpGet]
         public async Task<IActionResult> DeleteTournamentMessage(int id)
@@ -232,25 +226,7 @@ namespace WinWin.Areas.Admin.Controllers
             return View(deleteTournament);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> CompleteTournamentInfo(int id)
-        {
-            var userId = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
-            var tournament = await _tournamentServices.GetTournamentById(id);
-            if (tournament == null && tournament.CreatedByUserId == userId)
-                return Redirect("/AccessDenied");
-            ViewBag.tournamentId = tournament.TournamentId;
 
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> CompleteTournamentInfo(CompeleteTournamentViewModel compeleteTournament)
-        {
-            
-            
-
-            return View();
-        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteTournament([FromBody] int id)
@@ -417,25 +393,6 @@ namespace WinWin.Areas.Admin.Controllers
             {
                 return Json(new { success = false, message = "خطا در بروزرسانی وضعیت رویداد" });
             }
-        }
-
-        [HttpGet("admin/getUserByNationalId/{id}")]
-        public async Task<IActionResult> GetUserByNationalId(string id)
-        {
-            if (string.IsNullOrWhiteSpace(id) || id.Length != 10 || !id.All(char.IsDigit))
-            {
-                return BadRequest(new { error = "کد ملی باید ۱۰ رقم باشد" });
-            }
-
-            var userId = Guid.Parse(id);
-            var user = await _userServices.GetUserById(userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(new { id = user.UserId, fullName = $"{user.Name} {user.LastName}" });
         }
 
     }

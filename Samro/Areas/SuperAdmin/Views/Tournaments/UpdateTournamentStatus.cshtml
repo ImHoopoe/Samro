@@ -79,9 +79,8 @@
                             <p class="mb-2"><small class="text-muted">محل مسابقه:</small> @item.MatchLocation</p>
                             <p class="mb-2"><small class="text-muted">تاریخ وزن‌کشی:</small> @item.WeighInDate.ToShamsi()</p>
                             <div class="mt-auto border-top pt-3 d-flex justify-content-between">
-                                <button type="button" class="btn btn-sm btn-outline-success btn-hover-icon w-100" data-bs-toggle="modal" data-bs-target="#detailsModal-@item.TournamentId">
-                                    <i class="fas fa-check-circle"></i> تکمیل اطلاعات
-
+                                <button type="button" class="btn btn-sm btn-outline-dark btn-hover-icon w-100" data-bs-toggle="modal" data-bs-target="#detailsModal-@item.TournamentId">
+                                    <i class="fas fa-info-circle"> مشاهده اطلاعات  </i>
                                 </button>
                             </div>
                         </div>
@@ -155,12 +154,9 @@
                             </table>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary " data-bs-dismiss="modal">بستن</button>
-                            <a asp-controller="Tournaments" asp-action="CompleteTournamentInfo" 
-                               asp-route-TournamentId="@item.TournamentId" type="button" class="btn btn-outline-success approve-btn">
-                                تکمیل اطلاعات
-                            </a>
-
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                            <button type="button" class="btn btn-success approve-btn" data-id="@item.TournamentId">تایید</button>
+                            <button type="button" class="btn btn-danger reject-btn" data-id="@item.TournamentId">رد</button>
                         </div>
                     </div>
                 </div>

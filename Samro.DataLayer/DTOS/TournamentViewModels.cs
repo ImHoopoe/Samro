@@ -278,4 +278,11 @@ namespace WinWin.DataLayer.DTOS
         public bool IsAccepted { get; set; }
         public bool IsFinal { get; set; } = false;
     }
+
+    public class CompeleteTournamentViewModel
+    {
+        public ICollection<Guid> ParticipantsIds { get; set; }
+        public int TournamentId { get; set; }
+        public ICollection<int> RoleIds { get; set; }
+    }
 }

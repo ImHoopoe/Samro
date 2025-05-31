@@ -25,6 +25,6 @@ namespace WinWin.Core.Interfaces
         Task<int> GetTotalUsersCount();
         Task<User> GetUserByActivationCode(Guid activationCode);
         #endregion
-
+        Task<string> GetUserByNationalId(string nationalId);
     }
 }

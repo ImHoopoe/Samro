@@ -84,8 +84,8 @@ namespace WinWin.Core.Services.TournamentAndMatch
         public async Task<List<Tournament>> GetTournaments()
         {
             return await _context.Tournaments
-                .Include(t => t.CreatedByUser) 
-                .Include(t => t.Sport)          
+                .Include(t => t.CreatedByUser)
+                .Include(t => t.Sport)
                 .ToListAsync();
         }
 
@@ -139,6 +139,14 @@ namespace WinWin.Core.Services.TournamentAndMatch
                 .ToListAsync();
         }
 
- 
+        public async Task<List<Tournament>> GetStepOneTournamentsForAdmin(Guid adminId)
+        {
+            return await _context.Tournaments
+                .Where(t => !t.IsFinal && t.IsAccepted && t.CreatedByUserId == adminId)
+                .AsNoTracking()
+                .Include(t => t.Sport)
+                .Include(t => t.CreatedByUser)
+                .ToListAsync();
+        }
     }
 }

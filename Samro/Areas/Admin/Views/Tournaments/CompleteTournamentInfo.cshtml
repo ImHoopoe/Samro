@@ -1,0 +1,530 @@
+﻿@model WinWin.DataLayer.DTOS.CompeleteTournamentViewModel
+@using WinWin.DataLayer.Entities.TournamentMatch
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "AdminProfile/AdminProfileLayout";
+}
+<style>
+    .progress-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .step {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        background: #f1f1f1;
+        border-radius: 5px;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+        .step.active {
+            background: #007bff;
+            color: white;
+        }
+
+    .steps-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .step-content {
+        display: none;
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 100%;
+        transition: transform 0.5s ease-in-out;
+    }
+
+        .step-content.active {
+            display: block;
+            position: relative;
+            left: 0;
+            transform: translateX(0);
+        }
+
+        .step-content.slide-left {
+            transform: translateX(-100%);
+        }
+
+        .step-content.slide-right {
+            transform: translateX(100%);
+        }
+
+    .step-navigation {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btn-primary, .btn-outline-secondary {
+        transition: all 0.3s ease;
+    }
+
+    .national-id-input {
+        direction: ltr;
+    }
+
+    .user-result {
+        margin-top: 5px;
+        font-size: 14px;
+    }
+
+    .user-found {
+        color: green;
+    }
+
+    .user-not-found {
+        color: red;
+    }
+
+    .invalid-input {
+        border-color: red;
+    }
+
+    .remove-btn {
+        margin-top: 8px;
+    }
+
+    .user-confirmed {
+        font-size: 14px;
+        color: green;
+    }
+
+    .remove-icon {
+        cursor: pointer;
+        color: red;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm p-4">
+            <h4 class="mb-4 text-center text-primary">@ViewData["Title"]</h4>
+
+            <!-- Progress Indicator -->
+            <div class="progress-steps mb-4">
+                <div class="step active" data-step="1">۱. داوران</div>
+                <div class="step" data-step="2">۲. مسئول برگزاری</div>
+                <div class="step" data-step="3">۳. انتظامات</div>
+                <div class="step" data-step="4">۴. تیم پزشکی</div>
+                <div class="step" data-step="5">۵. تنظیمات تکمیلی</div>
+            </div>
+
+            <!-- User Lookup Modal -->
+            @section Modal
+            {
+                <div class="modal fade" id="userLookupModal" tabindex="-1" aria-labelledby="userLookupModalLabel" aria-describedby="userLookupResult" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="userLookupModalLabel">نتیجه جستجوی کاربر</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="userLookupResult" class="user-result"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="confirmUserBtn">تأیید</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+            <form asp-action="CompleteTournamentInfo" enctype="multipart/form-data" id="multiStepForm">
+                <input asp-for="TournamentId" value="@ViewBag.tournamentId" hidden="hidden"/>
+
+                <div class="steps-container">
+                    <!-- Step 1: Referees -->
+                    <div class="step-content active" data-step="1">
+                        <h5 class="text-primary">داوران</h5>
+                        <hr/>
+
+                        <!-- Main Referee (Fixed Field) -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">داور اصلی</label>
+                                <input type="text" class="form-control national-id-input" name="MainRefereeNationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="main-referee" oninput="fetchUser(this)"/>
+                                <input type="hidden" name="MainRefereeFullName" id="main-referee-fullname"/>
+                                <span id="main-referee-confirmed" class="user-confirmed"></span>
+                            </div>
+                        </div>
+
+                        <!-- Referees (Dynamic Fields) -->
+                        <h6 class="text-primary">داوران</h6>
+                        <div id="referees-container">
+                            <div class="row g-3 referee-row">
+                                <div class="col-md-5">
+                                    <label class="form-label">نام داور</label>
+                                    <input type="text" class="form-control national-id-input" name="Referees[0].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="referee-0" oninput="fetchUser(this)"/>
+                                    <input type="hidden" name="Referees[0].FullName" id="referee-0-fullname"/>
+                                    <span id="referee-0-confirmed" class="user-confirmed"></span>
+                                </div>
+                                <div class="col-md-1">
+                                    <i class="fas fa-trash remove-icon" onclick="removeField(this)"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary mt-4" id="addRefereeBtn">+ افزودن داور</button>
+
+                        <div class="step-navigation mt-4">
+                            <button type="button" class="btn btn-primary next-step">بعدی <i class="fas fa-arrow-left ms-2"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Organizers -->
+                    <div class="step-content" data-step="2">
+                        <h5 class="text-primary">مسئول برگزاری</h5>
+                        <hr/>
+
+                        <!-- Organizer (Fixed Field) -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">نام مسئول برگزاری</label>
+                                <input type="text" class="form-control national-id-input" name="OrganizerNationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="organizer" oninput="fetchUser(this)"/>
+                                <input type="hidden" name="OrganizerFullName" id="organizer-fullname"/>
+                                <span id="organizer-confirmed" class="user-confirmed"></span>
+                            </div>
+                        </div>
+
+                        <div class="step-navigation mt-4">
+                            <button type="button" class="btn btn-outline-secondary prev-step"><i class="fas fa-arrow-right me-2"></i> قبلی</button>
+                            <button type="button" class="btn btn-primary next-step">بعدی <i class="fas fa-arrow-left ms-2"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Security Staff -->
+                    <div class="step-content" data-step="3">
+                        <h5 class="text-primary">انتظامات</h5>
+                        <hr/>
+
+                        <!-- Security Staff (Dynamic Fields) -->
+                        <h6 class="text-primary">انتظامات</h6>
+                        <div id="security-container">
+                            <div class="row g-3 security-row">
+                                <div class="col-md-5">
+                                    <label class="form-label">نام انتظامات</label>
+                                    <input type="text" class="form-control national-id-input" name="SecurityStaff[0].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="security-0" oninput="fetchUser(this)"/>
+                                    <input type="hidden" name="SecurityStaff[0].FullName" id="security-0-fullname"/>
+                                    <span id="security-0-confirmed" class="user-confirmed"></span>
+                                </div>
+                                <div class="col-md-1">
+                                    <i class="fas fa-trash remove-icon" onclick="removeField(this)"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary mt-4" id="addSecurityBtn">+ افزودن انتظامات</button>
+
+                        <div class="step-navigation mt-4">
+                            <button type="button" class="btn btn-outline-secondary prev-step"><i class="fas fa-arrow-right me-2"></i> قبلی</button>
+                            <button type="button" class="btn btn-primary next-step">بعدی <i class="fas fa-arrow-left ms-2"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Medical Team -->
+                    <div class="step-content" data-step="4">
+                        <h5 class="text-primary">تیم پزشکی</h5>
+                        <hr/>
+
+                        <!-- Medical Team Manager -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">مدیر تیم پزشکی</label>
+                                <input type="text" class="form-control national-id-input" name="MedicalManagerNationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="medical-manager" oninput="fetchUser(this)"/>
+                                <input type="hidden" name="MedicalManagerFullName" id="medical-manager-fullname"/>
+                                <span id="medical-manager-confirmed" class="user-confirmed"></span>
+                            </div>
+                        </div>
+
+                        <!-- Doctors (Dynamic Fields) -->
+                        <h6 class="text-primary">پزشکان</h6>
+                        <div id="doctors-container">
+                            <div class="row g-3 doctor-row">
+                                <div class="col-md-5">
+                                    <label class="form-label">نام پزشک</label>
+                                    <input type="text" class="form-control national-id-input" name="Doctors[0].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="doctor-0" oninput="fetchUser(this)"/>
+                                    <input type="hidden" name="Doctors[0].FullName" id="doctor-0-fullname"/>
+                                    <span id="doctor-0-confirmed" class="user-confirmed"></span>
+                                </div>
+                                <div class="col-md-1">
+                                    <i class="fas fa-trash remove-icon" onclick="removeField(this)"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary mt-4" id="addDoctorBtn">+ افزودن پزشک</button>
+
+                        <div class="step-navigation mt-4">
+                            <button type="button" class="btn btn-outline-secondary prev-step"><i class="fas fa-arrow-right me-2"></i> قبلی</button>
+                            <button type="button" class="btn btn-primary next-step">بعدی <i class="fas fa-arrow-left ms-2"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Additional Settings -->
+                    <div class="step-content" data-step="5">
+                        <h5 class="text-primary">اطلاعات برگزار کننده</h5>
+                        <hr/>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">نام و نام خانوادگی برگزار کننده</label>
+                                <input type="text" class="form-control" name="OrganizerFullName"/>
+                                <span class="text-danger" id="OrganizerFullNameError"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">کد ملی برگزار کننده</label>
+                                <input type="text" class="form-control" name="OrganizerNationalId"/>
+                                <span class="text-danger" id="OrganizerNationalIdError"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">شماره تلفن برگزار کننده</label>
+                                <input type="text" class="form-control" name="OrganizerPhone"/>
+                                <span class="text-danger" id="OrganizerPhoneError"></span>
+                            </div>
+                        </div>
+                        <div class="step-navigation mt-4">
+                            <button type="button" class="btn btn-outline-secondary prev-step"><i class="fas fa-arrow-right me-2"></i> قبلی</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-plus-circle ms-2"></i> ایجاد برگزار کننده
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize Bootstrap modal
+            const userLookupModal = new bootstrap.Modal(document.getElementById('userLookupModal'), {
+                focus: true
+            });
+
+            // Validation setup
+            $.validator.setDefaults({
+                ignore: [],
+                errorPlacement: function (error, element) {
+                    if (element.is(":hidden")) {
+                        const visibleInput = element.closest('.input-group').find('.persian-datepicker');
+                        error.insertAfter(visibleInput);
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+
+            // Add national ID validation rule
+            $.validator.addMethod("nationalId", function(value, element) {
+                return this.optional(element) || /^[0-9]{10}$/.test(value);
+            }, "لطفاً کد ملی معتبر (10 رقم) وارد کنید");
+
+            $('#multiStepForm').validate({
+                rules: {
+                    MainRefereeNationalId: { nationalId: true },
+                    OrganizerNationalId: { nationalId: true },
+                    MedicalManagerNationalId: { nationalId: true },
+                    'Referees[0].NationalId': { nationalId: true },
+                    'SecurityStaff[0].NationalId': { nationalId: true },
+                    'Doctors[0].NationalId': { nationalId: true }
+                },
+                errorClass: "text-danger"
+            });
+
+            // Counter for dynamic fields
+            let refereeCounter = 0;
+            let securityCounter = 0;
+            let doctorCounter = 0;
+
+            // Add new referee
+            document.getElementById('addRefereeBtn').addEventListener('click', function() {
+                refereeCounter++;
+                const refereesContainer = document.getElementById('referees-container');
+                const newReferee = document.createElement('div');
+                newReferee.classList.add('row', 'g-3', 'referee-row');
+                newReferee.innerHTML = `
+                    <div class="col-md-5">
+                        <label class="form-label">نام داور</label>
+                        <input type="text" class="form-control national-id-input" name="Referees[${refereeCounter}].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="referee-${refereeCounter}" oninput="fetchUser(this)" />
+                        <input type="hidden" name="Referees[${refereeCounter}].Id" id="referee-${refereeCounter}-id" />
+                        <input type="hidden" name="Referees[${refereeCounter}].FullName" id="referee-${refereeCounter}-fullname" />
+                        <span id="referee-${refereeCounter}-confirmed" class="user-confirmed"></span>
+                    </div>
+                    <div class="col-md-1">
+                        <i class="fas fa-trash remove-icon" onclick="removeField(this)"></i>
+                    </div>
+                `;
+                refereesContainer.appendChild(newReferee);
+                $(`input[name="Referees[${refereeCounter}].NationalId"]`).rules("add", { nationalId: true });
+            });
+
+            // Add new security staff
+            document.getElementById('addSecurityBtn').addEventListener('click', function() {
+                securityCounter++;
+                const securityContainer = document.getElementById('security-container');
+                const newSecurity = document.createElement('div');
+                newSecurity.classList.add('row', 'g-3', 'security-row');
+                newSecurity.innerHTML = `
+                    <div class="col-md-5">
+                        <label class="form-label">نام انتظامات</label>
+                        <input type="text" class="form-control national-id-input" name="SecurityStaff[${securityCounter}].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="security-${securityCounter}" oninput="fetchUser(this)" />
+                        <input type="hidden" name="SecurityStaff[${securityCounter}].Id" id="security-${securityCounter}-id" />
+                        <input type="hidden" name="SecurityStaff[${securityCounter}].FullName" id="security-${securityCounter}-fullname" />
+                        <span id="security-${securityCounter}-confirmed" class="user-confirmed"></span>
+                    </div>
+                    <div class="col-md-1">
+                        <i class="fas fa-trash remove-icon" onclick="removeField(this)"></i>
+                    </div>
+                `;
+                securityContainer.appendChild(newSecurity);
+                $(`input[name="SecurityStaff[${securityCounter}].NationalId"]`).rules("add", { nationalId: true });
+            });
+
+            // Add new doctor
+            document.getElementById('addDoctorBtn').addEventListener('click', function() {
+                doctorCounter++;
+                const doctorsContainer = document.getElementById('doctors-container');
+                const newDoctor = document.createElement('div');
+                newDoctor.classList.add('row', 'g-3', 'doctor-row');
+                newDoctor.innerHTML = `
+                    <div class="col-md-5">
+                        <label class="form-label">نام پزشک</label>
+                        <input type="text" class="form-control national-id-input" name="Doctors[${doctorCounter}].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="doctor-${doctorCounter}" oninput="fetchUser(this)" />
+                        <input type="hidden" name="Doctors[${doctorCounter}].Id" id="doctor-${doctorCounter}-id" />
+                        <input type="hidden" name="Doctors[${doctorCounter}].FullName" id="doctor-${doctorCounter}-fullname" />
+                        <span id="doctor-${doctorCounter}-confirmed" class="user-confirmed"></span>
+                    </div>
+                    <div class="col-md-1">
+                        <i class="fas fa-trash remove-icon" onclick="removeField(this)"></i>
+                    </div>
+                `;
+                doctorsContainer.appendChild(newDoctor);
+                $(`input[name="Doctors[${doctorCounter}].NationalId"]`).rules("add", { nationalId: true });
+            });
+
+            // Remove dynamic field
+            window.removeField = function(button) {
+                $(button).closest('.row').remove();
+            };
+
+            // Fetch user by national ID and show in modal
+            let currentInput = null;
+            window.fetchUser = async function(input) {
+                const nationalId = input.value;
+                const resultDiv = document.getElementById('userLookupResult');
+                currentInput = input;
+
+                if (nationalId.length === 10) {
+                    if (!/^[0-9]{10}$/.test(nationalId)) {
+                        $(input).addClass('invalid-input');
+                        return;
+                    }
+                    $(input).removeClass('invalid-input');
+                    try {
+                        const response = await fetch(`/admin/getUserByNationalId/${nationalId}`);
+                        if (!response.ok) {
+                            resultDiv.innerHTML = '<span class="user-not-found">کاربر یافت نشد</span>';
+                            resultDiv.dataset.id = '';
+                            resultDiv.dataset.fullName = '';
+                            userLookupModal.show();
+                            return;
+                        }
+                        const data = await response.text(); // دریافت رشته Id:FullName
+                        if (data) {
+                            const [id, fullName] = data.split(':');
+                            resultDiv.innerHTML = `<span class="user-found">${fullName} <i class="fas fa-check-circle"></i></span>`;
+                            resultDiv.dataset.id = id;
+                            resultDiv.dataset.fullName = fullName;
+                        } else {
+                            resultDiv.innerHTML = '<span class="user-not-found">کاربر یافت نشد</span>';
+                            resultDiv.dataset.id = '';
+                            resultDiv.dataset.fullName = '';
+                        }
+                        userLookupModal.show();
+                    } catch (error) {
+                        console.error('خطا:', error);
+                        resultDiv.innerHTML = '<span class="user-not-found">خطا در ارتباط با سرور</span>';
+                        resultDiv.dataset.id = '';
+                        resultDiv.dataset.fullName = '';
+                        userLookupModal.show();
+                    }
+                } else {
+                    $(input).removeClass('invalid-input');
+                }
+            };
+
+            // Confirm user selection
+            document.getElementById('confirmUserBtn').addEventListener('click', function() {
+                const resultDiv = document.getElementById('userLookupResult');
+                const id = resultDiv.dataset.id;
+                const fullName = resultDiv.dataset.fullName;
+                if (id && fullName && currentInput) {
+                    const resultId = currentInput.dataset.resultId;
+                    document.getElementById(`${resultId}-id`).value = id; // ذخیره Id در فیلد مخفی
+                    document.getElementById(`${resultId}-fullname`).value = fullName; // ذخیره FullName در فیلد مخفی
+                    const confirmedSpan = document.getElementById(`${resultId}-confirmed`);
+                    confirmedSpan.innerHTML = `<i class="fas fa-check-circle"></i> ${fullName}`; // نمایش FullName
+                }
+                userLookupModal.hide();
+            });
+
+            // Multi-step form navigation
+            let currentStep = 1;
+            const totalSteps = $('.step-content').length;
+
+            function showStep(step) {
+                $('.step-content').removeClass('active slide-left slide-right');
+                $('.step').removeClass('active');
+
+                const $current = $(`.step-content[data-step="${step}"]`);
+                const $prev = $(`.step-content[data-step="${step - 1}"]`);
+                const $next = $(`.step-content[data-step="${step + 1}"]`);
+
+                if (step > currentStep) {
+                    $current.addClass('active');
+                    $prev.addClass('slide-left');
+                } else if (step < currentStep) {
+                    $current.addClass('active');
+                    $next.addClass('slide-right');
+                } else {
+                    $current.addClass('active');
+                }
+
+                $(`.step[data-step="${step}"]`).addClass('active');
+                currentStep = step;
+
+                // Validate current step before proceeding
+                $('#multiStepForm').validate().form();
+            }
+
+            $('.next-step').click(function () {
+                if (currentStep < totalSteps && $('#multiStepForm').valid()) {
+                    showStep(currentStep + 1);
+                }
+            });
+
+            $('.prev-step').click(function () {
+                if (currentStep > 1) {
+                    showStep(currentStep - 1);
+                }
+            });
+
+            // Form submission validation
+            $('#multiStepForm').on('submit', function(e) {
+                if (!$(this).valid()) {
+                    e.preventDefault();
+                    showStep(1); // Go back to first step to show errors
+                }
+            });
+        });
+    </script>
+}

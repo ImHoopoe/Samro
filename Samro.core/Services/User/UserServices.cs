@@ -171,6 +171,15 @@ namespace WinWin.Core.Services
             return await _context.Users.SingleOrDefaultAsync(u => u.ActivationCode == activationCode);
         }
 
+        public async Task<string> GetUserByNationalId(string nationalId)
+        {
+            return await _context.Users
+                .Where(u => u.NationalId == nationalId)
+                .Select(u => $"{u.UserId}:{u.Name} {u.LastName}")
+                .FirstOrDefaultAsync();
+        }
+
+
         #endregion
     }
 }
