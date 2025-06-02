@@ -9,21 +9,49 @@ using WinWin.DataLayer.Contextes;
 
 #nullable disable
 
-namespace WinWin.DataLayer.Migrations
+namespace Samro.DataLayer.Migrations
 {
     [DbContext(typeof(SamroContext))]
-    [Migration("20250417175018_UpdateMohammadDesign")]
-    partial class UpdateMohammadDesign
+    [Migration("20250602182054_Add_Match_Roles")]
+    partial class Add_Match_Roles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Samro.DataLayer.Entities.TournamentMatch.TournamentParticipant", b =>
+                {
+                    b.Property<int>("TournamentParticipantId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TournamentParticipantId"));
+
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TournamentId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("TournamentParticipantId");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("TournamentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TournamentParticipant");
+                });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.BlogBlogGroup.Blog", b =>
                 {
@@ -43,8 +71,8 @@ namespace WinWin.DataLayer.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("PublishDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("PublishDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ShortDescription")
                         .IsRequired()
@@ -183,7 +211,13 @@ namespace WinWin.DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsAccepted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFinal")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsFull")
@@ -205,12 +239,21 @@ namespace WinWin.DataLayer.Migrations
                     b.Property<DateTimeOffset>("RegsiterStartsAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int?>("SportId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Thumbnail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TournamentDoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TournamentRefereeId")
+                        .HasColumnType("int");
 
                     b.Property<int>("TournamentType")
                         .HasColumnType("int");
@@ -225,6 +268,8 @@ namespace WinWin.DataLayer.Migrations
                     b.HasKey("TournamentId");
 
                     b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("SportId");
 
                     b.ToTable("Tournaments");
                 });
@@ -384,6 +429,52 @@ namespace WinWin.DataLayer.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("WinWin.DataLayer.Entities.Sport.Sport", b =>
+                {
+                    b.Property<int>("SportId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SportId"));
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SportName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("SportId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Sports");
+                });
+
+            modelBuilder.Entity("WinWin.DataLayer.Entities.Sport.SportToMatch", b =>
+                {
+                    b.Property<int>("SportToMatchId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SportToMatchId"));
+
+                    b.Property<int>("MatchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SportId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SportToMatchId");
+
+                    b.HasIndex("MatchId");
+
+                    b.HasIndex("SportId");
+
+                    b.ToTable("SportToMatch");
+                });
+
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.Match", b =>
                 {
                     b.Property<int>("MatchId")
@@ -392,8 +483,8 @@ namespace WinWin.DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MatchId"));
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -406,8 +497,11 @@ namespace WinWin.DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("MatchDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("MatchDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int?>("SportId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -452,7 +546,7 @@ namespace WinWin.DataLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("MatchRoles");
+                    b.ToTable("MatchRoles", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchRound", b =>
@@ -547,8 +641,8 @@ namespace WinWin.DataLayer.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("IssuedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("IssuedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("MatchId")
                         .HasColumnType("int");
@@ -590,6 +684,27 @@ namespace WinWin.DataLayer.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("TournamentUsers");
+                });
+
+            modelBuilder.Entity("Samro.DataLayer.Entities.TournamentMatch.TournamentParticipant", b =>
+                {
+                    b.HasOne("WinWin.DataLayer.Entities.Roles.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId");
+
+                    b.HasOne("WinWin.DataLayer.Entities.EventModels.Tournament", "Tournament")
+                        .WithMany("TournamentParticipants")
+                        .HasForeignKey("TournamentId");
+
+                    b.HasOne("WinWin.DataLayer.Entities.Roles.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("Tournament");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.BlogBlogGroup.Blog", b =>
@@ -658,7 +773,13 @@ namespace WinWin.DataLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WinWin.DataLayer.Entities.Sport.Sport", "Sport")
+                        .WithMany("SportToTournaments")
+                        .HasForeignKey("SportId");
+
                     b.Navigation("CreatedByUser");
+
+                    b.Navigation("Sport");
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.RolePernissionUser.RolePermission", b =>
@@ -715,6 +836,34 @@ namespace WinWin.DataLayer.Migrations
                     b.HasOne("WinWin.DataLayer.Entities.Roles.Role", null)
                         .WithMany("Users")
                         .HasForeignKey("RoleId");
+                });
+
+            modelBuilder.Entity("WinWin.DataLayer.Entities.Sport.Sport", b =>
+                {
+                    b.HasOne("WinWin.DataLayer.Entities.Sport.Sport", "Parent")
+                        .WithMany("SubGroups")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("WinWin.DataLayer.Entities.Sport.SportToMatch", b =>
+                {
+                    b.HasOne("WinWin.DataLayer.Entities.TournamentMatch.Match", "Match")
+                        .WithMany("SportToMatches")
+                        .HasForeignKey("MatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WinWin.DataLayer.Entities.Sport.Sport", "Sport")
+                        .WithMany("SportToMatches")
+                        .HasForeignKey("SportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Match");
+
+                    b.Navigation("Sport");
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.Match", b =>
@@ -819,6 +968,8 @@ namespace WinWin.DataLayer.Migrations
                     b.Navigation("Matches");
 
                     b.Navigation("RegisteredUsers");
+
+                    b.Navigation("TournamentParticipants");
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.Roles.Permission", b =>
@@ -844,6 +995,15 @@ namespace WinWin.DataLayer.Migrations
                     b.Navigation("UserRoles");
                 });
 
+            modelBuilder.Entity("WinWin.DataLayer.Entities.Sport.Sport", b =>
+                {
+                    b.Navigation("SportToMatches");
+
+                    b.Navigation("SportToTournaments");
+
+                    b.Navigation("SubGroups");
+                });
+
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.Match", b =>
                 {
                     b.Navigation("ParticipantsWithRoles");
@@ -854,6 +1014,8 @@ namespace WinWin.DataLayer.Migrations
 
                     b.Navigation("Score")
                         .IsRequired();
+
+                    b.Navigation("SportToMatches");
 
                     b.Navigation("Warnings");
                 });

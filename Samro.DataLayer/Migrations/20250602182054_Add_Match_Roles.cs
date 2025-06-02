@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace WinWin.DataLayer.Migrations
+namespace Samro.DataLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class ChangeToCorrectUserModels : Migration
+    public partial class Add_Match_Roles : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -426,10 +426,7 @@ namespace WinWin.Areas.Admin.Controllers
             {
                 return BadRequest(new { error = "کد ملی باید ۱۰ رقم باشد" });
             }
-
-            var userId = Guid.Parse(id);
-            var user = await _userServices.GetUserById(userId);
-
+            var user = await _userServices.GetUserByNationalId(id);
             if (user == null)
             {
                 return NotFound();
@@ -437,6 +434,7 @@ namespace WinWin.Areas.Admin.Controllers
 
             return Ok(new { id = user.UserId, fullName = $"{user.Name} {user.LastName}" });
         }
+
 
     }
 }

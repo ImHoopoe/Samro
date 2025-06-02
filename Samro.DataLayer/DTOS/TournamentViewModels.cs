@@ -283,6 +283,6 @@ namespace WinWin.DataLayer.DTOS
     {
         public ICollection<Guid> ParticipantsIds { get; set; }
         public int TournamentId { get; set; }
-        public ICollection<int> RoleIds { get; set; }
+        public ICollection<int> MatchRoleIds { get; set; }
     }
 }

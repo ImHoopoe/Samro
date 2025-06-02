@@ -543,7 +543,7 @@ namespace WinWin.DataLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("MatchRoles");
+                    b.ToTable("MatchRoles", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchRound", b =>
