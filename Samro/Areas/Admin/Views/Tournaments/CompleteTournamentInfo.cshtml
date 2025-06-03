@@ -111,7 +111,6 @@
         <div class="card shadow-sm p-4">
             <h4 class="mb-4 text-center text-primary">@ViewData["Title"]</h4>
 
-            <!-- Progress Indicator -->
             <div class="progress-steps mb-4">
                 <div class="step active" data-step="1">۱. داوران</div>
                 <div class="step" data-step="2">۲. انتظامات</div>
@@ -120,7 +119,6 @@
                 <div class="step" data-step="5">۵. تنظیمات تکمیلی</div>
             </div>
 
-            <!-- User Lookup Modal -->
             @section Modal
             {
                 <div class="modal fade" id="userLookupModal" tabindex="-1" aria-labelledby="userLookupModalLabel" aria-describedby="userLookupResult" aria-hidden="true">
@@ -146,31 +144,28 @@
                 <input asp-for="TournamentId" value="@ViewBag.tournamentId" hidden="hidden" />
 
                 <div class="steps-container">
-                    <!-- Step 1: Referees -->
                     <div class="step-content active" data-step="1">
                         <h5 class="text-primary">داوران</h5>
                         <hr />
 
-                        <!-- Main Referee (Fixed Field) -->
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">داور اصلی</label>
                                 <input type="text" class="form-control national-id-input" name="MainRefereeNationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="main-referee" oninput="fetchUser(this)" />
-                                <input type="hidden" asp-for="ParticipantsIds" id="main-referee-id" />
-                                <input type="hidden" asp-for="MatchRoleIds" value="1" id="main-referee-fullname" />
+                                <input type="hidden" name="ParticipantsIds[0]" id="main-referee-id" />
+                                <input type="hidden" name="MatchRoleIds[0]" value="1" id="main-referee-fullname" />
                                 <span id="main-referee-confirmed" class="user-confirmed"></span>
                             </div>
                         </div>
 
-                        <!-- Referees (Dynamic Fields) -->
                         <h6 class="text-primary">داوران</h6>
                         <div id="referees-container">
                             <div class="row g-3 referee-row">
                                 <div class="col-md-5">
                                     <label class="form-label">نام داور</label>
                                     <input type="text" class="form-control national-id-input" name="Referees[0].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="referee-0" oninput="fetchUser(this)" />
-                                    <input type="hidden" asp-for="ParticipantsIds"  id="referee-0-id" />
-                                    <input type="hidden" asp-for="MatchRoleIds" value="2" id="referee-0-fullname" />
+                                    <input type="hidden" name="ParticipantsIds[1]" id="referee-0-id" />
+                                    <input type="hidden" name="MatchRoleIds[1]" value="2" id="referee-0-fullname" />
                                     <span id="referee-0-confirmed" class="user-confirmed"></span>
                                 </div>
                                 <div class="col-md-1">
@@ -185,30 +180,28 @@
                         </div>
                     </div>
 
-
-
-                    <!-- Step 3: Security Staff -->
                     <div class="step-content" data-step="2">
                         <h5 class="text-primary">انتظامات</h5>
                         <hr />
 
-                        <!-- Security Staff (Dynamic Fields) -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">مسئول انتظامات</label>
+                                <input type="text" class="form-control national-id-input" name="SecurityManagerNationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="security-manager" oninput="fetchUser(this)" />
+                                <input type="hidden" name="ParticipantsIds[2]" id="security-manager-id" />
+                                <input type="hidden" name="MatchRoleIds[2]" value="3" id="security-manager-fullname" />
+                                <span id="security-manager-confirmed" class="user-confirmed"></span>
+                            </div>
+                        </div>
+
                         <h6 class="text-primary">انتظامات</h6>
                         <div id="security-container">
                             <div class="row g-3 security-row">
                                 <div class="col-md-5">
-                                    <label class="form-label">کد ملی مسئول انتظامات</label>
-                                    <input type="text" class="form-control national-id-input" name="SecurityStaff[0].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="referee-0" oninput="fetchUser(this)" />
-                                    <input type="hidden" asp-for="ParticipantsIds" id="referee-0-id" />
-                                    <input type="hidden" asp-for="MatchRoleIds" value="3" id="referee-0-fullname" />
-                                    <span id="referee-0-confirmed" class="user-confirmed"></span>
-                                </div>
-
-                                <div class="col-md-5">
                                     <label class="form-label">کد ملی انتظامات</label>
-                                    <input type="text" class="form-control national-id-input" name="SecurityStaff[0].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="security-0" oninput="fetchUser(this)"/>
-                                    <input type="hidden" asp-for="ParticipantsIds" name="SecurityStaff[0].Id" id="security-0-id"/>
-                                    <input type="hidden" asp-for="MatchRoleIds" value="4" id="security-0-fullname" />
+                                    <input type="text" class="form-control national-id-input" name="SecurityStaff[0].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="security-0" oninput="fetchUser(this)" />
+                                    <input type="hidden" name="ParticipantsIds[3]" id="security-0-id" />
+                                    <input type="hidden" name="MatchRoleIds[3]" value="4" id="security-0-fullname" />
                                     <span id="security-0-confirmed" class="user-confirmed"></span>
                                 </div>
                                 <div class="col-md-1">
@@ -224,31 +217,28 @@
                         </div>
                     </div>
 
-                    <!-- Step 4: Medical Team -->
                     <div class="step-content" data-step="3">
                         <h5 class="text-primary">تیم پزشکی</h5>
                         <hr />
 
-                        <!-- Medical Team Manager -->
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">مدیر تیم پزشکی</label>
                                 <input type="text" class="form-control national-id-input" name="MedicalManagerNationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="medical-manager" oninput="fetchUser(this)" />
-                                <input type="hidden" asp-for="ParticipantsIds"  id="medical-manager-id" />
-                                <input type="hidden" asp-for="MatchRoleIds" value="5" id="medical-manager-fullname" />
+                                <input type="hidden" name="ParticipantsIds[4]" id="medical-manager-id" />
+                                <input type="hidden" name="MatchRoleIds[4]" value="5" id="medical-manager-fullname" />
                                 <span id="medical-manager-confirmed" class="user-confirmed"></span>
                             </div>
                         </div>
 
-                        <!-- Doctors (Dynamic Fields) -->
                         <h6 class="text-primary">پزشکان</h6>
                         <div id="doctors-container">
                             <div class="row g-3 doctor-row">
                                 <div class="col-md-5">
                                     <label class="form-label">نام پزشک</label>
                                     <input type="text" class="form-control national-id-input" name="Doctors[0].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="doctor-0" oninput="fetchUser(this)" />
-                                    <input type="hidden" asp-for="ParticipantsIds" name="Doctors[0].Id" id="doctor-0-id" />
-                                    <input type="hidden" asp-for="MatchRoleIds" value="6" id="doctor-0-fullname" />
+                                    <input type="hidden" name="ParticipantsIds[5]" id="doctor-0-id" />
+                                    <input type="hidden" name="MatchRoleIds[5]" value="6" id="doctor-0-fullname" />
                                     <span id="doctor-0-confirmed" class="user-confirmed"></span>
                                 </div>
                                 <div class="col-md-1">
@@ -264,8 +254,34 @@
                         </div>
                     </div>
 
-                    <!-- Step 5: Additional Settings -->
                     <div class="step-content" data-step="4">
+                        <h5 class="text-primary">بازیکنان</h5>
+                        <hr />
+
+                        <h6 class="text-primary">لیست بازیکنان</h6>
+                        <div id="players-container">
+                            <div class="row g-3 player-row">
+                                <div class="col-md-5">
+                                    <label class="form-label">نام بازیکن</label>
+                                    <input type="text" class="form-control national-id-input" name="Players[0].NationalId" placeholder="کد ملی بازیکن" maxlength="10" data-result-id="player-0" oninput="fetchUser(this)" />
+                                    <input type="hidden" name="ParticipantsIds[6]" id="player-0-id" />
+                                    <input type="hidden" name="MatchRoleIds[6]" value="7" id="player-0-fullname" />
+                                    <span id="player-0-confirmed" class="user-confirmed"></span>
+                                </div>
+                                <div class="col-md-1">
+                                    <i class="fas fa-trash remove-icon" onclick="removeField(this)"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary mt-4" id="addPlayerBtn">+ افزودن بازیکن</button>
+
+                        <div class="step-navigation mt-4">
+                            <button type="button" class="btn btn-outline-secondary prev-step"><i class="fas fa-arrow-right me-2"></i> قبلی</button>
+                            <button type="button" class="btn btn-primary next-step">بعدی <i class="fas fa-arrow-left ms-2"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="step-content" data-step="5">
                         <h5 class="text-primary">اطلاعات برگزار کننده</h5>
                         <hr />
                         <div class="row g-3">
@@ -287,40 +303,11 @@
                         </div>
                         <div class="step-navigation mt-4">
                             <button type="button" class="btn btn-outline-secondary prev-step"><i class="fas fa-arrow-right me-2"></i> قبلی</button>
-                            <button type="button" class="btn btn-primary next-step">بعدی <i class="fas fa-arrow-left ms-2"></i></button>
-                        </div>
-                    </div>
-                    
-                    <!-- Step 4: Players -->
-                    <div class="step-content" data-step="5">
-                        <h5 class="text-primary">بازیکنان</h5>
-                        <hr />
-
-                        <h6 class="text-primary">لیست بازیکنان</h6>
-                        <div id="players-container">
-                            <div class="row g-3 player-row">
-                                <div class="col-md-5">
-                                    <label class="form-label">نام بازیکن</label>
-                                    <input type="text" class="form-control national-id-input" name="Players[0].NationalId" placeholder="کد ملی بازیکن" maxlength="10" data-result-id="player-0" oninput="fetchUser(this)" />
-                                    <input type="hidden" name="ParticipantsIds" id="player-0-id" />
-                                    <input type="hidden" name="MatchRoleIds" value="7" id="player-0-fullname" />
-                                    <span id="player-0-confirmed" class="user-confirmed"></span>
-                                </div>
-                                <div class="col-md-1">
-                                    <i class="fas fa-trash remove-icon" onclick="removeField(this)"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-outline-primary mt-4" id="addPlayerBtn">+ افزودن بازیکن</button>
-
-                        <div class="step-navigation mt-4">
-                            <button type="button" class="btn btn-outline-secondary prev-step"><i class="fas fa-arrow-right me-2"></i> قبلی</button>
                             <button type="submit" class="btn btn-success w-100">
                                 <i class="fas fa-check-circle ms-2"></i> ثبت نهایی اطلاعات
                             </button>
                         </div>
                     </div>
-
                 </div>
             </form>
         </div>
@@ -332,12 +319,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Initialize Bootstrap modal
             const userLookupModal = new bootstrap.Modal(document.getElementById('userLookupModal'), {
                 focus: true
             });
 
-            // Validation settings
             $.validator.setDefaults({
                 ignore: [],
                 errorPlacement: function (error, element) {
@@ -355,12 +340,10 @@
                 }
             });
 
-            // Custom validation for national ID
             $.validator.addMethod("nationalId", function(value, element) {
                 return this.optional(element) || /^[0-9]{10}$/.test(value);
             }, "لطفاً کد ملی معتبر (10 رقم) وارد کنید");
 
-            // Form validation setup
             $('#multiStepForm').validate({
                 rules: {
                     MainRefereeNationalId: { required: true, nationalId: true },
@@ -368,8 +351,9 @@
                     OrganizerFullName: { required: true },
                     OrganizerNationalId: { required: true, nationalId: true },
                     OrganizerPhone: { required: true, digits: true, minlength: 11, maxlength: 11 },
-                    MainRefereeId: { required: true },
-                    MedicalManagerId: { required: true },
+                    'ParticipantsIds[0]': { required: true },
+                    'ParticipantsIds[2]': { required: true },
+                    'ParticipantsIds[4]': { required: true },
                     'Referees[0].NationalId': { nationalId: true },
                     'SecurityStaff[0].NationalId': { nationalId: true },
                     'Doctors[0].NationalId': { nationalId: true },
@@ -381,21 +365,22 @@
                     OrganizerFullName: "لطفاً نام برگزارکننده را وارد کنید",
                     OrganizerNationalId: "لطفاً کد ملی معتبر برگزارکننده را وارد کنید",
                     OrganizerPhone: "لطفاً شماره تلفن معتبر (11 رقم) وارد کنید",
-                    MainRefereeId: "لطفاً داور اصلی را انتخاب کنید",
-                    MedicalManagerId: "لطفاً مدیر تیم پزشکی را انتخاب کنید"
+                    'ParticipantsIds[0]': "لطفاً داور اصلی را انتخاب کنید",
+                    'ParticipantsIds[2]': "لطفاً مسئول انتظامات را انتخاب کنید",
+                    'ParticipantsIds[4]': "لطفاً مدیر تیم پزشکی را انتخاب کنید"
                 },
                 errorClass: "text-danger"
             });
 
-            // Counters for dynamic fields
+            let globalCounter = 6;
             let refereeCounter = 0;
             let securityCounter = 0;
             let doctorCounter = 0;
             let playerCounter = 0;
 
-            // Add new referee
             document.getElementById('addRefereeBtn').addEventListener('click', function() {
                 refereeCounter++;
+                globalCounter++;
                 const refereesContainer = document.getElementById('referees-container');
                 const newReferee = document.createElement('div');
                 newReferee.classList.add('row', 'g-3', 'referee-row');
@@ -403,8 +388,8 @@
                     <div class="col-md-5">
                         <label class="form-label">نام داور</label>
                         <input type="text" class="form-control national-id-input" name="Referees[${refereeCounter}].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="referee-${refereeCounter}" oninput="fetchUser(this)" />
-                        <input type="hidden" name="ParticipantsIds" id="referee-${refereeCounter}-id" />
-                        <input type="hidden" name="MatchRoleIds" value="2" id="referee-${refereeCounter}-fullname" />
+                        <input type="hidden" name="ParticipantsIds[${globalCounter}]" id="referee-${refereeCounter}-id" />
+                        <input type="hidden" name="MatchRoleIds[${globalCounter}]" value="2" id="referee-${refereeCounter}-fullname" />
                         <span id="referee-${refereeCounter}-confirmed" class="user-confirmed"></span>
                     </div>
                     <div class="col-md-1">
@@ -415,9 +400,9 @@
                 $(`input[name="Referees[${refereeCounter}].NationalId"]`).rules("add", { nationalId: true });
             });
 
-            // Add new security staff
             document.getElementById('addSecurityBtn').addEventListener('click', function() {
                 securityCounter++;
+                globalCounter++;
                 const securityContainer = document.getElementById('security-container');
                 const newSecurity = document.createElement('div');
                 newSecurity.classList.add('row', 'g-3', 'security-row');
@@ -425,8 +410,8 @@
                     <div class="col-md-5">
                         <label class="form-label">نام انتظامات</label>
                         <input type="text" class="form-control national-id-input" name="SecurityStaff[${securityCounter}].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="security-${securityCounter}" oninput="fetchUser(this)" />
-                        <input type="hidden" name="ParticipantsIds" id="security-${securityCounter}-id" />
-                        <input type="hidden" name="MatchRoleIds" value="4" id="security-${securityCounter}-fullname" />
+                        <input type="hidden" name="ParticipantsIds[${globalCounter}]" id="security-${securityCounter}-id" />
+                        <input type="hidden" name="MatchRoleIds[${globalCounter}]" value="4" id="security-${securityCounter}-fullname" />
                         <span id="security-${securityCounter}-confirmed" class="user-confirmed"></span>
                     </div>
                     <div class="col-md-1">
@@ -437,9 +422,9 @@
                 $(`input[name="SecurityStaff[${securityCounter}].NationalId"]`).rules("add", { nationalId: true });
             });
 
-            // Add new doctor
             document.getElementById('addDoctorBtn').addEventListener('click', function() {
                 doctorCounter++;
+                globalCounter++;
                 const doctorsContainer = document.getElementById('doctors-container');
                 const newDoctor = document.createElement('div');
                 newDoctor.classList.add('row', 'g-3', 'doctor-row');
@@ -447,8 +432,8 @@
                     <div class="col-md-5">
                         <label class="form-label">نام پزشک</label>
                         <input type="text" class="form-control national-id-input" name="Doctors[${doctorCounter}].NationalId" placeholder="کد ملی کاربر" maxlength="10" data-result-id="doctor-${doctorCounter}" oninput="fetchUser(this)" />
-                        <input type="hidden" name="ParticipantsIds" id="doctor-${doctorCounter}-id" />
-                        <input type="hidden" name="MatchRoleIds" value="6" id="doctor-${doctorCounter}-fullname" />
+                        <input type="hidden" name="ParticipantsIds[${globalCounter}]" id="doctor-${doctorCounter}-id" />
+                        <input type="hidden" name="MatchRoleIds[${globalCounter}]" value="6" id="doctor-${doctorCounter}-fullname" />
                         <span id="doctor-${doctorCounter}-confirmed" class="user-confirmed"></span>
                     </div>
                     <div class="col-md-1">
@@ -459,9 +444,9 @@
                 $(`input[name="Doctors[${doctorCounter}].NationalId"]`).rules("add", { nationalId: true });
             });
 
-            // Add new player
             document.getElementById('addPlayerBtn').addEventListener('click', function() {
                 playerCounter++;
+                globalCounter++;
                 const playersContainer = document.getElementById('players-container');
                 const newPlayer = document.createElement('div');
                 newPlayer.classList.add('row', 'g-3', 'player-row');
@@ -469,9 +454,9 @@
                     <div class="col-md-5">
                         <label class="form-label">نام بازیکن</label>
                         <input type="text" class="form-control national-id-input" name="Players[${playerCounter}].NationalId" placeholder="کد ملی بازیکن" maxlength="10" data-result-id="player-${playerCounter}" oninput="fetchUser(this)" />
-                        <input type="hidden" name="ParticipantsIds" id="player-${playerCounter}-id" />
-                        <input type="hidden" name="MatchRoleIds" value="7" id="player-${playerCounter}-fullname" />
-                        <span id="player-${counter}-confirmed" class="user-confirmed"></span>
+                        <input type="hidden" name="ParticipantsIds[${globalCounter}]" id="player-${playerCounter}-id" />
+                        <input type="hidden" name="MatchRoleIds[${globalCounter}]" value="7" id="player-${playerCounter}-fullname" />
+                        <span id="player-${playerCounter}-confirmed" class="user-confirmed"></span>
                     </div>
                     <div class="col-md-1">
                         <i class="fas fa-trash remove-icon" onclick="removeField(this)"></i>
@@ -481,12 +466,10 @@
                 $(`input[name="Players[${playerCounter}].NationalId"]`).rules("add", { nationalId: true });
             });
 
-            // Remove dynamic field
             window.removeField = function(button) {
                 $(button).closest('.row').remove();
             };
 
-            // Fetch user by national ID
             let currentInput = null;
             window.fetchUser = async function(input) {
                 const nationalId = input.value;
@@ -537,7 +520,6 @@
                 }
             };
 
-            // Confirm user selection
             document.getElementById('confirmUserBtn').addEventListener('click', function() {
                 const resultDiv = document.getElementById('userLookupResult');
                 const id = resultDiv.dataset.id;
@@ -548,13 +530,11 @@
                     const fullNameField = document.getElementById(`${resultId}-fullname`);
                     const confirmedSpan = document.getElementById(`${resultId}-confirmed`);
                     if (idField) idField.value = id;
-                    if (fullNameField) fullNameField.value = fullName;
                     if (confirmedSpan) confirmedSpan.innerHTML = `<i class="fas fa-check-circle"></i> ${fullName}`;
                 }
                 userLookupModal.hide();
             });
 
-            // Multi-step form navigation
             let currentStep = 1;
             const totalSteps = $('.step-content').length;
 
@@ -562,11 +542,9 @@
                 let isValid = true;
                 const $currentStep = $(`.step-content[data-step="${step}"]`);
 
-                // Clear previous error messages
                 $currentStep.find('.text-danger').text('');
                 $currentStep.find('.national-id-input').removeClass('invalid-input');
 
-                // Validate all inputs in the current step
                 $currentStep.find('input[type="text"]').each(function() {
                     const $input = $(this);
                     if (!$input.val().trim()) {
@@ -581,8 +559,7 @@
                     }
                 });
 
-                // Validate hidden ID fields (ParticipantsIds)
-                $currentStep.find('input[name="ParticipantsIds"]').each(function() {
+                $currentStep.find('input[name^="ParticipantsIds"]').each(function() {
                     const $input = $(this);
                     if (!$input.val().trim()) {
                         isValid = false;
@@ -594,8 +571,7 @@
                     }
                 });
 
-                // Specific validation for step 4 (Organizer details)
-                if (step === 4) {
+                if (step === 5) {
                     const organizerName = $('input[name="OrganizerFullName"]').val().trim();
                     const organizerNationalId = $('input[name="OrganizerNationalId"]').val().trim();
                     const organizerPhone = $('input[name="OrganizerPhone"]').val().trim();
@@ -614,7 +590,6 @@
                     }
                 }
 
-                // Validate jQuery Validate rules
                 if (!$('#multiStepForm').validate().form()) {
                     isValid = false;
                 }
@@ -658,14 +633,21 @@
                 }
             });
 
-            // Form submission validation
             $('#multiStepForm').on('submit', function(e) {
                 if (!validateStep(currentStep) || !$(this).valid()) {
                     e.preventDefault();
-                    showStep(1); // Return to first step to show errors
+                    showStep(1);
                     alert('لطفاً تمام فیلدهای الزامی را به‌درستی پر کنید.');
                 }
             });
+        });
+    </script>
+
+    <script>
+        document.querySelector('form').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+            }
         });
     </script>
 }

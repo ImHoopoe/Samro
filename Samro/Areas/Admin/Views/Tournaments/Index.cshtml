@@ -156,8 +156,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary " data-bs-dismiss="modal">بستن</button>
-                            <a asp-controller="Tournaments" asp-action="CompleteTournamentInfo" 
-                               asp-route-TournamentId="@item.TournamentId" type="button" class="btn btn-outline-success approve-btn">
+                            <a href="/Admin/tournaments/CompleteTournamentInfo/@item.TournamentId" type="button" class="btn btn-outline-success approve-btn">
                                 تکمیل اطلاعات
                             </a>
 

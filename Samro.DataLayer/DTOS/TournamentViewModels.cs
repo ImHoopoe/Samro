@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Microsoft.AspNetCore.Http;
+using Samro.DataLayer.Entities.TournamentMatch;
 using WinWin.DataLayer.Entities.EventModels;
+using WinWin.DataLayer.Entities.Roles;
 using WinWin.DataLayer.Entities.TournamentMatch;
 
 namespace WinWin.DataLayer.DTOS
@@ -150,6 +152,7 @@ namespace WinWin.DataLayer.DTOS
         public string SportName { get; set; }
         public string Thumbnail { get; set; }
         public bool IsAccepted { get; set; } = false;
+        public List<TournamentParticipant>? TournamentParticipants { get; set; }
     }
 
     public class EditTournamentViewModel
@@ -281,8 +284,10 @@ namespace WinWin.DataLayer.DTOS
 
     public class CompeleteTournamentViewModel
     {
-        public ICollection<Guid> ParticipantsIds { get; set; }
+        public List<Guid> ParticipantsIds { get; set; }
         public int TournamentId { get; set; }
-        public ICollection<int> MatchRoleIds { get; set; }
+        public List<int> MatchRoleIds { get; set; }
     }
+
+  
 }

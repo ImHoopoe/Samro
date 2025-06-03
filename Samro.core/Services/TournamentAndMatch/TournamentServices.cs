@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Samro.DataLayer.Entities.TournamentMatch;
 using WinWin.Core.Interfaces.TournamentAndMatch;
 using WinWin.DataLayer.Contextes;
 using WinWin.DataLayer.Entities.EventModels;
@@ -136,6 +137,7 @@ namespace WinWin.Core.Services.TournamentAndMatch
                 .AsNoTracking()  // جلوگیری از ردیابی تغییرات
                 .Include(t => t.CreatedByUser)  // بارگذاری موجودیت مربوط به CreatedByUser
                 .Include(t => t.Sport)  // بارگذاری موجودیت مربوط به Sport
+                .Include(t => t.TournamentParticipants)  // بارگذاری موجودیت مربوط به Sport
                 .ToListAsync();
         }
 
@@ -147,6 +149,21 @@ namespace WinWin.Core.Services.TournamentAndMatch
                 .Include(t => t.Sport)
                 .Include(t => t.CreatedByUser)
                 .ToListAsync();
+        }
+
+        public async Task<bool> CreateParticipent(TournamentParticipant participant)
+        {
+            try
+            {
+               await _context.TournamentParticipants.AddAsync(participant);
+               await _context.SaveChangesAsync();
+               return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

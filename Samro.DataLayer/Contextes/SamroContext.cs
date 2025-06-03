@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security;
+using Samro.DataLayer.Entities.TournamentMatch;
 using WinWin.DataLayer.Entities.BlogBlogGroup;
 using WinWin.DataLayer.Entities.ChatHub;
 using WinWin.DataLayer.Entities.EventModels;
@@ -81,6 +82,7 @@ namespace WinWin.DataLayer.Contextes
         public DbSet<MatchWarning> MatchWarnings { get; set; }
         public DbSet<MatchUser> MatchUsers { get; set; }
         public DbSet<TournamentUser> TournamentUsers { get; set; }
+        public DbSet<TournamentParticipant> TournamentParticipants { get; set; }
 
 
 

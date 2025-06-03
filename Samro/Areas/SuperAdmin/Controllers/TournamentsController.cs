@@ -329,7 +329,7 @@ namespace WinWin.Areas.SuperAdmin.Controllers
 
 
         [HttpGet]
-        [Route("admin/tournaments/UpdateTournamentFinalStatus")]
+        [Route("superadmin/tournaments/UpdateTournamentFinalStatus")]
         public async Task<IActionResult> UpdateTournamentFinalStatus()
         {
             var tournaments = await _tournamentServices.GetStepStepTwoTournaments();
@@ -360,7 +360,9 @@ namespace WinWin.Areas.SuperAdmin.Controllers
                     RegisteredUsersCount = t.RegisteredUsersCount,
                     TournamentId = t.TournamentId,
                     Thumbnail = t.Thumbnail,
-                    IsAccepted = t.IsAccepted
+                    IsAccepted = t.IsAccepted,
+                    SportName = t.Sport.SportName,
+                    TournamentParticipants = t.TournamentParticipants.ToList()
                 });
             }
 

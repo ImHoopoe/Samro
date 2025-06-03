@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Samro.DataLayer.Entities.TournamentMatch;
 using WinWin.Core.Interfaces;
 using WinWin.Core.Interfaces.Sports;
 using WinWin.Core.Interfaces.TournamentAndMatch;
@@ -246,10 +247,34 @@ namespace WinWin.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> CompleteTournamentInfo(CompeleteTournamentViewModel compeleteTournament)
         {
-            
-            
+            if (!ModelState.IsValid)
+            {
+                return View(compeleteTournament);
+            }
 
-            return View();
+            for (int i=0; i<compeleteTournament.ParticipantsIds.Count;i++)
+            {
+                TournamentParticipant participant = new TournamentParticipant()
+                {
+                    RoleId = compeleteTournament.MatchRoleIds[i],
+                    TournamentId = compeleteTournament.TournamentId,
+                    UserId = compeleteTournament.ParticipantsIds[i]
+                };
+                if (!await _tournamentServices.CreateParticipent(participant))
+                {
+                    return View("Error");
+                }
+
+
+            }
+
+          var tournament = await _tournamentServices.GetTournamentById(compeleteTournament.TournamentId);
+          tournament.IsFinal = true;
+          if (!await _tournamentServices.EditTournament(tournament))
+          {
+              return View("Error");
+            }
+            return RedirectToAction("Index");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
