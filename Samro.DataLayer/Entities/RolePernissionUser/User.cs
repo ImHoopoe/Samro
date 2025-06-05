@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using Samro.DataLayer.Entities.TournamentMatch;
 using WinWin.DataLayer.Entities.EventModels;
 using WinWin.DataLayer.Entities.RolePernissionUser;
 using WinWin.DataLayer.Entities.TournamentMatch;
@@ -40,8 +41,9 @@ namespace WinWin.DataLayer.Entities.Roles
         #endregion
 
         #region EventRelations
-        public ICollection<MatchRole>? MatchRoles { get; set; }
+       
         public ICollection<Tournament>? CreatedTournaments { get; set; }
+        public ICollection<TournamentParticipant>? TournamentParticipants { get; set; }
 
 
         #endregion

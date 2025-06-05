@@ -259,7 +259,7 @@ namespace WinWin.Areas.SuperAdmin.Controllers
 
 
         [HttpGet]
-        [Route("admin/tournaments/UpdateTournamentStatus")]
+        [Route("superadmin/tournaments/UpdateTournamentStatus")]
         public async Task<IActionResult> UpdateTournamentStatus()
         {
             var tournaments = await _tournamentServices.GetStepOneTournaments();
@@ -299,7 +299,7 @@ namespace WinWin.Areas.SuperAdmin.Controllers
         }
 
         [HttpPost]
-        [Route("admin/tournaments/updateTournamentStatus")]
+        [Route("superadmin/tournaments/updateTournamentStatus")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateTournamentStatus([FromBody] UpdateTournamentStatusViewModel model)
         {

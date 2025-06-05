@@ -1,14 +1,12 @@
 ﻿@using WinWin.Core.Tools.PublicTools
 @using System.ComponentModel.DataAnnotations
 @model IEnumerable<WinWin.DataLayer.DTOS.ShowTournamentForAdminViewModel>
+
 @Html.AntiForgeryToken()
 
 @{
-    ViewData["Title"] = "مدیریت رویدادها";
+    ViewData["Title"] = "به‌روزرسانی وضعیت نهایی رویدادها";
     Layout = "~/Views/Shared/AdminProfile/AdminProfileLayout.cshtml";
-    var pageSize = ViewBag.PageSize as int? ?? 10;
-    var pageIndex = ViewBag.PageIndex as int? ?? 1;
-    var totalPages = ViewBag.TotalPages as int? ?? 1;
 }
 
 <style>
@@ -36,15 +34,6 @@
         color: #007bff;
     }
 
-    .pagination {
-        justify-content: center;
-    }
-
-        .pagination .page-item.active .page-link {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-
     .btn-sm {
         font-size: 0.875rem;
     }
@@ -54,12 +43,9 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="fw-bold mb-0">مدیریت</h3>
+            <h3 class="fw-bold mb-0">به‌روزرسانی وضعیت نهایی رویدادها</h3>
             <h6 class="text-muted">مدیریت / @ViewData["Title"]</h6>
         </div>
-        <a asp-action="CreateTournament" class="btn btn-success btn-rounded">
-            <i class="fas fa-plus-circle me-2"></i> افزودن رویداد جدید
-        </a>
     </div>
 
     <!-- Tournament Cards -->
@@ -78,9 +64,10 @@
                             <h5 class="card-title text-primary mb-0 text-truncate">@item.Title</h5>
                             <p class="mb-2"><small class="text-muted">محل مسابقه:</small> @item.MatchLocation</p>
                             <p class="mb-2"><small class="text-muted">تاریخ وزن‌کشی:</small> @item.WeighInDate.ToShamsi()</p>
+                            <p class="mb-2"><small class="text-muted">ورزش:</small> @item.SportName</p>
                             <div class="mt-auto border-top pt-3 d-flex justify-content-between">
                                 <button type="button" class="btn btn-sm btn-outline-dark btn-hover-icon w-100" data-bs-toggle="modal" data-bs-target="#detailsModal-@item.TournamentId">
-                                    <i class="fas fa-info-circle"> مشاهده اطلاعات  </i>
+                                    <i class="fas fa-info-circle"> مشاهده اطلاعات </i>
                                 </button>
                             </div>
                         </div>
@@ -92,18 +79,6 @@
         {
             <p class="text-center text-muted">هیچ رویدادی یافت نشد.</p>
         }
-    </div>
-
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-4">
-        <ul class="pagination pagination-sm mb-0">
-            @for (var i = 1; i <= totalPages; i++)
-            {
-                <li class="page-item @(i == pageIndex ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("Index", "Tournaments", new { pageIndex = i, pageSize })">@i</a>
-                </li>
-            }
-        </ul>
     </div>
 </div>
 
@@ -152,6 +127,32 @@
                                     <tr><th>آدرس</th><td>@item.Address</td></tr>
                                 </tbody>
                             </table>
+                            <hr />
+                            <h6 class="text-muted">شرکت‌کنندگان</h6>
+                            @if (item.TournamentParticipants != null && item.TournamentParticipants.Any())
+                            {
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>نام کاربر</th>
+                                            <th>نقش</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var participant in item.TournamentParticipants)
+                                        {
+                                            <tr>
+                                                <td>@(participant.User?.Name + participant.User?.LastName)</td>
+                                                <td>@participant.MatchRole.MatchRoleDisplayName</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <p>هیچ شرکت‌کننده‌ای برای این تورنمنت ثبت نشده است.</p>
+                            }
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
@@ -167,49 +168,10 @@
 
 @section Scripts {
     <script>
-        // حذف رویداد
-        //         document.querySelectorAll('.delete-btn').forEach(btn => {
-        //     btn.addEventListener('click', () => {
-        //         const idStr = btn.getAttribute('data-id');
-        //         const id = parseInt(idStr);
-        //         console.log('ID for deletion:', id);
-
-        //         if (isNaN(id) || id <= 0) {
-        //             alert('شناسه رویداد معتبر نیست!');
-        //             return;
-        //         }
-
-        //         if (confirm('آیا از حذف این رویداد مطمئن هستید؟')) {
-        //             fetch('@Url.Action("DeleteTournament", "Tournaments")', {
-        //                 method: 'POST',
-        //                 headers: {
-        //                     'Content-Type': 'application/json',
-        //                     'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-        //                 },
-        //                 body: JSON.stringify({ id: id })
-        //             })
-        //             .then(res => {
-        //                 if (!res.ok) throw new Error('خطا در درخواست: ' + res.status);
-        //                 return res.json();
-        //             })
-        //             .then(data => {
-        //                 if (data.success) location.reload();
-        //                 else alert(data.message || 'خطا در حذف رویداد');
-        //             })
-        //             .catch(error => {
-        //                 console.error('خطا:', error);
-        //                 alert('خطایی رخ داد. لطفاً دوباره تلاش کنید.');
-        //             });
-        //         }
-        //     });
-        // });
-
         // تأیید رویداد
         document.querySelectorAll('.approve-btn').forEach(btn => {
             btn.addEventListener('click', async function () {
                 const id = this.getAttribute('data-id');
-                console.log("Tournament ID for approval: ", id); // برای دیباگ
-
                 if (!id || isNaN(parseInt(id))) {
                     alert("شناسه رویداد نامعتبر است");
                     return;
@@ -243,8 +205,6 @@
         document.querySelectorAll('.reject-btn').forEach(btn => {
             btn.addEventListener('click', async function () {
                 const id = this.getAttribute('data-id');
-                console.log("Tournament ID for rejection: ", id); // برای دیباگ
-
                 if (!id || isNaN(parseInt(id))) {
                     alert("شناسه رویداد نامعتبر است");
                     return;

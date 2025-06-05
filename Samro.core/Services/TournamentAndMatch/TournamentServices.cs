@@ -134,10 +134,13 @@ namespace WinWin.Core.Services.TournamentAndMatch
         {
             return await _context.Tournaments
                 .Where(t => !t.IsFinal && t.IsAccepted)
-                .AsNoTracking()  // جلوگیری از ردیابی تغییرات
-                .Include(t => t.CreatedByUser)  // بارگذاری موجودیت مربوط به CreatedByUser
-                .Include(t => t.Sport)  // بارگذاری موجودیت مربوط به Sport
-                .Include(t => t.TournamentParticipants)  // بارگذاری موجودیت مربوط به Sport
+                .AsNoTracking()
+                .Include(t => t.CreatedByUser)
+                .Include(t => t.Sport)
+                .Include(t => t.TournamentParticipants)
+                .ThenInclude(tp => tp.User)
+                .Include(t => t.TournamentParticipants)
+                .ThenInclude(tp => tp.MatchRole)
                 .ToListAsync();
         }
 

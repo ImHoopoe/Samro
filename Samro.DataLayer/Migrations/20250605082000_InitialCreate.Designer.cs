@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WinWin.DataLayer.Contextes;
 
 #nullable disable
 
-namespace WinWin.DataLayer.Migrations
+namespace Samro.DataLayer.Migrations
 {
     [DbContext(typeof(SamroContext))]
-    partial class SamroContextModelSnapshot : ModelSnapshot
+    [Migration("20250605082000_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,6 +33,9 @@ namespace WinWin.DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TournamentParticipantId"));
 
+                    b.Property<int?>("MatchRoleId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("RoleId")
                         .HasColumnType("int");
 
@@ -40,6 +46,8 @@ namespace WinWin.DataLayer.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("TournamentParticipantId");
+
+                    b.HasIndex("MatchRoleId");
 
                     b.HasIndex("RoleId");
 
@@ -524,9 +532,6 @@ namespace WinWin.DataLayer.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("MatchId")
-                        .HasColumnType("int");
-
                     b.Property<string>("MatchRoleDisplayName")
                         .HasColumnType("nvarchar(max)");
 
@@ -534,14 +539,7 @@ namespace WinWin.DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("MatchRoleId");
-
-                    b.HasIndex("MatchId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("MatchRoles");
                 });
@@ -685,6 +683,10 @@ namespace WinWin.DataLayer.Migrations
 
             modelBuilder.Entity("Samro.DataLayer.Entities.TournamentMatch.TournamentParticipant", b =>
                 {
+                    b.HasOne("WinWin.DataLayer.Entities.TournamentMatch.MatchRole", "MatchRole")
+                        .WithMany()
+                        .HasForeignKey("MatchRoleId");
+
                     b.HasOne("WinWin.DataLayer.Entities.Roles.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId");
@@ -694,8 +696,10 @@ namespace WinWin.DataLayer.Migrations
                         .HasForeignKey("TournamentId");
 
                     b.HasOne("WinWin.DataLayer.Entities.Roles.User", "User")
-                        .WithMany()
+                        .WithMany("TournamentParticipants")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("MatchRole");
 
                     b.Navigation("Role");
 
@@ -874,17 +878,6 @@ namespace WinWin.DataLayer.Migrations
                     b.Navigation("Tournament");
                 });
 
-            modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchRole", b =>
-                {
-                    b.HasOne("WinWin.DataLayer.Entities.TournamentMatch.Match", null)
-                        .WithMany("ParticipantsWithRoles")
-                        .HasForeignKey("MatchId");
-
-                    b.HasOne("WinWin.DataLayer.Entities.Roles.User", null)
-                        .WithMany("MatchRoles")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchRound", b =>
                 {
                     b.HasOne("WinWin.DataLayer.Entities.TournamentMatch.Match", "Match")
@@ -987,7 +980,7 @@ namespace WinWin.DataLayer.Migrations
                 {
                     b.Navigation("CreatedTournaments");
 
-                    b.Navigation("MatchRoles");
+                    b.Navigation("TournamentParticipants");
 
                     b.Navigation("UserRoles");
                 });
@@ -1003,8 +996,6 @@ namespace WinWin.DataLayer.Migrations
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.Match", b =>
                 {
-                    b.Navigation("ParticipantsWithRoles");
-
                     b.Navigation("Players");
 
                     b.Navigation("Rounds");

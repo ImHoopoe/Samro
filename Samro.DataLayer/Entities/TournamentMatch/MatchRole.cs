@@ -13,5 +13,6 @@ namespace WinWin.DataLayer.Entities.TournamentMatch
         public string MatchRoleName { get; set; }           
         public string? MatchRoleDisplayName { get; set; }
         public bool IsDeleted { get; set; }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace WinWin.DataLayer.Entities.TournamentMatch
 {
     public class Match
     {
+        [Key]
         public int MatchId { get; set; }
         public string? Title { get; set; }
         public string Description { get; set; }
@@ -23,7 +25,6 @@ namespace WinWin.DataLayer.Entities.TournamentMatch
         #region Relations
         public Tournament Tournament { get; set; }
         public IEnumerable<User> Players { get; set; }
-        public List<MatchRole> ParticipantsWithRoles { get; set; } = new();
         public List<MatchRound> Rounds { get; set; } = new();
         public List<MatchWarning> Warnings { get; set; } = new();
         public MatchScore Score { get; set; }

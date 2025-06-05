@@ -25,7 +25,7 @@ namespace WinWin.DataLayer.Contextes
             modelBuilder.Entity<User>().HasQueryFilter(bg => bg.IsActivated == false);
             modelBuilder.Entity<Role>().HasQueryFilter(bg => bg.IsDeleted == false);
             modelBuilder.Entity<Match>().HasQueryFilter(bg => bg.IsDeleted == false);
-            //modelBuilder.Entity<Tournament>().HasQueryFilter(bg => bg.IsDeleted == false);
+            modelBuilder.Entity<Tournament>().HasQueryFilter(bg => bg.IsDeleted == false);
 
             modelBuilder.Entity<Room>()
             .HasOne(r => r.User1)
@@ -39,12 +39,12 @@ namespace WinWin.DataLayer.Contextes
                 .HasForeignKey(r => r.User2Id)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            
+
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.Room)
                 .WithMany(r => r.Messages)
                 .HasForeignKey(m => m.RoomId)
-                .OnDelete(DeleteBehavior.NoAction);  
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
 
