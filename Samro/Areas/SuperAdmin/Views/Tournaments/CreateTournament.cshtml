@@ -9,6 +9,10 @@
     var Sports = ViewData["Sports"] as List<SelectListItem>;
 }
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css" />
+<link href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css" rel="stylesheet">
+
 <div class="page-inner">
     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
         <div>
@@ -63,25 +67,34 @@
                             <h5 class="text-primary">محل‌های برگزاری</h5>
                             <hr />
                             <div class="row g-3">
+                                <!-- محل مسابقه -->
                                 <div class="col-md-6">
-                                    <label asp-for="MatchLocation" class="form-label"></label>
+                                    <label asp-for="MatchLocation" class="form-label">محل مسابقه</label>
                                     <input asp-for="MatchLocation" class="form-control" />
                                     <span asp-validation-for="MatchLocation" class="text-danger"></span>
+                                    <div id="matchMap" style="height: 300px; width: 100%;"></div>
+                                    <input type="hidden" asp-for="MatchLocationLat" id="MatchLocationLat" />
+                                    <input type="hidden" asp-for="MatchLocationLng" id="MatchLocationLng" />
                                 </div>
+
+                                <!-- محل وزن‌کشی -->
                                 <div class="col-md-6">
-                                    <label asp-for="WeighInLocation" class="form-label"></label>
+                                    <label asp-for="WeighInLocation" class="form-label">محل وزن‌کشی</label>
                                     <input asp-for="WeighInLocation" class="form-control" />
                                     <span asp-validation-for="WeighInLocation" class="text-danger"></span>
+                                    <div id="weighInMap" style="height: 300px; width: 100%;"></div>
+                                    <input type="hidden" asp-for="WeighInLocationLat" id="WeighInLocationLat" />
+                                    <input type="hidden" asp-for="WeighInLocationLng" id="WeighInLocationLng" />
                                 </div>
+
+                                <!-- محل رو در رو -->
                                 <div class="col-md-6">
-                                    <label asp-for="FaceToFaceLocation" class="form-label"></label>
+                                    <label asp-for="FaceToFaceLocation" class="form-label">محل رو در رو</label>
                                     <input asp-for="FaceToFaceLocation" class="form-control" />
                                     <span asp-validation-for="FaceToFaceLocation" class="text-danger"></span>
-                                </div>
-                                <div class="col-md-6">
-                                    <label asp-for="HostelLocation" class="form-label"></label>
-                                    <input asp-for="HostelLocation" class="form-control" />
-                                    <span asp-validation-for="HostelLocation" class="text-danger"></span>
+                                    <div id="faceToFaceMap" style="height: 300px; width: 100%;"></div>
+                                    <input type="hidden" asp-for="FaceToFaceLocationLat" id="FaceToFaceLocationLat" />
+                                    <input type="hidden" asp-for="FaceToFaceLocationLng" id="FaceToFaceLocationLng" />
                                 </div>
                             </div>
                             <div class="step-navigation mt-4">
@@ -199,7 +212,6 @@
     </div>
 </div>
 
-<link href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css" rel="stylesheet">
 <style>
     .progress-steps {
         display: flex;
@@ -260,12 +272,22 @@
     .btn-primary, .btn-outline-secondary {
         transition: all 0.3s ease;
     }
+
+    #matchMap, #weighInMap, #faceToFaceMap {
+        height: 300px;
+        width: 100%;
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
 </style>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
     <script>
         $(document).ready(function () {
             // Validation setup
@@ -325,6 +347,7 @@
             // Multi-step form navigation
             let currentStep = 1;
             const totalSteps = $('.step-content').length;
+            let maps = {};
 
             function showStep(step) {
                 $('.step-content').removeClass('active slide-left slide-right');
@@ -349,6 +372,27 @@
 
                 // Validate current step before proceeding
                 $('#multiStepForm').validate().form();
+
+                // Initialize or refresh maps when step 2 is shown
+                if (step === 2) {
+                    setTimeout(() => {
+                        if (!maps.matchMap) {
+                            initMap('matchMap', 'MatchLocationLat', 'MatchLocationLng', 'MatchLocation');
+                        } else {
+                            maps.matchMap.invalidateSize();
+                        }
+                        if (!maps.weighInMap) {
+                            initMap('weighInMap', 'WeighInLocationLat', 'WeighInLocationLng', 'WeighInLocation');
+                        } else {
+                            maps.weighInMap.invalidateSize();
+                        }
+                        if (!maps.faceToFaceMap) {
+                            initMap('faceToFaceMap', 'FaceToFaceLocationLat', 'FaceToFaceLocationLng', 'FaceToFaceLocation');
+                        } else {
+                            maps.faceToFaceMap.invalidateSize();
+                        }
+                    }, 100);
+                }
             }
 
             $('.next-step').click(function () {
@@ -367,7 +411,7 @@
             window.getSubGroups = async function (sportId) {
                 if (!sportId) return;
                 try {
-                    const url = '@Url.Action("GetSubGroups", "Tournaments", new { area = "Admin" })';
+                    const url = '@Url.Action("GetSubGroups", "Tournaments", new { area = "SuperAdmin" })';
                     const response = await fetch(`${url}?id=${sportId}`);
                     if (!response.ok) throw new Error('خطا در بارگذاری داده‌ها');
                     const data = await response.json();
@@ -383,6 +427,52 @@
                     console.error('خطا:', error);
                 }
             };
+
+            // Initialize map function
+            function initMap(mapId, latInputId, lngInputId, addressInputId) {
+                const defaultLocation = [35.6895, 51.3890]; // Tehran
+                const map = L.map(mapId).setView(defaultLocation, 12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                const marker = L.marker(defaultLocation).addTo(map);
+                marker.dragging.enable();
+
+                // Update coordinates on marker drag
+                marker.on('dragend', function (e) {
+                    const latLng = e.target.getLatLng();
+                    document.getElementById(latInputId).value = latLng.lat;
+                    document.getElementById(lngInputId).value = latLng.lng;
+                });
+
+                // Add click event to update marker and coordinates
+                map.on('click', function (e) {
+                    marker.setLatLng(e.latlng);
+                    document.getElementById(latInputId).value = e.latlng.lat;
+                    document.getElementById(lngInputId).value = e.latlng.lng;
+                });
+
+                // Add geocoder control for search
+                const geocoder = L.Control.geocoder({
+                    defaultMarkGeocode: false,
+                    geocoder: new L.Control.Geocoder.Nominatim(),
+                    placeholder: 'جستجوی آدرس...'
+                }).on('markgeocode', function (e) {
+                    const latlng = e.geocode.center;
+                    marker.setLatLng(latlng);
+                    map.setView(latlng, 12);
+                    document.getElementById(latInputId).value = latlng.lat;
+                    document.getElementById(lngInputId).value = latlng.lng;
+                    document.getElementById(addressInputId).value = e.geocode.name;
+                }).addTo(map);
+
+                maps[mapId] = map;
+                console.log('نقشه لود شد: ' + mapId);
+            }
+
+            // Start from step 1
+            showStep(1);
         });
     </script>
 }

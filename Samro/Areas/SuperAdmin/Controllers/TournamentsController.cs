@@ -250,7 +250,8 @@ namespace WinWin.Areas.SuperAdmin.Controllers
             }
         }
 
-        [HttpGet("/GetSubSportGroups")]
+        [HttpGet()]
+        [Route("Admin/Tournaments/GetSubGroups")]
         public async Task<IActionResult> GetSubGroups(int id)
         {
             var list = await _tournamentServices.GetSubSportsSelectList(id);

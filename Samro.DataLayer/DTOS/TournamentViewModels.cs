@@ -23,22 +23,51 @@ namespace WinWin.DataLayer.DTOS
         [DisplayName("آدرس رویداد")]
         public string Address { get; set; }
 
+        // محل مسابقه
         [Required(ErrorMessage = "محل مسابقه الزامی است.")]
         [DisplayName("محل برگزاری مسابقات")]
         public string MatchLocation { get; set; }
 
+        // مختصات محل مسابقه
+        [Required(ErrorMessage = "مختصات محل مسابقه الزامی است.")]
+        [DisplayName("مختصات محل برگزاری مسابقات")]
+        public decimal MatchLocationLat { get; set; }
+        public decimal MatchLocationLng { get; set; }
+
+        // محل وزن‌کشی
         [Required(ErrorMessage = "محل وزن‌کشی الزامی است.")]
         [DisplayName("محل برگزاری وزن‌کشی")]
         public string WeighInLocation { get; set; }
 
+        // مختصات محل وزن‌کشی
+        [Required(ErrorMessage = "مختصات محل وزن‌کشی الزامی است.")]
+        [DisplayName("مختصات محل برگزاری وزن‌کشی")]
+        public decimal WeighInLocationLat { get; set; }
+        public decimal WeighInLocationLng { get; set; }
+
+        // محل ملاقات رودررو
         [Required(ErrorMessage = "محل ملاقات رودررو الزامی است.")]
         [DisplayName("محل ملاقات رودررو")]
         public string FaceToFaceLocation { get; set; }
 
+        // مختصات محل ملاقات رودررو
+        [Required(ErrorMessage = "مختصات محل ملاقات رودررو الزامی است.")]
+        [DisplayName("مختصات محل ملاقات رودررو")]
+        public decimal FaceToFaceLocationLat { get; set; }
+        public decimal FaceToFaceLocationLng { get; set; }
+
+        // محل خوابگاه
         [Required(ErrorMessage = "محل خوابگاه الزامی است.")]
         [DisplayName("محل اقامت و خوابگاه")]
         public string HostelLocation { get; set; }
 
+        // مختصات محل خوابگاه
+        [Required(ErrorMessage = "مختصات محل خوابگاه الزامی است.")]
+        [DisplayName("مختصات محل اقامت و خوابگاه")]
+        public decimal HostelLocationLat { get; set; }
+        public decimal HostelLocationLng { get; set; }
+
+        // تاریخ‌ها و زمان‌ها
         [Required(ErrorMessage = "تاریخ مسابقه الزامی است.")]
         [DisplayName("تاریخ برگزاری مسابقه")]
         public string MatchDate { get; set; }
@@ -78,56 +107,13 @@ namespace WinWin.DataLayer.DTOS
         [DisplayName("ورزش")]
         [Required(ErrorMessage = " ورزش الزامی است.")]
         public int SportId { get; set; }
-
-        //public static ValidationResult? ValidateDate(object value, ValidationContext context)
-        //{
-        //    if (value is not string input || string.IsNullOrWhiteSpace(input))
-        //        return ValidationResult.Success; // عدم بررسی برای فیلدهای Optional
-
-        //    try
-        //    {
-        //        var parts = input.Split('T');
-        //        if (parts.Length != 2)
-        //            return new ValidationResult("فرمت تاریخ باید به صورت YYYY-MM-DDTHH:mm:ss باشد.");
-
-        //        var dateParts = parts[0].Split('-');
-        //        var timeParts = parts[1].Split(':');
-
-        //        if (dateParts.Length != 3 || timeParts.Length < 2)
-        //            return new ValidationResult("فرمت تاریخ یا ساعت نادرست است.");
-
-        //        // استخراج قسمت‌های تاریخ و ساعت
-        //        int year = int.Parse(dateParts[0]);
-        //        int month = int.Parse(dateParts[1]);
-        //        int day = int.Parse(dateParts[2]);
-
-        //        int hour = int.Parse(timeParts[0]);
-        //        int minute = int.Parse(timeParts[1]);
-
-        //        // تبدیل تاریخ شمسی به میلادی
-        //        var pc = new PersianCalendar();
-        //        DateTime persianDateTime = new DateTime(year, month, day, hour, minute, 0, pc);
-
-        //        // بررسی اینکه تاریخ باید در آینده باشد
-        //        if (persianDateTime < DateTime.Now)
-        //            return new ValidationResult("تاریخ باید در آینده باشد.");
-        //    }
-        //    catch
-        //    {
-        //        return new ValidationResult("تاریخ وارد شده معتبر نیست.");
-        //    }
-
-        //    return ValidationResult.Success;
-        //}
-
-        public class DeleteTournamentViewModel
-        {
-            public int TournamentId { get; set; }
-            public string Title { get; set; }
-        }
-
     }
 
+    public class DeleteTournamentViewModel
+    {
+        public int TournamentId { get; set; }
+        public string Title { get; set; }
+    }
     public class ShowTournamentForAdminViewModel
     {
         public int TournamentId { get; set; }
@@ -153,6 +139,7 @@ namespace WinWin.DataLayer.DTOS
         public string Thumbnail { get; set; }
         public bool IsAccepted { get; set; } = false;
         public List<TournamentParticipant>? TournamentParticipants { get; set; }
+        
     }
 
     public class EditTournamentViewModel

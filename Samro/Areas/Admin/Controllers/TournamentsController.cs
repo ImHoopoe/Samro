@@ -256,7 +256,7 @@ namespace WinWin.Areas.Admin.Controllers
             {
                 TournamentParticipant participant = new TournamentParticipant()
                 {
-                    RoleId = compeleteTournament.MatchRoleIds[i],
+                    MatchRoleId = compeleteTournament.MatchRoleIds[i],
                     TournamentId = compeleteTournament.TournamentId,
                     UserId = compeleteTournament.ParticipantsIds[i]
                 };
