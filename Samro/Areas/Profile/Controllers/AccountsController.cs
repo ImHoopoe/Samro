@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+
+
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Security.Claims;
 using WinWin.Core.Interfaces;
 using WinWin.DataLayer.DTOS;
@@ -140,6 +145,75 @@ namespace Samro.Areas.User.Profile.Controllers
             }
 
             TempData["Sucsses"] = "رمز عبور با موفقیت تغییر کرد";
+            return Redirect("/Profile/Accounts/index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> CompleteInfo()
+        {
+            var userId = GetCurrentUserId();
+            var user = await _UserServices.GetUserById(userId);
+            if (user == null)
+            {
+                TempData["Error"] = "کاربر یافت نشد";
+                return Redirect("/Profile/Accounts/index");
+            }
+
+            CompleteInfoViewModel model = new CompleteInfoViewModel()
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Name = user.Name,
+                LastName = user.LastName,
+                Avatar = user.Avatar,
+                Address = user.Address,
+                Age = user.Age,
+                NationalId = user.NationalId,
+                Height = user.Height,
+                Weight = user.Weight,
+                IsActivated = user.IsActivated
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CompleteInfo(CompleteInfoViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "فیلدهای خالی را پر کنید";
+                return View(model);
+            }
+
+            var userId = GetCurrentUserId();
+            var user = await _UserServices.GetUserById(userId);
+
+            if (user == null)
+            {
+                TempData["Error"] = "کاربر یافت نشد";
+                return View(model);
+            }
+
+            user.UserName = model.UserName;
+            model.Email = user.Email;
+            model.PhoneNumber = user.PhoneNumber;
+            model.Name = user.Name;
+            model.LastName = user.LastName;
+            model.Avatar = user.Avatar;
+            model.Address = user.Address;
+            model.Age = user.Age;
+            model.NationalId = user.NationalId;
+            model.Height = user.Height;
+            model.Weight = user.Weight;
+            model.IsActivated = user.IsActivated;
+
+            if (!await _UserServices.EditUser(user))
+            {
+                TempData["Error"] = "عملیات با موفقیت شکست خورد";
+                return View(model);
+            }
+
+            TempData["Sucsses"] = "عملیات با موفقیت انجام شد";
             return Redirect("/Profile/Accounts/index");
         }
     }

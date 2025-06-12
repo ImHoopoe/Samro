@@ -167,6 +167,66 @@ namespace WinWin.DataLayer.DTOS
 
         public bool IsActivated { get; set; }
     }
+    public class CompleteInfoViewModel
+    {
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [StringLength(50, MinimumLength = 3)]
+        [Display(Name = "نام کاربری")]
+        public string UserName { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [StringLength(50)]
+        [Display(Name = "نام")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [StringLength(50)]
+        [Display(Name = "نام خانوادگی")]
+        public string LastName { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [EmailAddress]
+        [Display(Name = "ایمیل")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [Display(Name = "شماره تلفن")]
+        public string PhoneNumber { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [Display(Name = "کد ملی")]
+        public string NationalId { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [Display(Name = "آواتار")]
+        public string Avatar { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [StringLength(200)]
+        [Display(Name = "آدرس")]
+        public string Address { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [Range(0, 120)]
+        [Display(Name = "سن")]
+        public int? Age { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [Range(0.0, 3.0)]
+        [Display(Name = "قد (متر)")]
+        public double? Height { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [Range(0.0, 500.0)]
+        [Display(Name = "وزن (کیلوگرم)")]
+        public double? Weight { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [Display(Name = "فعال شده")]
+        public bool IsActivated { get; set; }
+
+    }
 
 
 }
