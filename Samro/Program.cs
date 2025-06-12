@@ -97,11 +97,11 @@ builder.Services.AddAuthentication(options =>
 #endregion
 
 #region Database Context
-//builder.Services.AddDbContext<SamroContext>(options =>
-//   options.UseSqlServer(builder.Configuration.GetConnectionString("WinWinTestConnectionString2022")));
-
 builder.Services.AddDbContext<SamroContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("WinWinTestConnectionString2019")));
+   options.UseSqlServer(builder.Configuration.GetConnectionString("WinWinTestConnectionString2022")));
+
+//builder.Services.AddDbContext<SamroContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("WinWinTestConnectionString2019")));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",

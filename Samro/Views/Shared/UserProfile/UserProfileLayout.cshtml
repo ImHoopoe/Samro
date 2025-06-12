@@ -1,571 +1,622 @@
-﻿@using System.Security.Claims
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>@ViewData["Title"]</title>
-    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-          name="viewport" />
-    <link rel="icon"
-          href="/AdminProfile/assets/img/kaiadmin/favicon.ico"
-          type="image/x-icon" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدیریت هنرهای رزمی</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+                :root {
+                    --primary-color: #e31e24;
+                    --secondary-color: #d6d1d1;
+                    --light-color: #ffffff;
+                }
 
-    <!-- Fonts and icons -->
-    <script src="/AdminProfile/assets/js/plugin/webfont/webfont.min.js"></script>
-    <script>
-        WebFont.load({
-          google: { families: ["Public Sans:300,400,500,600,700"] },
-          custom: {
-            families: [
-              "Font Awesome 5 Solid",
-              "Font Awesome 5 Regular",
-              "Font Awesome 5 Brands",
-              "simple-line-icons",
-            ],
-            urls: ["/AdminProfile/assets/css/fonts.min.css"],
-          },
-          active: function () {
-            sessionStorage.fonts = true;
-          },
-        });
-    </script>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    background-color: #f8f9fa;
+                    overflow-x: hidden;
+                }
+                /* Gradient card headers */
+        .card-header {
+            background: linear-gradient(90deg, var(--primary-color), #b31217);
+            color: white;
+            font-weight: bold;
+            border-bottom: none;
+        }
 
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="/AdminProfile/assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/AdminProfile/assets/css/plugins.min.css" />
-    <link rel="stylesheet" href="/AdminProfile/assets/css/kaiadmin.min.css" />
+        /* Floating background circles */
+        .floating-circles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .floating-circles span {
+            position: absolute;
+            display: block;
+            width: 20px; height: 20px;
+            background: rgba(227,30,36,0.2);
+            border-radius: 50%;
+            animation: float 20s linear infinite;
+        }
+        @@keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
 
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="/AdminProfile/assets/css/demo.css" />
+        /* Floating Action Button (FAB) */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 55px;
+            height: 55px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1050;
+            transition: all 0.3s;
+        }
+        .fab:hover {
+            background-color: #b31217;
+            transform: scale(1.05);
+        }
+
+
+                /* Loading Animation */
+                .loading-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(255, 255, 255, 0.9);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                    transition: opacity 0.5s ease;
+                }
+
+                .loading-spinner {
+                    width: 50px;
+                    height: 50px;
+                    border: 5px solid var(--secondary-color);
+                    border-top: 5px solid var(--primary-color);
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                }
+
+                @@keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+
+                /* Sidebar Styles */
+                .sidebar {
+                    position: fixed;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    width: 250px;
+                    background-color: var(--light-color);
+                    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+                    transition: all 0.3s;
+                    z-index: 1000;
+                }
+
+                .sidebar-header {
+                    padding: 20px;
+                    background-color: var(--primary-color);
+                    color: white;
+                    text-align: center;
+                }
+
+                .sidebar-header h3 {
+                    margin: 0;
+                    font-weight: bold;
+                }
+
+                .sidebar-menu {
+                    padding: 0;
+                    list-style: none;
+                }
+
+                .sidebar-menu li {
+                    position: relative;
+                }
+
+                .sidebar-menu li a {
+                    display: block;
+                    padding: 12px 20px;
+                    color: #333;
+                    text-decoration: none;
+                    transition: all 0.3s;
+                    border-right: 3px solid transparent;
+                }
+
+                .sidebar-menu li a:hover {
+                    background-color: rgba(227, 30, 36, 0.1);
+                    border-right-color: var(--primary-color);
+                }
+
+                .sidebar-menu li a.active {
+                    background-color: rgba(227, 30, 36, 0.1);
+                    border-right-color: var(--primary-color);
+                    color: var(--primary-color);
+                }
+
+                .sidebar-menu li a i {
+                    margin-left: 10px;
+                }
+
+                .sidebar-menu .submenu {
+                    padding-right: 30px;
+                    list-style: none;
+                    display: none;
+                    background-color: rgba(214, 209, 209, 0.2);
+                }
+
+                .sidebar-menu .submenu li a {
+                    padding: 10px 15px;
+                    font-size: 0.9em;
+                }
+
+                .sidebar-menu .has-submenu > a:after {
+                    content: '\f282';
+                    font-family: 'bootstrap-icons';
+                    position: absolute;
+                    left: 20px;
+                    top: 12px;
+                    transition: transform 0.3s;
+                }
+
+                .sidebar-menu .has-submenu.active > a:after {
+                    transform: rotate(90deg);
+                }
+
+                /* Main Content */
+                .main-content {
+                    margin-right: 250px;
+                    padding: 20px;
+                    transition: all 0.3s;
+                }
+
+                /* Navbar */
+                .navbar {
+                    background-color: var(--light-color);
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                    padding: 10px 20px;
+                }
+
+                .navbar-brand img {
+                    height: 40px;
+                }
+
+                .search-box {
+                    position: relative;
+                    max-width: 400px;
+                }
+
+                .search-box input {
+                    padding-right: 40px;
+                    border-radius: 20px;
+                    border: 1px solid var(--secondary-color);
+                }
+
+                .search-box button {
+                    position: absolute;
+                    left: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: none;
+                    border: none;
+                    color: var(--secondary-color);
+                }
+
+                .user-menu img {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                }
+
+                /* Cards */
+                .card {
+                    border: none;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                    transition: all 0.3s;
+                    margin-bottom: 20px;
+                }
+
+                .card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                }
+
+
+                .card-body {
+                    padding: 20px;
+                }
+
+                /* Stats Cards */
+                .stat-card {
+                    text-align: center;
+                    padding: 20px;
+                }
+
+                .stat-card .icon {
+                    width: 60px;
+                    height: 60px;
+                    margin: 0 auto 15px;
+                    background-color: rgba(227, 30, 36, 0.1);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--primary-color);
+                    font-size: 24px;
+                }
+
+                .stat-card h3 {
+            font-size: 22px;
+            white-space: nowrap;
+            direction: ltr;
+            text-align: center;
+        }
+
+                .stat-card p {
+                    color: #666;
+                    margin: 0;
+                }
+
+                /* Tables */
+                .table th {
+                    background-color: var(--secondary-color);
+                    color: #333;
+                }
+
+                /* Buttons */
+                .btn-primary {
+                    background-color: var(--primary-color);
+                    border-color: var(--primary-color);
+                }
+
+                .btn-outline-primary {
+                    color: var(--primary-color);
+                    border-color: var(--primary-color);
+                }
+
+                .btn-outline-primary:hover {
+                    background-color: var(--primary-color);
+                    border-color: var(--primary-color);
+                }
+
+                /* Badges */
+                .badge-primary {
+                    background-color: var(--primary-color);
+                }
+
+                /* Animations */
+                @@keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
+                .animate-fade-in {
+                    animation: fadeIn 0.5s ease forwards;
+                }
+
+                .delay-1 { animation-delay: 0.1s; }
+                .delay-2 { animation-delay: 0.2s; }
+                .delay-3 { animation-delay: 0.3s; }
+                .delay-4 { animation-delay: 0.4s; }
+
+                /* Responsive */
+                @@media (max-width: 992px) {
+                    .sidebar {
+                        right: -250px;
+                    }
+
+                    .sidebar.active {
+                        right: 0;
+                    }
+
+                    .main-content {
+                        margin-right: 0;
+                    }
+
+                    .navbar-toggler {
+                        display: block;
+                    }
+                }
+
+                /* Martial Arts Theme Elements */
+                .martial-arts-icon {
+                    color: var(--primary-color);
+                }
+
+                .belt-rank {
+                    display: inline-block;
+                    width: 30px;
+                    height: 10px;
+                    margin-left: 5px;
+                    vertical-align: middle;
+                }
+
+                .belt-white { background-color: white; border: 1px solid #ddd; }
+                .belt-yellow { background-color: #ffeb3b; }
+                .belt-orange { background-color: #ff9800; }
+                .belt-green { background-color: #4caf50; }
+                .belt-blue { background-color: #2196f3; }
+                .belt-brown { background-color: #795548; }
+                .belt-black { background-color: #212121; }
+
+                /* Profile Section */
+                .profile-card {
+                    text-align: center;
+                }
+
+                .profile-img {
+                    width: 150px;
+                    height: 150px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 5px solid var(--secondary-color);
+                    margin: 0 auto 20px;
+                }
+
+                .profile-title {
+                    color: var(--primary-color);
+                    margin-bottom: 10px;
+                }
+
+                .profile-belt {
+                    display: inline-block;
+                    padding: 5px 15px;
+                    background-color: #212121;
+                    color: white;
+                    border-radius: 20px;
+                    font-size: 0.9em;
+                    margin-bottom: 20px;
+                }
+
+                .profile-stats {
+                    display: flex;
+                    justify-content: space-around;
+                    margin: 20px 0;
+                }
+
+                .profile-stat {
+                    text-align: center;
+                }
+
+                .profile-stat h4 {
+                    margin: 0;
+                    color: var(--primary-color);
+                }
+
+                .profile-stat p {
+                    margin: 0;
+                    font-size: 0.8em;
+                    color: #666;
+                }
+    </style>
 </head>
 <body>
-    <div class="wrapper">
-        <!-- Sidebar -->
-        <div class="sidebar" data-background-color="dark">
-            <div class="sidebar-logo">
-                <!-- Logo Header -->
-                <div class="logo-header" data-background-color="dark" dir="rtl">
-                    @* <a href="index.html" class="logo">
-                        <img src="/AdminProfile/assets/img/kaiadmin/logo_light.svg"
-                             alt="navbar brand"
-                             class="navbar-brand"
-                             height="20" />
-                    </a> *@
-                    <h2 class="card-header text-white fw-bolder">پنل کاربری</h2>
-                    <div class="nav-toggle">
-                        <button class="btn btn-toggle toggle-sidebar">
-                            <i class="gg-menu-right"></i>
-                        </button>
-                        <button class="btn btn-toggle sidenav-toggler">
-                            <i class="gg-menu-left"></i>
-                        </button>
-                    </div>
-                    <button class="topbar-toggler more">
-                        <i class="gg-more-vertical-alt"></i>
+    <!-- Floating Background Animation -->
+    <div class="floating-circles">
+        <span style="left: 5%; animation-delay: 0s;"></span>
+        <span style="left: 15%; animation-delay: 2s;"></span>
+        <span style="left: 30%; animation-delay: 4s;"></span>
+        <span style="left: 50%; animation-delay: 1s;"></span>
+        <span style="left: 70%; animation-delay: 3s;"></span>
+        <span style="left: 90%; animation-delay: 5s;"></span>
+    </div>
+
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3>هنرهای رزمی</h3>
+            <p>سیستم مدیریت آموزشگاه</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="has-submenu">
+                <a asp-area="Profile" asp-controller="Accounts" asp-action="index" class="active">
+                    <i class="bi bi-speedometer2"></i>
+                    حساب کاربری
+                </a>
+                <ul class="submenu">
+                    <li><a asp-area="Profile" asp-controller="Accounts" asp-action="EditProfile">ویرایش پروفایل</a></li>
+                    <li><a asp-area="Profile" asp-controller="Accounts" asp-action="ChangePassword">تغییر رمز عبور</a></li>
+                </ul>
+            </li>
+            <li class="has-submenu">
+                <a asp-area="Profile" asp-controller="Achievements" asp-action="index" >
+                    <i class="bi bi-speedometer2"></i>
+                    دست آورد ها
+                </a>
+                <ul class="submenu">
+                    <li><a href="#">دست آورد های رزمی</a></li>
+                </ul>
+            </li>
+            <li class="has-submenu">
+                <a asp-area="Profile" asp-controller="Payments" asp-action="index" >
+                    <i class="bi bi-speedometer2"></i>
+                    پرداختی ها
+                </a>
+                <ul class="submenu">
+                    <li><a href="#">پرداخت های مسابقات</a></li>
+                </ul>
+            </li>
+            <li class="has-submenu">
+                <a asp-area="Profile" asp-controller="Tournaments" asp-action="index">
+                    <i class="bi bi-speedometer2"></i>
+                    مسابقات
+                </a>
+                <ul class="submenu">
+                    <li><a href="#">مسابقات رزمی</a></li>
+                </ul>
+            
+
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <button class="navbar-toggler d-lg-none" type="button">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div class="search-box me-auto">
+                    <input type="text" class="form-control" placeholder="جستجو...">
+                    <button type="button" class="btn">
+                        <i class="bi bi-search"></i>
                     </button>
                 </div>
-                <!-- End Logo Header -->
-            </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner" >
-                <div class="sidebar-content" >
-                    <ul class="nav nav-secondary"  >
-                        
-                       
-                        <li class="nav-item" dir="rtl">
-                            <a data-bs-toggle="collapse" href="#base">
-                                <i class="fas fa-layer-group"></i>
-                                <p>مدیریت رویداد ها</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse" id="base" dir="rtl">
-                                <ul class="nav nav-collapse">
-                                    <li>
-                                        <a asp-area="Profile" asp-controller="BlogGroups" asp-action="index">
-                                            <span class="sub-item">رویداد های در جریان</span>
-                                        </a>
-                                    </li>
 
-                                    <li>
-                                        <a asp-area="Profile" asp-controller="BlogGroups" asp-action="CreateBlogGroup">
-                                            <span class="sub-item">رویداد های من</span>
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item" dir="rtl">
-                            <a data-bs-toggle="collapse" href="#sidebarLayouts">
-                                <i class="fas fa-th-list"></i>
-                                <p>مدیریت مسابقات</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse" id="sidebarLayouts">
-                                <ul class="nav nav-collapse">
-                                   
-                                    <li>
-                                        <a asp-area="Profile" asp-controller="Blogs" asp-action="CreateBlog">
-                                            <span class="sub-item">مسابقات من</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item" dir="rtl">
-                            <a data-bs-toggle="collapse" href="#forms">
-                                <i class="fas fa-pen-square"></i>
-                                <p>مدیریت پروفایل</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse" id="forms">
-                                <ul class="nav nav-collapse">
-                                    <li>
-                                        <a asp-area="Profile" asp-controller="Users" asp-action="Index">
-                                            <span class="sub-item">ویرایش پروفایل </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a asp-area="Profile" asp-controller="Users" asp-action="Index">
-                                            <span class="sub-item">تغییر رمز عبور </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                                
-                            </div>
-                        </li>
-                        <li class="nav-item" dir="rtl">
-                            <a data-bs-toggle="collapse" href="#tables">
-                                <i class="fas fa-table"></i>
-                                <p>پشتیبانی</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse" id="tables">
-                                <ul class="nav nav-collapse">
-                                    <li>
-                                        <a href="tables/tables.html">
-                                            <span class="sub-item">درخواست دسترسی</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="tables/datatables.html">
-                                            <span class="sub-item">گفت و گو</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                       
-                       
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <!-- End Sidebar -->
-
-        <div class="main-panel">
-            <div class="main-header">
-                <div class="main-header-logo">
-                    
-              
-                    <!-- End Logo Header -->
-                </div>
-                <!-- Navbar Header -->
-                <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-                    <div class="container-fluid">
-                        <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <button type="submit" class="btn btn-search pe-1">
-                                        <i class="fa fa-search search-icon"></i>
-                                    </button>
-                                </div>
-                                <input type="text"
-                                       placeholder="جست و جو کنید"
-                                       class="form-control" />
-                            </div>
-                        </nav>
-
-                        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                            <li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
-                                <a class="nav-link dropdown-toggle"
-                                   data-bs-toggle="dropdown"
-                                   href="#"
-                                   role="button"
-                                   aria-expanded="false"
-                                   aria-haspopup="true">
-                                    <i class="fa fa-search"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-search animated fadeIn">
-                                    <form class="navbar-left navbar-form nav-search">
-                                        <div class="input-group">
-                                            <input type="text"
-                                                   placeholder="Search ..."
-                                                   class="form-control" />
-                                        </div>
-                                    </form>
-                                </ul>
-                            </li>
-                            <li class="nav-item topbar-icon dropdown hidden-caret">
-                                <a class="nav-link dropdown-toggle"
-                                   href="#"
-                                   id="messageDropdown"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-haspopup="true"
-                                   aria-expanded="false">
-                                    <i class="fa fa-envelope"></i>
-                                </a>
-                                <ul class="dropdown-menu messages-notif-box animated fadeIn"
-                                    aria-labelledby="messageDropdown">
-                                    <li>
-                                        <div class="dropdown-title d-flex justify-content-between align-items-center">
-                                            Messages
-                                            <a href="#" class="small">Mark all as read</a>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="message-notif-scroll scrollbar-outer">
-                                            <div class="notif-center">
-                                                <a href="#">
-                                                    <div class="notif-img">
-                                                        <img src="/AdminProfile/assets/img/jm_denis.jpg"
-                                                             alt="Img Profile" />
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="subject">Jimmy Denis</span>
-                                                        <span class="block"> How are you ? </span>
-                                                        <span class="time">5 minutes ago</span>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="notif-img">
-                                                        <img src="/AdminProfile/assets/img/chadengle.jpg"
-                                                             alt="Img Profile" />
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="subject">Chad</span>
-                                                        <span class="block"> Ok, Thanks ! </span>
-                                                        <span class="time">12 minutes ago</span>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="notif-img">
-                                                        <img src="/AdminProfile/assets/img/mlane.jpg"
-                                                             alt="Img Profile" />
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="subject">Jhon Doe</span>
-                                                        <span class="block">
-                                                            Ready for the meeting today...
-                                                        </span>
-                                                        <span class="time">12 minutes ago</span>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="notif-img">
-                                                        <img src="/AdminProfile/assets/img/talha.jpg"
-                                                             alt="Img Profile" />
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="subject">Talha</span>
-                                                        <span class="block"> Hi, Apa Kabar ? </span>
-                                                        <span class="time">17 minutes ago</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a class="see-all" href="javascript:void(0);">
-                                            See all messages<i class="fa fa-angle-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="nav-item topbar-icon dropdown hidden-caret">
-                                <a class="nav-link dropdown-toggle"
-                                   href="#"
-                                   id="notifDropdown"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-haspopup="true"
-                                   aria-expanded="false">
-                                    <i class="fa fa-bell"></i>
-                                    <span class="notification">4</span>
-                                </a>
-                                <ul class="dropdown-menu notif-box animated fadeIn"
-                                    aria-labelledby="notifDropdown">
-                                    <li>
-                                        <div class="dropdown-title">
-                                            You have 4 new notification
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="notif-scroll scrollbar-outer">
-                                            <div class="notif-center">
-                                                <a href="#">
-                                                    <div class="notif-icon notif-primary">
-                                                        <i class="fa fa-user-plus"></i>
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="block"> New user registered </span>
-                                                        <span class="time">5 minutes ago</span>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="notif-icon notif-success">
-                                                        <i class="fa fa-comment"></i>
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="block">
-                                                            Rahmad commented on Admin
-                                                        </span>
-                                                        <span class="time">12 minutes ago</span>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="notif-img">
-                                                        <img src="/AdminProfile/assets/img/profile2.jpg"
-                                                             alt="Img Profile" />
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="block">
-                                                            Reza send messages to you
-                                                        </span>
-                                                        <span class="time">12 minutes ago</span>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="notif-icon notif-danger">
-                                                        <i class="fa fa-heart"></i>
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="block"> Farrah liked Admin </span>
-                                                        <span class="time">17 minutes ago</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a class="see-all" href="javascript:void(0);">
-                                            See all notifications<i class="fa fa-angle-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="nav-item topbar-icon dropdown hidden-caret">
-                                <a class="nav-link"
-                                   data-bs-toggle="dropdown"
-                                   href="#"
-                                   aria-expanded="false">
-                                    <i class="fas fa-layer-group"></i>
-                                </a>
-                                <div class="dropdown-menu quick-actions animated fadeIn">
-                                    <div class="quick-actions-header">
-                                        <span class="title mb-1">Quick Actions</span>
-                                        <span class="subtitle op-7">Shortcuts</span>
-                                    </div>
-                                    <div class="quick-actions-scroll scrollbar-outer">
-                                        <div class="quick-actions-items">
-                                            <div class="row m-0">
-                                                <a class="col-6 col-md-4 p-0" href="#">
-                                                    <div class="quick-actions-item">
-                                                        <div class="avatar-item bg-danger rounded-circle">
-                                                            <i class="far fa-calendar-alt"></i>
-                                                        </div>
-                                                        <span class="text">Calendar</span>
-                                                    </div>
-                                                </a>
-                                                <a class="col-6 col-md-4 p-0" href="#">
-                                                    <div class="quick-actions-item">
-                                                        <div class="avatar-item bg-warning rounded-circle">
-                                                            <i class="fas fa-map"></i>
-                                                        </div>
-                                                        <span class="text">Maps</span>
-                                                    </div>
-                                                </a>
-                                                <a class="col-6 col-md-4 p-0" href="#">
-                                                    <div class="quick-actions-item">
-                                                        <div class="avatar-item bg-info rounded-circle">
-                                                            <i class="fas fa-file-excel"></i>
-                                                        </div>
-                                                        <span class="text">Reports</span>
-                                                    </div>
-                                                </a>
-                                                <a class="col-6 col-md-4 p-0" href="#">
-                                                    <div class="quick-actions-item">
-                                                        <div class="avatar-item bg-success rounded-circle">
-                                                            <i class="fas fa-envelope"></i>
-                                                        </div>
-                                                        <span class="text">Emails</span>
-                                                    </div>
-                                                </a>
-                                                <a class="col-6 col-md-4 p-0" href="#">
-                                                    <div class="quick-actions-item">
-                                                        <div class="avatar-item bg-primary rounded-circle">
-                                                            <i class="fas fa-file-invoice-dollar"></i>
-                                                        </div>
-                                                        <span class="text">Invoice</span>
-                                                    </div>
-                                                </a>
-                                                <a class="col-6 col-md-4 p-0" href="#">
-                                                    <div class="quick-actions-item">
-                                                        <div class="avatar-item bg-secondary rounded-circle">
-                                                            <i class="fas fa-credit-card"></i>
-                                                        </div>
-                                                        <span class="text">Payments</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li class="nav-item topbar-user dropdown hidden-caret">
-                                <a class="dropdown-toggle profile-pic"
-                                   data-bs-toggle="dropdown"
-                                   href="#"
-                                   aria-expanded="false">
-
-                                    <span class="profile-username mx-2">
-
-                                        <span class="fw-bold">@User.Identity.Name</span>
-                                        <span class="op-7">، سلام</span>
-                                    </span>
-                                    <div class="avatar-sm">
-                                        <img src="/AdminProfile/assets/img/profile.jpg"
-                                             alt="..."
-                                             class="avatar-img rounded-circle" />
-                                    </div>
-                                </a>
-                                <ul class="dropdown-menu dropdown-user animated fadeIn text-end">
-                                    <div class="dropdown-user-scroll scrollbar-outer">
-                                    <li dir="rtl">
-                                        <div class="user-box">
-                                            <div class="avatar-lg">
-                                                <img src="/AdminProfile/assets/img/profile.jpg"
-                                                     alt="image profile"
-                                                     class="avatar-img rounded" />
-                                            </div>
-                                            <div class="u-text">
-                                                <h4>Hizrian</h4>
-                                                <p class="text-muted">@User.FindFirst((ClaimTypes.Email)).Value</p>
-                                                <a href="profile.html"
-                                                   class="btn btn-xs btn-secondary btn-sm">مشاهده پروفایل</a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="dropdown-divider "></div>
-                                        <a class="dropdown-item" href="#">رویداد ها</a>
-                                        <a class="dropdown-item" href="#">گروه های خبری</a>
-                                        <a class="dropdown-item" href="#">اخبار</a>
-                                        <a class="dropdown-item" href="#">تراکنش ها</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">خروج از اکانت</a>
-                                    </li>
+                <div class="user-menu d-flex align-items-center">
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+                            <span class="me-2">امین محمدی</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>پروفایل</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>تنظیمات</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-left me-2"></i>خروج</a></li>
+                        </ul>
                     </div>
-                    </ul>
-                    </li>
-                    </ul>
-            </div>
-            </nav>
-            <!-- End Navbar -->
-        </div>
-
-        <div class="container" dir="rtl">
-
-                @RenderBody()
-        </div>
-
-        <footer class="footer">
-            <div class="container-fluid d-flex justify-content-between">
-                <nav class="pull-left">
-                    <ul class="nav">
-                        
-                    </ul>
-                </nav>
-                <div class="copyright">
-                    <a href="http://www.themekita.com">win win</a>
-                    ساخته شده توسط تیم
-
-                </div>
-                <div>
-                   برنامه نویسی شده توسط
-                    <a target="_blank" href="https://themewagon.com/">علی مارتین</a>.
+                    <button class="btn btn-sm ms-3">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge bg-danger rounded-pill">3</span>
+                    </button>
                 </div>
             </div>
-        </footer>
+        </nav>
+
+        <!-- Page Content -->
+        @RenderBody()
     </div>
 
- 
-    </div>
-    <!--   Core JS Files   -->
-    <script src="/AdminProfile/assets/js/core/jquery-3.7.1.min.js"></script>
-    <script src="/AdminProfile/assets/js/core/popper.min.js"></script>
-    <script src="/AdminProfile/assets/js/core/bootstrap.min.js"></script>
-
-    <!-- jQuery Scrollbar -->
-    <script src="/AdminProfile/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-
-    <!-- Chart JS -->
-    <script src="/AdminProfile/assets/js/plugin/chart.js/chart.min.js"></script>
-
-    <!-- jQuery Sparkline -->
-    <script src="/AdminProfile/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
-
-    <!-- Chart Circle -->
-    <script src="/AdminProfile/assets/js/plugin/chart-circle/circles.min.js"></script>
-
-    <!-- Datatables -->
-    <script src="/AdminProfile/assets/js/plugin/datatables/datatables.min.js"></script>
-
-    <!-- Bootstrap Notify -->
-    <script src="/AdminProfile/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-
-    <!-- jQuery Vector Maps -->
-    <script src="/AdminProfile/assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
-    <script src="/AdminProfile/assets/js/plugin/jsvectormap/world.js"></script>
-
-    <!-- Sweet Alert -->
-    <script src="/AdminProfile/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
-
-    <!-- Kaiadmin JS -->
-    <script src="/AdminProfile/assets/js/kaiadmin.min.js"></script>
-
-    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
-    <script src="/AdminProfile/assets/js/setting-demo.js"></script>
-    <script src="/AdminProfile/assets/js/demo.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-          type: "line",
-          height: "70",
-          width: "100%",
-          lineWidth: "2",
-          lineColor: "#177dff",
-          fillColor: "rgba(23, 125, 255, 0.14)",
-        });
+            document.addEventListener('DOMContentLoaded', () => {
+              // Fade out loading screen
+              const loadingOverlay = document.querySelector('.loading-overlay');
+              if (loadingOverlay) {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => loadingOverlay.style.display = 'none', 500);
+              }
 
-        $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-          type: "line",
-          height: "70",
-          width: "100%",
-          lineWidth: "2",
-          lineColor: "#f3545d",
-          fillColor: "rgba(243, 84, 93, .14)",
-        });
+              // Sidebar toggle on small screens
+              const sidebar = document.querySelector('.sidebar');
+              const toggler = document.querySelector('.navbar-toggler');
+              if (toggler && sidebar) {
+                toggler.addEventListener('click', () => sidebar.classList.toggle('active'));
+                document.addEventListener('click', (e) => {
+                  if (window.innerWidth <= 992 && !sidebar.contains(e.target) && !toggler.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                  }
+                });
+              }
 
-        $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-          type: "line",
-          height: "70",
-          width: "100%",
-          lineWidth: "2",
-          lineColor: "#ffa534",
-          fillColor: "rgba(255, 165, 52, .14)",
+              // Submenu toggle
+              document.querySelectorAll('.has-submenu > a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  const parent = link.closest('li.has-submenu');
+                  const submenu = parent.querySelector('.submenu');
+
+                  document.querySelectorAll('.has-submenu').forEach(item => {
+                    if (item !== parent) {
+                      item.classList.remove('active');
+                      item.querySelector('.submenu')?.classList.remove('submenu-expanded');
+                    }
+                  });
+
+                  parent.classList.toggle('active');
+                  submenu?.classList.toggle('submenu-expanded');
+                });
+              });
+
+              // Animated Counters
+              document.querySelectorAll('.stat-card h3').forEach(counter => {
+                const update = () => {
+                  const target = +counter.innerText.replace(/[^0-9]/g, '');
+                  const current = +counter.getAttribute('data-count') || 0;
+                  const inc = Math.ceil(target / 100);
+                  if (current < target) {
+                    counter.innerText = (current + inc).toLocaleString();
+                    counter.setAttribute('data-count', current + inc);
+                    setTimeout(update, 20);
+                  } else {
+                    counter.innerText = target.toLocaleString();
+                  }
+                };
+                counter.setAttribute('data-count', 0);
+                update();
+              });
+
+              // Tooltips
+              const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+              tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+            });
+            document.addEventListener("DOMContentLoaded", () => {
+          const counters = document.querySelectorAll('.counter');
+          counters.forEach(counter => {
+            const target = +counter.getAttribute('data-target');
+            let count = 0;
+            const step = Math.ceil(target / 100);
+
+            const update = () => {
+              if (count < target) {
+                count += step;
+                if (count > target) count = target;
+                counter.innerText = count.toLocaleString();
+                requestAnimationFrame(update);
+              } else {
+                counter.innerText = target.toLocaleString();
+              }
+            };
+
+            update();
+          });
         });
     </script>
+
+    <style>
+        /* Clean submenu toggle styles */
+        .submenu-collapsed {
+            display: none !important;
+        }
+        .submenu-expanded {
+            display: block !important;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+    </style>
     @RenderSection("Scripts", false)
 </body>
 </html>
