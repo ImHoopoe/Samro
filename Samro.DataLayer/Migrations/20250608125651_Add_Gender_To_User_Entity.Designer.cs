@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WinWin.DataLayer.Contextes;
 
@@ -11,9 +12,11 @@ using WinWin.DataLayer.Contextes;
 namespace Samro.DataLayer.Migrations
 {
     [DbContext(typeof(SamroContext))]
-    partial class SamroContextModelSnapshot : ModelSnapshot
+    [Migration("20250608125651_Add_Gender_To_User_Entity")]
+    partial class Add_Gender_To_User_Entity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,9 +223,6 @@ namespace Samro.DataLayer.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsFinal")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsForMen")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsFull")

@@ -25,12 +25,13 @@ namespace WinWin.DataLayer.Entities.Roles
         public string? NationalId { get; set; }
         public string? Avatar { get; set; }
         public string? Address { get; set; }
-        public int? Age { get; set; }
+        public string? BirthDay { get; set; }
         public double? Height { get; set; }
         public double? Weight { get; set; }
         public bool IsActivated { get; set; }
         public Guid ActivationCode { get; set; }
-
+        public bool IsMan { get; set; }
+        public int? Age  { get; set; }
         #region AccessbilityRelations
         public IEnumerable<UserRole> UserRoles { get; set; }
         #endregion

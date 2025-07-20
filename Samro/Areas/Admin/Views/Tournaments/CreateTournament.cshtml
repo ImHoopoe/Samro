@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿```html
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using WinWin.DataLayer.DTOS
 @using WinWin.DataLayer.Entities.TournamentMatch
 @model CreateTournamentViewModel
@@ -31,6 +32,16 @@
                 </div>
 
                 <form asp-action="CreateTournament" enctype="multipart/form-data" id="multiStepForm">
+                    <!-- فیلدهای مخفی برای مختصات -->
+                    <input type="hidden" asp-for="MatchLocationLat" id="MatchLocationLat" name="MatchLocationLat" />
+                    <input type="hidden" asp-for="MatchLocationLng" id="MatchLocationLng" name="MatchLocationLng" />
+                    <input type="hidden" asp-for="WeighInLocationLat" id="WeighInLocationLat" name="WeighInLocationLat" />
+                    <input type="hidden" asp-for="WeighInLocationLng" id="WeighInLocationLng" name="WeighInLocationLng" />
+                    <input type="hidden" asp-for="FaceToFaceLocationLat" id="FaceToFaceLocationLat" name="FaceToFaceLocationLat" />
+                    <input type="hidden" asp-for="FaceToFaceLocationLng" id="FaceToFaceLocationLng" name="FaceToFaceLocationLng" />
+                    <input type="hidden" asp-for="HostelLocationLat" id="HostelLocationLat" name="HostelLocationLat" />
+                    <input type="hidden" asp-for="HostelLocationLng" id="HostelLocationLng" name="HostelLocationLng" />
+
                     <div class="steps-container">
                         <!-- Step 1: Main Information -->
                         <div class="step-content active" data-step="1">
@@ -69,7 +80,6 @@
                                         <input asp-for="MatchLocation" class="form-control" readonly placeholder="محل مسابقه را انتخاب کنید" />
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#locationModal" data-field="MatchLocation">انتخاب</button>
                                     </div>
-                                    <input type="hidden" id="MatchLocationCoords" name="MatchLocationCoords" />
                                     <span asp-validation-for="MatchLocation" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-6">
@@ -78,7 +88,6 @@
                                         <input asp-for="WeighInLocation" class="form-control" readonly placeholder="محل وزن‌کشی را انتخاب کنید" />
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#locationModal" data-field="WeighInLocation">انتخاب</button>
                                     </div>
-                                    <input type="hidden" id="WeighInLocationCoords" name="WeighInLocationCoords" />
                                     <span asp-validation-for="WeighInLocation" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-6">
@@ -87,7 +96,6 @@
                                         <input asp-for="FaceToFaceLocation" class="form-control" readonly placeholder="محل رو در رو را انتخاب کنید" />
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#locationModal" data-field="FaceToFaceLocation">انتخاب</button>
                                     </div>
-                                    <input type="hidden" id="FaceToFaceLocationCoords" name="FaceToFaceLocationCoords" />
                                     <span asp-validation-for="FaceToFaceLocation" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-6">
@@ -96,7 +104,6 @@
                                         <input asp-for="HostelLocation" class="form-control" readonly placeholder="محل اقامت را انتخاب کنید" />
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#locationModal" data-field="HostelLocation">انتخاب</button>
                                     </div>
-                                    <input type="hidden" id="HostelLocationCoords" name="HostelLocationCoords" />
                                     <span asp-validation-for="HostelLocation" class="text-danger"></span>
                                 </div>
                             </div>
@@ -309,204 +316,203 @@
     <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
-                    $(document).ready(function () {
-                        // Validation setup
-                        $.validator.setDefaults({
-                            ignore: [],
-                            errorPlacement: function (error, element) {
-                                if (element.is(":hidden")) {
-                                    const visibleInput = element.closest('.input-group').find('.persian-datepicker');
-                                    error.insertAfter(visibleInput);
-                                } else {
-                                    error.insertAfter(element);
-                                }
-                            }
-                        });
-
-                        // Persian Datepicker setup
-                        const dateFields = [
-                            { persian: 'MatchDatePersian', hidden: 'MatchDate' },
-                            { persian: 'WeighInDatePersian', hidden: 'WeighInDate' },
-                            { persian: 'FaceToFaceDatePersian', hidden: 'FaceToFaceDate' },
-                            { persian: 'RegsiterStartsAtPersian', hidden: 'RegsiterStartsAt' },
-                            { persian: 'RegsiterEndsAtPersian', hidden: 'RegsiterEndsAt' }
-                        ];
-
-                        dateFields.forEach(field => {
-                            const $picker = $('#' + field.persian);
-                            const $hidden = $('#' + field.hidden);
-                            const initialValue = $hidden.val();
-
-                            if (initialValue) {
-                                const d = new persianDate(new Date(initialValue));
-                                $picker.val(d.format('YYYY/MM/DD HH:mm:ss'));
-                            }
-
-                            $picker.persianDatepicker({
-                                format: 'YYYY/MM/DD HH:mm:ss',
-                                initialValue: false,
-                                autoClose: true,
-                                calendar: { persian: { locale: 'fa', showHint: true } },
-                                timePicker: { enabled: true, meridiem: { enabled: false } },
-                                toolbox: { calendarSwitch: { enabled: false } },
-                                onSelect: function (unixDate) {
-                                    const p = new persianDate(unixDate);
-                                    const persianStr = p.format('YYYY/MM/DD HH:mm:ss');
-                                    $picker.val(persianStr);
-                                    $hidden.val(persianStr).trigger('change');
-                                }
-                            });
-
-                            $picker.on('input', function () {
-                                if ($(this).val().trim() === '') {
-                                    $hidden.val('').trigger('change');
-                                }
-                            });
-                        });
-
-                        // Multi-step form navigation
-                        let currentStep = 1;
-                        const totalSteps = $('.step-content').length;
-
-                        function showStep(step) {
-                            $('.step-content').removeClass('active slide-left slide-right');
-                            $('.step').removeClass('active');
-
-                            const $current = $(`.step-content[data-step="${step}"]`);
-                            const $prev = $(`.step-content[data-step="${step - 1}"]`);
-                            const $next = $(`.step-content[data-step="${step + 1}"]`);
-
-                            if (step > currentStep) {
-                                $current.addClass('active');
-                                $prev.addClass('slide-left');
-                            } else if (step < currentStep) {
-                                $current.addClass('active');
-                                $next.addClass('slide-right');
-                            } else {
-                                $current.addClass('active');
-                            }
-
-                            $(`.step[data-step="${step}"]`).addClass('active');
-                            currentStep = step;
-
-                            // Validate current step before proceeding
-                            $('#multiStepForm').validate().form();
-                        }
-
-                        $('.next-step').click(function () {
-                            if (currentStep < totalSteps && $('#multiStepForm').valid()) {
-                                showStep(currentStep + 1);
-                            }
-                        });
-
-                        $('.prev-step').click(function () {
-                            if (currentStep > 1) {
-                                showStep(currentStep - 1);
-                            }
-                        });
-
-                        // Map setup
-                        let map = null;
-                        let currentMarker = null;
-                        let selectedLatLng = null;
-                        let selectedField = null;
-
-                        function initializeMap() {
-                            if (map) {
-                                map.invalidateSize();
-                                return;
-                            }
-                            map = L.map('map').setView([35.6892, 51.3890], 12);
-                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                            }).addTo(map);
-
-                            map.on('click', function(e) {
-                                selectedLatLng = e.latlng;
-                                if (currentMarker) map.removeLayer(currentMarker);
-                                currentMarker = L.marker(selectedLatLng).addTo(map);
-                                getLocationName(selectedLatLng.lat, selectedLatLng.lng);
-                            });
-
-                            $('#search-bar').on('input', function() {
-                                const query = $(this).val().trim();
-                                if (query.length < 3) return;
-
-                                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.length > 0) {
-                                            const { lat, lon, display_name } = data[0];
-                                            selectedLatLng = { lat, lng: lon };
-                                            map.setView([lat, lon], 14);
-                                            if (currentMarker) map.removeLayer(currentMarker);
-                                            currentMarker = L.marker([lat, lon]).addTo(map).bindPopup(display_name).openPopup();
-                                            $('#locationInfo').text(display_name);
-                                        }
-                                    });
-                            });
-                        }
-
-                        function getLocationName(lat, lng) {
-                            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    const name = data.display_name || 'نام مکان یافت نشد';
-                                    $('#locationInfo').text(name);
-                                    if (currentMarker) currentMarker.bindPopup(name).openPopup();
-                                });
-                        }
-
-                        // جایگزین کردن کد مربوط به مدیریت مودال و نقشه
-        $('[data-bs-toggle="modal"]').on('click', function() {
-            selectedField = $(this).data('field');
-        });
-
-        $('#locationModal').on('shown.bs.modal', function () {
-            initializeMap();
-            if (map) {
-                setTimeout(() => map.invalidateSize(), 100);
-            }
+        $(document).ready(function () {
+            // Validation setup
+            $.validator.setDefaults({
+                ignore: [],
+                errorPlacement: function (error, element) {
+                    if (element.is(":hidden")) {
+                        const visibleInput = element.closest('.input-group').find('.persian-datepicker');
+                        error.insertAfter(visibleInput);
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
             });
 
-                    $('#confirmLocation').on('click', function() {
-    if (selectedLatLng) {
-        $(`#${selectedField}`).val($('#locationInfo').text());
-        $(`#${selectedField}Coords`).val(JSON.stringify(selectedLatLng));
-        $('#locationModal').modal('hide');
-        // تأخیر برای اطمینان از تکمیل انیمیشن بسته شدن مودال
-        setTimeout(function() {
-            if ($('.modal-backdrop').length > 0) {
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open');
+            // Persian Datepicker setup
+            const dateFields = [
+                { persian: 'MatchDatePersian', hidden: 'MatchDate' },
+                { persian: 'WeighInDatePersian', hidden: 'WeighInDate' },
+                { persian: 'FaceToFaceDatePersian', hidden: 'FaceToFaceDate' },
+                { persian: 'RegsiterStartsAtPersian', hidden: 'RegsiterStartsAt' },
+                { persian: 'RegsiterEndsAtPersian', hidden: 'RegsiterEndsAt' }
+            ];
+
+            dateFields.forEach(field => {
+                const $picker = $('#' + field.persian);
+                const $hidden = $('#' + field.hidden);
+                const initialValue = $hidden.val();
+
+                if (initialValue) {
+                    const d = new persianDate(new Date(initialValue));
+                    $picker.val(d.format('YYYY/MM/DD HH:mm:ss'));
+                }
+
+                $picker.persianDatepicker({
+                    format: 'YYYY/MM/DD HH:mm:ss',
+                    initialValue: false,
+                    autoClose: true,
+                    calendar: { persian: { locale: 'fa', showHint: true } },
+                    timePicker: { enabled: true, meridiem: { enabled: false } },
+                    toolbox: { calendarSwitch: { enabled: false } },
+                    onSelect: function (unixDate) {
+                        const p = new persianDate(unixDate);
+                        const persianStr = p.format('YYYY/MM/DD HH:mm:ss');
+                        $picker.val(persianStr);
+                        $hidden.val(persianStr).trigger('change');
+                    }
+                });
+
+                $picker.on('input', function () {
+                    if ($(this).val().trim() === '') {
+                        $hidden.val('').trigger('change');
+                    }
+                });
+            });
+
+            // Multi-step form navigation
+            let currentStep = 1;
+            const totalSteps = $('.step-content').length;
+
+            function showStep(step) {
+                $('.step-content').removeClass('active slide-left slide-right');
+                $('.step').removeClass('active');
+
+                const $current = $(`.step-content[data-step="${step}"]`);
+                const $prev = $(`.step-content[data-step="${step - 1}"]`);
+                const $next = $(`.step-content[data-step="${step + 1}"]`);
+
+                if (step > currentStep) {
+                    $current.addClass('active');
+                    $prev.addClass('slide-left');
+                } else if (step < currentStep) {
+                    $current.addClass('active');
+                    $next.addClass('slide-right');
+                } else {
+                    $current.addClass('active');
+                }
+
+                $(`.step[data-step="${step}"]`).addClass('active');
+                currentStep = step;
+
+                // Validate current step before proceeding
+                $('#multiStepForm').validate().form();
             }
-        }, 100); // تأخیر 300 میلی‌ثانیه برای تکمیل انیمیشن
-    } else {
-        alert('لطفاً یک مکان انتخاب کنید.');
-    }
-    });
 
+            $('.next-step').click(function () {
+                if (currentStep < totalSteps && $('#multiStepForm').valid()) {
+                    showStep(currentStep + 1);
+                }
+            });
 
-                        // Subgroup fetch
-                        window.getSubGroups = async function (sportId) {
-                            if (!sportId) return;
-                            try {
-                                const url = '@Url.Action("GetSubGroups", "Tournaments", new { area = "Admin" })';
-                                const response = await fetch(`${url}?id=${sportId}`);
-                                if (!response.ok) throw new Error('خطا در بارگذاری داده‌ها');
-                                const data = await response.json();
-                                const select = document.getElementById('subGroupSelect');
-                                select.innerHTML = '<option value="">انتخاب کنید</option>';
-                                data.forEach(item => {
-                                    const opt = document.createElement('option');
-                                    opt.value = item.value;
-                                    opt.textContent = item.text;
-                                    select.appendChild(opt);
-                                });
-                            } catch (error) {
-                                console.error('خطا:', error);
+            $('.prev-step').click(function () {
+                if (currentStep > 1) {
+                    showStep(currentStep - 1);
+                }
+            });
+
+            // Map setup
+            let map = null;
+            let currentMarker = null;
+            let selectedLatLng = null;
+            let selectedField = null;
+
+            function initializeMap() {
+                if (map) {
+                    map.invalidateSize();
+                    return;
+                }
+                map = L.map('map').setView([35.6892, 51.3890], 12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(map);
+
+                map.on('click', function(e) {
+                    selectedLatLng = e.latlng;
+                    if (currentMarker) map.removeLayer(currentMarker);
+                    currentMarker = L.marker(selectedLatLng).addTo(map);
+                    getLocationName(selectedLatLng.lat, selectedLatLng.lng);
+                });
+
+                $('#search-bar').on('input', function() {
+                    const query = $(this).val().trim();
+                    if (query.length < 3) return;
+
+                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.length > 0) {
+                                const { lat, lon, display_name } = data[0];
+                                selectedLatLng = { lat, lng: lon };
+                                map.setView([lat, lon], 14);
+                                if (currentMarker) map.removeLayer(currentMarker);
+                                currentMarker = L.marker([lat, lon]).addTo(map).bindPopup(display_name).openPopup();
+                                $('#locationInfo').text(display_name);
                             }
-                        };
+                        });
+                });
+            }
+
+            function getLocationName(lat, lng) {
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const name = data.display_name || 'نام مکان یافت نشد';
+                        $('#locationInfo').text(name);
+                        if (currentMarker) currentMarker.bindPopup(name).openPopup();
                     });
+            }
+
+            $('[data-bs-toggle="modal"]').on('click', function() {
+                selectedField = $(this).data('field');
+            });
+
+            $('#locationModal').on('shown.bs.modal', function () {
+                initializeMap();
+                if (map) {
+                    setTimeout(() => map.invalidateSize(), 100);
+                }
+            });
+
+            $('#confirmLocation').on('click', function() {
+                if (selectedLatLng) {
+                    $(`#${selectedField}`).val($('#locationInfo').text());
+                    $(`#${selectedField}Lat`).val(selectedLatLng.lat);
+                    $(`#${selectedField}Lng`).val(selectedLatLng.lng);
+                    $('#locationModal').modal('hide');
+                    setTimeout(function() {
+                        if ($('.modal-backdrop').length > 0) {
+                            $('.modal-backdrop').remove();
+                            $('body').removeClass('modal-open');
+                        }
+                    }, 100);
+                } else {
+                    alert('لطفاً یک مکان انتخاب کنید.');
+                }
+            });
+
+            // Subgroup fetch
+            window.getSubGroups = async function (sportId) {
+                if (!sportId) return;
+                try {
+                    const url = '@Url.Action("GetSubGroups", "Tournaments", new { area = "Admin" })';
+                    const response = await fetch(`${url}?id=${sportId}`);
+                    if (!response.ok) throw new Error('خطا در بارگذاری داده‌ها');
+                    const data = await response.json();
+                    const select = document.getElementById('subGroupSelect');
+                    select.innerHTML = '<option value="">انتخاب کنید</option>';
+                    data.forEach(item => {
+                        const opt = document.createElement('option');
+                        opt.value = item.value;
+                        opt.textContent = item.text;
+                        select.appendChild(opt);
+                    });
+                } catch (error) {
+                    console.error('خطا:', error);
+                }
+            };
+        });
     </script>
 }
+```

@@ -45,6 +45,7 @@ namespace WinWin.DataLayer.Entities.EventModels
         }
         public string Thumbnail { get; set; } = "No.png";
         public int? SportId { get; set; }
+        public bool IsForMen { get; set; }
 
         #region Relations
         public ICollection<Match> Matches { get; set; }
