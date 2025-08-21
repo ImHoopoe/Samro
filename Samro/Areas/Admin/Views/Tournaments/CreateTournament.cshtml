@@ -53,6 +53,15 @@
                                     <input asp-for="Title" class="form-control" placeholder="عنوان رویداد را وارد کنید" />
                                     <span asp-validation-for="Title" class="text-danger"></span>
                                 </div>
+                                <div class="form-group">
+                                    <label asp-for="IsForMen"></label>
+                                    <select asp-for="IsForMen" class="form-select" asp-items="@(new List<SelectListItem> {
+                                                                                                                                            new SelectListItem { Text = "مرد", Value = "true" },
+                                                                                                                                            new SelectListItem { Text = "زن", Value = "false" }
+                                                                                                                                        })">
+                                    </select>
+                                    <span asp-validation-for="IsForMen" class="text-danger"></span>
+                                </div>
                                 <div class="col-md-6">
                                     <label asp-for="Address" class="form-label">آدرس کلی</label>
                                     <input asp-for="Address" class="form-control" placeholder="آدرس کلی رویداد" />

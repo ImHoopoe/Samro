@@ -116,8 +116,11 @@ namespace WinWin.Areas.Admin.Controllers
                     MaximnumPlayers = createTournamentViewModel.MaximnumPlayers,
                     RegsiterEndsAt = DateTimeExtensions.ToGregorian(createTournamentViewModel.RegsiterEndsAt),
                     RegsiterStartsAt = DateTimeExtensions.ToGregorian(createTournamentViewModel.RegsiterStartsAt),
-                    SportId = createTournamentViewModel.SportId
-                };
+                    SportId = createTournamentViewModel.SportId,
+                    IsForMen = createTournamentViewModel.IsForMen
+
+
+                  };
                 if (createTournamentViewModel.Thumbnail != null && createTournamentViewModel.Thumbnail.Length > 0)
                 {
                     string ImageName = Guid.NewGuid().ToString();
