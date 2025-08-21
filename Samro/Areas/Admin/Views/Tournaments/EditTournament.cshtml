@@ -30,7 +30,15 @@
                         <input asp-for="Title" class="form-control" />
                         <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
-
+                    <div class="form-group">
+                        <label asp-for="IsForMen"></label>
+                        <select asp-for="IsForMen" class="form-select" asp-items="@(new List<SelectListItem> {
+                                                                                                                                new SelectListItem { Text = "مرد", Value = "true" },
+                                                                                                                                new SelectListItem { Text = "زن", Value = "false" }
+                                                                                                                            })">
+                        </select>
+                        <span asp-validation-for="IsForMen" class="text-danger"></span>
+                    </div>
                     <!-- آدرس رویداد -->
                     <div class="form-group">
                         <label asp-for="Address" class="control-label"></label>

@@ -171,7 +171,8 @@ namespace WinWin.Areas.Admin.Controllers
                 RegsiterEndsAt = DateTimeExtensions.ToShamsi(tournament.RegsiterEndsAt),
                 RegsiterStartsAt = DateTimeExtensions.ToShamsi(tournament.RegsiterStartsAt),
                 TournamentType = tournament.TournamentType,
-                SportId = tournament.SportId.Value
+                SportId = tournament.SportId.Value,
+                IsForMen = tournament.IsForMen,
 
             };
 
@@ -209,6 +210,7 @@ namespace WinWin.Areas.Admin.Controllers
             tournament.RegsiterEndsAt = DateTimeExtensions.ToGregorian(editTournament.RegsiterEndsAt);
             tournament.RegsiterStartsAt = DateTimeExtensions.ToGregorian(editTournament.RegsiterStartsAt);
             tournament.SportId = editTournament.SportId;
+            tournament.IsForMen = editTournament.IsForMen;
 
             if (!await _tournamentServices.EditTournament(tournament))
             {

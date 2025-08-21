@@ -154,6 +154,10 @@ namespace WinWin.DataLayer.DTOS
         [DisplayName("عنوان رویداد")]
         public string Title { get; set; }
 
+        [Required(ErrorMessage = "جنسیت رویداد الزامی است.")]
+        [DisplayName("جنسیت رویداد")]
+        public bool IsForMen { get; set; }
+
         [Required(ErrorMessage = "آدرس الزامی است.")]
         [StringLength(200, ErrorMessage = "آدرس نباید بیشتر از 200 کاراکتر باشد.")]
         [DisplayName("آدرس رویداد")]
