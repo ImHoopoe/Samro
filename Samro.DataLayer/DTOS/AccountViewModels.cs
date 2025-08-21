@@ -176,6 +176,10 @@ namespace WinWin.DataLayer.DTOS
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "مقدار {0} الزامی است !")]
+        [Display(Name = "جنسیت")]
+        public bool IsMan { get; set; }
+
+        [Required(ErrorMessage = "مقدار {0} الزامی است !")]
         [StringLength(50)]
         [Display(Name = "نام")]
         public string Name { get; set; }

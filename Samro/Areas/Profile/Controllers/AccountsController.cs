@@ -171,7 +171,8 @@ namespace Samro.Areas.User.Profile.Controllers
                 NationalId = user.NationalId,
                 Height = user.Height,
                 Weight = user.Weight,
-                IsActivated = user.IsActivated
+                IsActivated = user.IsActivated,
+                IsMan = user.IsMan
             };
 
             return View(model);
@@ -206,7 +207,7 @@ namespace Samro.Areas.User.Profile.Controllers
             model.Height = user.Height;
             model.Weight = user.Weight;
             model.IsActivated = user.IsActivated;
-
+            model.IsMan = user.IsMan;
             if (!await _UserServices.EditUser(user))
             {
                 TempData["Error"] = "عملیات با موفقیت شکست خورد";
