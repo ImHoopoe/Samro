@@ -9,15 +9,15 @@ using WinWin.DataLayer.Entities.TournamentMatch;
 
 namespace WinWin.Core.Services.TournamentAndMatch
 {
-    public class MatchRoundServices : IMatchRound
+    public class RoundServices : IMatchRound
     {
         private readonly SamroContext _context;
-        public MatchRoundServices(SamroContext context)
+        public RoundServices(SamroContext context)
         {
             _context = context;
         }
 
-        public async Task<bool> CreateMatchRound(MatchRound matchRound)
+        public async Task<bool> CreateMatchRound(Round matchRound)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace WinWin.Core.Services.TournamentAndMatch
         {
             try
             {
-                MatchRound matchRound = await GetMatchRoundById(id);
+                Round matchRound = await GetMatchRoundById(id);
                 matchRound.IsDeleted = true;
                 await _context.SaveChangesAsync();
                 return true;
@@ -46,7 +46,7 @@ namespace WinWin.Core.Services.TournamentAndMatch
             }
         }
 
-        public async Task<bool> EditMatchRound(MatchRound matchRound)
+        public async Task<bool> EditMatchRound(Round matchRound)
         {
             try
             {
@@ -60,14 +60,14 @@ namespace WinWin.Core.Services.TournamentAndMatch
             }
         }
 
-        public async Task<MatchRound> GetMatchRoundById(int id)
+        public async Task<Round> GetMatchRoundById(int id)
         {
-            return await _context.MatchRounds.FindAsync(id);
+            return await _context.Rounds.FindAsync(id);
         }
 
-        public IEnumerable<MatchRound> GetMatchRounds()
+        public IEnumerable<Round> GetMatchRounds()
         {
-            return _context.MatchRounds;
+            return _context.Rounds;
         }
 
     }

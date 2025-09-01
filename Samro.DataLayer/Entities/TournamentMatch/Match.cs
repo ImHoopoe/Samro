@@ -22,10 +22,13 @@ namespace WinWin.DataLayer.Entities.TournamentMatch
         public string Location { get; set; }
         public DateTimeOffset Date { get; set; }
         public int? SportId  { get; set; }
+        public Guid Player1Id { get; set; }
+        public Guid Player2Id { get; set; }
+        public bool IsCompleted { get; set; }
         #region Relations
         public Tournament Tournament { get; set; }
         public IEnumerable<User> Players { get; set; }
-        public List<MatchRound> Rounds { get; set; } = new();
+        public List<Round> Rounds { get; set; } = new();
         public List<MatchWarning> Warnings { get; set; } = new();
         public MatchScore Score { get; set; }
         public ICollection<SportToMatch> SportToMatches { get; set; }

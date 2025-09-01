@@ -52,7 +52,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TournamentParticipants");
+                    b.ToTable("TournamentParticipants", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.BlogBlogGroup.Blog", b =>
@@ -96,7 +96,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("BlogGroupId");
 
-                    b.ToTable("Blogs");
+                    b.ToTable("Blogs", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.BlogBlogGroup.BlogGroup", b =>
@@ -121,7 +121,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("BlogGroups");
+                    b.ToTable("BlogGroups", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.ChatHub.Message", b =>
@@ -152,7 +152,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.ChatHub.Room", b =>
@@ -180,7 +180,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("User2Id");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.EventModels.Tournament", b =>
@@ -220,9 +220,6 @@ namespace Samro.DataLayer.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsFinal")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsForMen")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsFull")
@@ -276,7 +273,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("SportId");
 
-                    b.ToTable("Tournaments");
+                    b.ToTable("Tournaments", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.RolePernissionUser.RolePermission", b =>
@@ -299,7 +296,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RolePermisions");
+                    b.ToTable("RolePermisions", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.RolePernissionUser.UserRole", b =>
@@ -322,7 +319,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.Roles.Permission", b =>
@@ -345,7 +342,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Permisions");
+                    b.ToTable("Permisions", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.Roles.Role", b =>
@@ -365,7 +362,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.Roles.User", b =>
@@ -437,7 +434,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.Sport.Sport", b =>
@@ -460,7 +457,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Sports");
+                    b.ToTable("Sports", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.Sport.SportToMatch", b =>
@@ -483,7 +480,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("SportId");
 
-                    b.ToTable("SportToMatch");
+                    b.ToTable("SportToMatch", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.Match", b =>
@@ -524,7 +521,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("Matches");
+                    b.ToTable("Matches", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchRole", b =>
@@ -547,7 +544,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasKey("MatchRoleId");
 
-                    b.ToTable("MatchRoles");
+                    b.ToTable("MatchRoles", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchRound", b =>
@@ -577,7 +574,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("MatchId");
 
-                    b.ToTable("MatchRounds");
+                    b.ToTable("MatchRounds", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchScore", b =>
@@ -605,7 +602,7 @@ namespace Samro.DataLayer.Migrations
                     b.HasIndex("MatchId")
                         .IsUnique();
 
-                    b.ToTable("MatchScores");
+                    b.ToTable("MatchScores", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchUser", b =>
@@ -628,7 +625,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("MatchUsers");
+                    b.ToTable("MatchUsers", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchWarning", b =>
@@ -661,7 +658,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("MatchId");
 
-                    b.ToTable("MatchWarnings");
+                    b.ToTable("MatchWarnings", (string)null);
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.TournamentUser", b =>
@@ -684,7 +681,7 @@ namespace Samro.DataLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TournamentUsers");
+                    b.ToTable("TournamentUsers", (string)null);
                 });
 
             modelBuilder.Entity("Samro.DataLayer.Entities.TournamentMatch.TournamentParticipant", b =>

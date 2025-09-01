@@ -77,7 +77,7 @@ namespace WinWin.DataLayer.Contextes
         public DbSet<Match> Matches { get; set; }
         public DbSet<Tournament> Tournaments { get; set; }
         public DbSet<MatchRole> MatchRoles { get; set; }
-        public DbSet<MatchRound> MatchRounds { get; set; }
+        public DbSet<Round> Rounds { get; set; }
         public DbSet<MatchScore> MatchScores { get; set; }
         public DbSet<MatchWarning> MatchWarnings { get; set; }
         public DbSet<MatchUser> MatchUsers { get; set; }
