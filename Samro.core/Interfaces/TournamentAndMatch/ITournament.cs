@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Samro.DataLayer.Entities.TournamentMatch;
 using WinWin.DataLayer.Entities.EventModels;
+using WinWin.DataLayer.Entities.TournamentMatch;
 
 namespace WinWin.Core.Interfaces.TournamentAndMatch
 {
@@ -29,7 +30,7 @@ namespace WinWin.Core.Interfaces.TournamentAndMatch
         Task<List<Tournament>> GetStepStepTwoTournaments();
         Task<List<Tournament>> GetStepOneTournamentsForAdmin(Guid adminId);
         Task<bool> CreateParticipent(TournamentParticipant participant);
-
+        //Task<List<Match>> GenerateTournamentMatch()
         #endregion
     }
 }
