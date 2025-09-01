@@ -12,8 +12,8 @@ using WinWin.DataLayer.Contextes;
 namespace Samro.DataLayer.Migrations
 {
     [DbContext(typeof(SamroContext))]
-    [Migration("20250605082000_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250901084936_UpdateRoundAndMatch")]
+    partial class UpdateRoundAndMatch
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,6 +225,9 @@ namespace Samro.DataLayer.Migrations
                     b.Property<bool>("IsFinal")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsForMen")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsFull")
                         .HasColumnType("bit");
 
@@ -386,6 +389,9 @@ namespace Samro.DataLayer.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("BirthDay")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -393,6 +399,9 @@ namespace Samro.DataLayer.Migrations
                         .HasColumnType("float");
 
                     b.Property<bool>("IsActivated")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMan")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -495,6 +504,9 @@ namespace Samro.DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -504,6 +516,12 @@ namespace Samro.DataLayer.Migrations
 
                     b.Property<DateTimeOffset>("MatchDate")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("Player1Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Player2Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("SportId")
                         .HasColumnType("int");
@@ -542,36 +560,6 @@ namespace Samro.DataLayer.Migrations
                     b.HasKey("MatchRoleId");
 
                     b.ToTable("MatchRoles");
-                });
-
-            modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchRound", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("time");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MatchId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoundNumber")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MatchId");
-
-                    b.ToTable("MatchRounds");
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchScore", b =>
@@ -656,6 +644,45 @@ namespace Samro.DataLayer.Migrations
                     b.HasIndex("MatchId");
 
                     b.ToTable("MatchWarnings");
+                });
+
+            modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.Round", b =>
+                {
+                    b.Property<int>("RoundId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoundId"));
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MatchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Player1Score")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Player2Score")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoundNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoundId");
+
+                    b.HasIndex("MatchId");
+
+                    b.ToTable("Rounds");
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.TournamentUser", b =>
@@ -878,17 +905,6 @@ namespace Samro.DataLayer.Migrations
                     b.Navigation("Tournament");
                 });
 
-            modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchRound", b =>
-                {
-                    b.HasOne("WinWin.DataLayer.Entities.TournamentMatch.Match", "Match")
-                        .WithMany("Rounds")
-                        .HasForeignKey("MatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Match");
-                });
-
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.MatchScore", b =>
                 {
                     b.HasOne("WinWin.DataLayer.Entities.TournamentMatch.Match", "Match")
@@ -926,6 +942,15 @@ namespace Samro.DataLayer.Migrations
                         .IsRequired();
 
                     b.Navigation("Match");
+                });
+
+            modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.Round", b =>
+                {
+                    b.HasOne("WinWin.DataLayer.Entities.TournamentMatch.Match", null)
+                        .WithMany("Rounds")
+                        .HasForeignKey("MatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WinWin.DataLayer.Entities.TournamentMatch.TournamentUser", b =>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Samro.DataLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class UpdateRoundAndMatch : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -163,34 +163,14 @@ namespace Samro.DataLayer.Migrations
                     TournamentId = table.Column<int>(type: "int", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    SportId = table.Column<int>(type: "int", nullable: true)
+                    SportId = table.Column<int>(type: "int", nullable: true),
+                    Player1Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Player2Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Matches", x => x.MatchId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MatchRounds",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MatchId = table.Column<int>(type: "int", nullable: false),
-                    RoundNumber = table.Column<int>(type: "int", nullable: false),
-                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MatchRounds", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MatchRounds_Matches_MatchId",
-                        column: x => x.MatchId,
-                        principalTable: "Matches",
-                        principalColumn: "MatchId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -240,6 +220,32 @@ namespace Samro.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Rounds",
+                columns: table => new
+                {
+                    RoundId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MatchId = table.Column<int>(type: "int", nullable: false),
+                    RoundNumber = table.Column<int>(type: "int", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Player1Score = table.Column<int>(type: "int", nullable: false),
+                    Player2Score = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rounds", x => x.RoundId);
+                    table.ForeignKey(
+                        name: "FK_Rounds_Matches_MatchId",
+                        column: x => x.MatchId,
+                        principalTable: "Matches",
+                        principalColumn: "MatchId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SportToMatch",
                 columns: table => new
                 {
@@ -279,11 +285,13 @@ namespace Samro.DataLayer.Migrations
                     NationalId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Age = table.Column<int>(type: "int", nullable: true),
+                    BirthDay = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Height = table.Column<double>(type: "float", nullable: true),
                     Weight = table.Column<double>(type: "float", nullable: true),
                     IsActivated = table.Column<bool>(type: "bit", nullable: false),
                     ActivationCode = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsMan = table.Column<bool>(type: "bit", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: true),
                     MatchId = table.Column<int>(type: "int", nullable: true),
                     RoleId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -380,7 +388,8 @@ namespace Samro.DataLayer.Migrations
                     TournamentDoctorId = table.Column<int>(type: "int", nullable: true),
                     TournamentRefereeId = table.Column<int>(type: "int", nullable: true),
                     Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SportId = table.Column<int>(type: "int", nullable: true)
+                    SportId = table.Column<int>(type: "int", nullable: true),
+                    IsForMen = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -527,11 +536,6 @@ namespace Samro.DataLayer.Migrations
                 column: "TournamentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MatchRounds_MatchId",
-                table: "MatchRounds",
-                column: "MatchId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_MatchScores_MatchId",
                 table: "MatchScores",
                 column: "MatchId",
@@ -586,6 +590,11 @@ namespace Samro.DataLayer.Migrations
                 name: "IX_Rooms_User2Id",
                 table: "Rooms",
                 column: "User2Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rounds_MatchId",
+                table: "Rounds",
+                column: "MatchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sports_ParentId",
@@ -682,9 +691,6 @@ namespace Samro.DataLayer.Migrations
                 name: "Blogs");
 
             migrationBuilder.DropTable(
-                name: "MatchRounds");
-
-            migrationBuilder.DropTable(
                 name: "MatchScores");
 
             migrationBuilder.DropTable(
@@ -698,6 +704,9 @@ namespace Samro.DataLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "RolePermisions");
+
+            migrationBuilder.DropTable(
+                name: "Rounds");
 
             migrationBuilder.DropTable(
                 name: "SportToMatch");
